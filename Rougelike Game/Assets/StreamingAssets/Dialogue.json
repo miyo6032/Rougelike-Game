@@ -1,0 +1,17 @@
+[
+	
+	{
+		"sprite": "ItemIcons/leather_bag",
+		"text": "Elvenstein the Guard: Hehe... I do nothing here but stand around and watch all of the ladies walk by!",
+		"id": 0,
+		"next": -1
+	},
+
+	{
+		"sprite": "ItemIcons/leather_bag",
+		"text": "Barribob the Mangy Dog: What are you staring at? If you're not gonna pet me, move on!",
+		"id": 1,
+		"next": -1
+	}
+
+]

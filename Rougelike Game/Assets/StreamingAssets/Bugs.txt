@@ -1,0 +1,13 @@
+Enemies spawning create lag maybe?
+
+Despawn loot bags after they get a certain distance away
+
+For some reason, the enemy info only happens on random enemies. Maybe just axe the thing all together.
+
+Optimization these functions:
+
+Wall.Awake()
+
+Player.FixedUpdate()
+
+WAlls can glitch in front of dead trees

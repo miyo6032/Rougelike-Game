@@ -1,0 +1,26 @@
+[
+	
+	{
+		"id":0,
+		"title": "Bone Collector",
+		"value":40,
+		"description": "Defeat 4 skeletons.",
+		"slug": "skeleton"
+	},
+
+	{
+		"id":1,
+		"title": "Shrub Buster",
+		"value":40,
+		"description": "Destroy 5 shrubs",
+		"slug": "shrub"
+	},
+
+	{
+		"id":2,
+		"title": "Defender",
+		"value":80,
+		"description": "Defend the city from an attack",
+		"slug": "stoneWall"
+	}
+]

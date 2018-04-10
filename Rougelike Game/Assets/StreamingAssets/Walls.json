@@ -1,0 +1,134 @@
+[
+	
+	{
+		"id":0,
+		"icon": "Tiles",
+		"iconIndex":26,
+		"maxHealth": 20,
+		"health": 20,
+		"defense":2,
+		"isUnbreakable":false
+	},
+
+	{
+		"id":1,
+		"icon": "Tiles",
+		"iconIndex":5,
+		"maxHealth": 0,
+		"health": 0,
+		"defense":0,
+		"isUnbreakable":true
+	},
+
+	{
+		"id":2,
+		"icon": "Test",
+		"iconIndex":64,
+		"maxHealth": 20,
+		"health": 20,
+		"defense":0,
+		"isUnbreakable":false
+	},
+
+	{
+		"id":3,
+		"icon": "Test",
+		"iconIndex":65,
+		"maxHealth": 20,
+		"health": 20,
+		"defense":0,
+		"isUnbreakable":false
+	},
+
+	{
+		"id":4,
+		"icon": "Test",
+		"iconIndex":66,
+		"maxHealth": 20,
+		"health": 20,
+		"defense":2,
+		"isUnbreakable":false
+	},
+
+	{
+		"id":5,
+		"icon": "Test",
+		"iconIndex":67,
+		"maxHealth": 20,
+		"health": 20,
+		"defense":2,
+		"isUnbreakable":false
+	},
+
+	{
+		"id":6,
+		"icon": "Test",
+		"iconIndex":68,
+		"maxHealth": 20,
+		"health": 20,
+		"defense":0,
+		"isUnbreakable":false
+	},
+
+	{
+		"id":7,
+		"icon": "Test",
+		"iconIndex":69,
+		"maxHealth": 20,
+		"health": 20,
+		"defense":0,
+		"isUnbreakable":false
+	},
+
+	{
+		"id":8,
+		"icon": "Test",
+		"iconIndex":70,
+		"maxHealth": 20,
+		"health": 20,
+		"defense":0,
+		"isUnbreakable":false
+	},
+
+	{
+		"id":9,
+		"icon": "Test",
+		"iconIndex":71,
+		"maxHealth": 20,
+		"health": 20,
+		"defense":2,
+		"isUnbreakable":false
+	},
+
+	{
+		"id":10,
+		"icon": "Test",
+		"iconIndex":72,
+		"maxHealth": 20,
+		"health": 20,
+		"defense":2,
+		"isUnbreakable":false
+	},
+
+	{
+		"id":11,
+		"icon": "Test",
+		"iconIndex":73,
+		"maxHealth": 20,
+		"health": 20,
+		"defense":2,
+		"isUnbreakable":false
+	},
+
+	{
+		"id":12,
+		"icon": "Test",
+		"iconIndex":74,
+		"maxHealth": 20,
+		"health": 20,
+		"defense":2,
+		"isUnbreakable":false
+	}
+
+
+]
