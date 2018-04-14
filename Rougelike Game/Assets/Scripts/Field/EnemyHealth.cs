@@ -14,13 +14,6 @@ public class EnemyHealth : MonoBehaviour {
 
 	public void updateHealth(int healthpercentage){
 		healthSlider.value = healthpercentage;
-		if (healthpercentage <= 0) {
-			Destroy(gameObject);
-		}
-	}
-
-	public void setPosition(Vector3 position){
-		healthSlider.transform.position = position;
 	}
 
 }

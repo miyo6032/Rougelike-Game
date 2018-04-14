@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 
 //Coordinates movements between the player and the enemy to keep collisions from happening
+//Basically, lets the everyone coordinate and communicate where they are going, so there are no
+//disasterous collisions. Imagine if we had this in real life!
 public class MovementTracker : MonoBehaviour {
 
     List<Vector2Int> claimedSpots = new List<Vector2Int>();

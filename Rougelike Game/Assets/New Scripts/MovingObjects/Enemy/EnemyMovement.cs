@@ -3,9 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 
 //Handles movement and when the enemy cannot move
-public class EnemyMovement : MovingObject {
-    public int turnDelay; //How many seconds an enemy has to wait until they can move again 
+//Also hold the ai/pathfinding for the enemy
+public class EnemyMovement : MovingObject
+{
+    public float turnDelay; //How many seconds an enemy has to wait until they can move again 
     public int enemySight = 3;
+    public LayerMask pathfindingLayer; //We want enemy pathfinding to disreguard enemies in the way of doorways and stuff like that,
+    //So we only use the environment layer to do the pathfinding
 
     protected Animator animator;
     protected EnemyStats stats;
@@ -31,15 +35,26 @@ public class EnemyMovement : MovingObject {
             //Disable Box colliders for future linecasts
             boxCollider.enabled = false;
             playerCol.enabled = false;
-            Vector2 nextMove = GetNextMove();
+            Vector2 nextMove = GetNextMove(blockingLayer + pathfindingLayer);
             boxCollider.enabled = true;
             playerCol.enabled = true;
 
-            //check to see if the next move is valid - if the path was found and the spot is not claimed
-            if (nextMove.x != Vector2.positiveInfinity.x &&
-                !moveManager.SpotClaimed(Vector2Int.RoundToInt( (Vector2)transform.position + nextMove * moveScale))) {
-                AttemptMove<PlayerStats>((int)nextMove.x, (int)nextMove.y);
-                altMove = !altMove;
+            //If there is a blockage, it might be because an enemy is in the way, so then we look for a path
+            //with the enemy's layer disabled
+            if (nextMove.x == Vector2.positiveInfinity.x)
+            {
+                nextMove = GetNextMove(pathfindingLayer);
+            }
+
+            //Make sure that nextMove actually found a path
+            if (nextMove.x != Vector2.positiveInfinity.x)
+            {
+                //As long at the spot is not claimed already something else, we can try to move into the position
+                if (!moveManager.SpotClaimed(Vector2Int.RoundToInt((Vector2)transform.position + nextMove * moveScale)))
+                {
+                    AttemptMove<PlayerStats>((int)nextMove.x, (int)nextMove.y);
+                    altMove = !altMove;
+                }
             }
             //Wait for however many second for the turn delay
             yield return new WaitForSeconds(turnDelay);
@@ -48,9 +63,8 @@ public class EnemyMovement : MovingObject {
 
     //LINECAST our way to VICTORY
     //Uses a modified sssp algorithm to find the next move for the enemy
-    public Vector2 GetNextMove()
+    public Vector2 GetNextMove(LayerMask layers)
     {
-
         //Helper directional vectors
         Vector2Int up = new Vector2Int(0, 1);
         Vector2Int down = new Vector2Int(0, -1);
@@ -108,7 +122,7 @@ public class EnemyMovement : MovingObject {
                 //Helper directions
                 Vector2Int[] adj = { (v + right), (v + left), (v + up), (v + down) };
 
-                //Makes the movement a little more interesting aka, just make the enemy move diagonally rather than in L shape
+                //Makes the movement a little more interesting - it justs make the enemy move diagonally rather than in L shape
                 if (altMove)
                 {
                     Vector2Int temp = adj[0];
@@ -129,7 +143,7 @@ public class EnemyMovement : MovingObject {
                         Vector2 from = v + currentPos - relCurPos;
                         Vector2 to = adj[i] + currentPos - relCurPos;
                         //Line cast, converting back to real space rather than 1 x 1 space
-                        if (Physics2D.Linecast(from * moveScale, to * moveScale, blockingLayer).transform == null)
+                        if (Physics2D.Linecast(from * moveScale, to * moveScale, layers).transform == null)
                         {
                             if (!visited[adj[i].x, adj[i].y])
                             {

@@ -3,6 +3,7 @@
 //Random hodgepodge of scripts that help with many different things
 public class HelperScripts {
 
+    //Finds a component in exclusively the children of the parent (because the original doesn't do that)
     public static T GetComponentFromChildrenExc<T>(Transform parent)
     where T : Component
     {
