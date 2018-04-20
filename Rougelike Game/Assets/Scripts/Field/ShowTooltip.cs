@@ -58,18 +58,6 @@ public class ShowTooltip : MonoBehaviour {
 
         data = "";//Reset Data
 
-        if (item.Rarity == 1) {
-            data = "<color=#f4b042>Empowered </color>\n";
-        }
-        if (item.Rarity == 2)
-        {
-            data = "<color=#c542f4>Enchanted </color>\n";
-        }
-        if (item.Rarity == 3)
-        {
-            data = "<color=#f8ff49>Immortalized </color>\n";
-        }
-
         data = data + "<color=#FFFFFF>" + item.Title + "</color>\n";
 		if(item.Attack > 0 || item.MaxAttack > 0){
             if (item.Attack == item.MaxAttack)
@@ -82,7 +70,7 @@ public class ShowTooltip : MonoBehaviour {
             }
 		}
 		if(item.Defence > 0){
-			data = data + "+" + (item.Defence + item.Rarity * Mathf.Clamp(item.Defence, 0, 2)) + " defence" ;
+			//data = data + "+" + (item.Defence + item.Rarity * Mathf.Clamp(item.Defence, 0, 2)) + " defence" ;
 		}
 
         if(item.Skill != 0)

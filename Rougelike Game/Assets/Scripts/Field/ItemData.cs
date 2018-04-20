@@ -206,8 +206,6 @@ IDragHandler, IEndDragHandler, IPointerDownHandler, IPointerUpHandler, IPointerC
                 }
             }
         }
-        
-        
     }
 
     private void moveItemInSlot(int i)

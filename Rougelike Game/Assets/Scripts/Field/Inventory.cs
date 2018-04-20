@@ -6,6 +6,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.IO;
 using UnityEngine.SceneManagement;
 
+//IT DOES EVERYTHING
 public class Inventory : MonoBehaviour
 {
 	private bool inventoryDrawn = false;

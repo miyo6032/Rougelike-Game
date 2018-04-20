@@ -7,6 +7,10 @@ public class MapGenerator : MonoBehaviour{
     public Tilemap floor;
     public Tilemap walls;
     public Tile floorTile;
+    public Tile wallTile; //The tile that will be the wall texture
+    public Tile freeStandingWallTile; //A freestanding wall tile
+    public Tile bufferTile; //The tile surrounding the edge of the wall
+    public Tile voidTile; //The tile that will be a empty void tile
 
     public int initialHeight; //The inital dimensions - the dimensions will grow with more cycles
     public int initialWidth; 
@@ -121,14 +125,35 @@ public class MapGenerator : MonoBehaviour{
     void IntToTile()
     {
         floor.ClearAllTiles();
+        walls.ClearAllTiles();
         for (int y = 0; y < height; y++)
         {
             for (int x = 0; x < height; x++)
             {
-                if (map[x, y] == 1)
+                if (map[y, x] == 1)//1 means a floor tile
                 {
                     //Offset to keep the tilemap at the expected position
                     floor.SetTile(new Vector3Int(x - cycles * detectRange, y - cycles * detectRange, 0), floorTile);
+                }
+                else
+                {
+                    //If there is a floor (no wall) below
+                    if (y > 0 && map[y - 1, x] == 1)
+                    {
+                        //If there is no floor above
+                        if(y < height && map[y + 1, x] == 1)
+                        {
+                            walls.SetTile(new Vector3Int(x - cycles * detectRange, y - cycles * detectRange, 0), freeStandingWallTile);
+                        }
+                        else
+                        {
+                            walls.SetTile(new Vector3Int(x - cycles * detectRange, y - cycles * detectRange, 0), wallTile);
+                        }
+                    }
+                    else
+                    {
+                        walls.SetTile(new Vector3Int(x - cycles * detectRange, y - cycles * detectRange, 0), voidTile);
+                    }
                 }
             }
         }

@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using System.Collections.Generic;
 
 //Keeps track of the player's game status, and holds status functions for updating stats.
 //Will link in between the inventory and equipment as well
@@ -8,8 +9,8 @@ public class PlayerStats : MonoBehaviour {
 
     public int health; //The player's in-game health that is updated regularly
     public int maxHealth; //The player's maximum health that is fixed at the start of every game
-    public int attack; //The player's attack power - is the base damage to an enemy before other caluclations are added in
-    //Influenced by strength and gear
+    public Vector2Int attack; //The player's attack power - is the base damage to an enemy before other caluclations are added in
+    //The vector2 represents minimum attack and maximum attack
     public int defence; //The player's defense - used in the damage calculation when the player is hit
     //Influenced by gear
     public int experience; //Just standard rpg experience, when the player has enough they will level up
@@ -21,6 +22,8 @@ public class PlayerStats : MonoBehaviour {
     public int strength; //Influences hit speed and attack
     public InGameUI inGameUI;
 
+    private Item[] equippedItems = new Item[10];
+
     Animator damageCounter;
     Text damageText;
 
@@ -30,6 +33,12 @@ public class PlayerStats : MonoBehaviour {
         damageText = HelperScripts.GetComponentFromChildrenExc<Text>(transform);
     }
 
+    //Used by Item instance to see if a certain equipment slot is taken
+    public bool ItemEquipped(int equippedSlot)
+    {
+        return equippedItems[equippedSlot] != null;
+    }
+
     //Damage the player, generate the damage counter, and update the health ui
     public void DamagePlayer(int damage)
     {
@@ -37,6 +46,45 @@ public class PlayerStats : MonoBehaviour {
         damageCounter.SetTrigger("damage");
         damageText.text = "" + damage;
         inGameUI.UpdateHealth(health / (float)maxHealth * 100);
+    }
+
+    //Called by slots when equipping an item. 
+    //If the item is being replaced, then there is no need to call
+    //unequip item because the equip item simply replaces it.
+    public bool EquipItem(ItemInstance inst)
+    {
+        //If the item has the correct stats to equip
+        if(level >= inst.item.ItemLevel)
+        {
+            inst.equipped = true;
+            equippedItems[inst.item.EquippedSlot] = inst.item;
+            UpdateEquipStats();
+            return true;
+        }
+        return false;
+    }
+
+    public void UnequipItem(ItemInstance inst)
+    {
+        equippedItems[inst.item.EquippedSlot] = null;
+        UpdateEquipStats();
+    }
+
+    //Update the player's stats by going over all the equipped items and summing their stats
+    void UpdateEquipStats()
+    {
+        this.defence = 0;
+        this.attack = new Vector2Int(1, 1);
+
+        for (int i = 0; i < equippedItems.Length; i++)
+        {
+            if (equippedItems[i] != null)
+            {
+                defence += equippedItems[i].Defence;
+                attack += new Vector2Int(equippedItems[i].Attack, equippedItems[i].MaxAttack);
+            }
+        }
+
     }
 
 }

@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections;
 using UnityEngine.EventSystems;
 
 public class Slot : MonoBehaviour, IDropHandler {
@@ -42,12 +41,11 @@ public class Slot : MonoBehaviour, IDropHandler {
                     else
                     {
                         ExchangeItems(droppedItem);
-
                     }
                 }
             }
-
         }
+        //If this slot is empty
         else if (inv.items[id].Id == -1)
         {
             if (!inv.LootDrawn() && !inv.buySellMode())

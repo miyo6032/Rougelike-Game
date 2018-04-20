@@ -5,6 +5,7 @@ public class InGameUI : MonoBehaviour {
     
     public Slider healthSlider; //The player's in-game health bar
     public GameObject pauseUI;
+    public GameObject invUI;
 
 	void Start () {
 	}
@@ -19,6 +20,12 @@ public class InGameUI : MonoBehaviour {
     {
         Time.timeScale = 0;
         pauseUI.SetActive(true);
+        gameObject.SetActive(false);
+    }
+
+    public void OpenInventory()
+    {
+        invUI.SetActive(true);
         gameObject.SetActive(false);
     }
 

@@ -1,37 +1,34 @@
 ﻿using UnityEngine;
-using System.Collections;
 using System.Collections.Generic;
 using LitJson;
 using System.IO;
 
+//Loads all of the item data from the json file and holds it for other scripts to use
 public class ItemDatabase : MonoBehaviour {
 
-	public List<Item> items = new List<Item>();
+	public Dictionary<int, Item> items = new Dictionary<int, Item>();
 
-	private List<Item> database = new List<Item>();
-	private JsonData itemData;
-
-	void Start(){
-
-		itemData = JsonMapper.ToObject (File.ReadAllText(Application.dataPath + "/StreamingAssets/Items.json"));
-		ConstructItemDatabase ();
-
-	}
-
+    //Finds the 
 	public Item GetItemByID(int id){
-		for (int i = 0; i < database.Count; i++) {
-			if(id == database[i].Id)
-				return database[i];
-		}
+
+        Item item;
+
+        if (items.TryGetValue(id, out item))
+        {
+            return item;
+        }
+
 		return null;
 	}
 
-	void ConstructItemDatabase(){
-		for(int i = 0; i < itemData.Count; i++){
-            for (int r = 0; r < 4; r++)//Adds duplicate rarer items;
-            {
-                database.Add(new Item(
-                (int)itemData[i]["id"] + r*1000,
+    //Populates the database for use - called from the InventoryManager to populate before its start
+    public void ConstructItemDatabase()
+    {
+        JsonData itemData = JsonMapper.ToObject(File.ReadAllText(Application.dataPath + "/StreamingAssets/Items.json"));
+        for (int i = 0; i < itemData.Count; i++)
+        {
+                items.Add((int)itemData[i]["id"], new Item(
+                (int)itemData[i]["id"],
                 itemData[i]["title"].ToString(),
                 (int)itemData[i]["value"],
                 (int)itemData[i]["stats"]["attack"],
@@ -42,13 +39,10 @@ public class ItemDatabase : MonoBehaviour {
                 (string)itemData[i]["slug"],
                 (int)itemData[i]["equippedSlot"],
                 (int)itemData[i]["itemLevel"],
-                r,
                 (int)itemData[i]["skill"]
             ));
-            }
-		}
-	}
-
+        }
+    }
 }
 
 public class Item{
@@ -64,10 +58,9 @@ public class Item{
 	public Sprite Sprite { get; set;}
 	public int EquippedSlot { get; set;}
 	public int ItemLevel { get; set;}
-    public int Rarity { get; set; }
     public int Skill { get; set; }
 
-    public Item(int id, string title, int value, int attack, int maxAttack, int defence, string description, bool stackable, string slug, int equippedSlot, int itemLevel, int rarity, int skill){
+    public Item(int id, string title, int value, int attack, int maxAttack, int defence, string description, bool stackable, string slug, int equippedSlot, int itemLevel, int skill){
 		this.Id = id;
 		this.Title = title;
 		this.Value = value;
@@ -80,7 +73,6 @@ public class Item{
 		this.EquippedSlot = equippedSlot;
 		this.Sprite = Resources.Load<Sprite> ("ItemIcons/" + slug);
 		this.ItemLevel = itemLevel;
-        this.Rarity = rarity;
         this.Skill = skill;
 	}
 

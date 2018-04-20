@@ -144,9 +144,9 @@ public class PlayerStat : MonoBehaviour {
         this.maxAttack = 1;
 		for(int i = 0; i < equippedItems.Count; i++){
 			if(equippedItems[i] != null && equippedItems[i].Id != -1){
-				defence += equippedItems[i].Defence + equippedItems[i].Rarity * Mathf.Clamp(equippedItems[i].Defence, 0, 2);
-				attack += equippedItems[i].Attack + equippedItems[i].Rarity * Mathf.Clamp(equippedItems[i].Attack, 0, 2);
-                maxAttack += equippedItems[i].MaxAttack + equippedItems[i].Rarity * Mathf.Clamp(equippedItems[i].MaxAttack, 0, 2);
+				//defence += equippedItems[i].Defence + equippedItems[i].Rarity * Mathf.Clamp(equippedItems[i].Defence, 0, 2);
+				//attack += equippedItems[i].Attack + equippedItems[i].Rarity * Mathf.Clamp(equippedItems[i].Attack, 0, 2);
+                //maxAttack += equippedItems[i].MaxAttack + equippedItems[i].Rarity * Mathf.Clamp(equippedItems[i].MaxAttack, 0, 2);
             }
 		}
 
