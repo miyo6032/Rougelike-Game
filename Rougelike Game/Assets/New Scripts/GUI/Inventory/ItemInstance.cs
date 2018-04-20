@@ -35,7 +35,21 @@ IDragHandler, IPointerDownHandler, IPointerUpHandler, IPointerClickHandler
     //Clicking "picks up" the item to the player doesn't have to drag
     public void OnPointerClick(PointerEventData eventData)
     {
-        SetItemAttached();
+        //If there is an item attached to the mouse pointer
+        ItemInstance droppedItem = StaticCanvasList.instance.inventoryManager.attachedItem;
+        if (droppedItem)
+        {
+            //Disconnect the item from the mouse
+            droppedItem.attached = false;
+            //Attach this item to the mouse
+            SetItemAttached();
+            slot.ItemDrop(droppedItem);
+        }
+        //If there is no item attached, just pick up the item with the mouse
+        else
+        {
+            SetItemAttached();
+        }
     }
 
     //Set the item to be dragged automatically by the mouse
@@ -46,6 +60,7 @@ IDragHandler, IPointerDownHandler, IPointerUpHandler, IPointerClickHandler
         StaticCanvasList.instance.inventoryManager.attachedItem = this;
         transform.SetParent(transform.parent.parent.parent);
         GetComponent<CanvasGroup>().blocksRaycasts = false;
+        slot.item = null;
     }
 
     //Set the item back from begin dragged to its rightful parent
@@ -54,6 +69,7 @@ IDragHandler, IPointerDownHandler, IPointerUpHandler, IPointerClickHandler
         transform.SetParent(slot.transform);
         transform.position = slot.transform.position;
         GetComponent<CanvasGroup>().blocksRaycasts = true;
+        slot.item = this;
     }
 
     //When the player begins to drag, snap it to the center of the pointer - makes it look nice
@@ -62,6 +78,7 @@ IDragHandler, IPointerDownHandler, IPointerUpHandler, IPointerClickHandler
         transform.SetParent(transform.parent.parent.parent);
         transform.position = eventData.position;
         GetComponent<CanvasGroup>().blocksRaycasts = false;
+        slot.item = null;
     }
 
     public void OnDrag(PointerEventData eventData)

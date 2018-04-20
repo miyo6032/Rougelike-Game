@@ -28,14 +28,16 @@ public class ItemSlot : MonoBehaviour, IDropHandler, IPointerClickHandler
     public void OnPointerClick(PointerEventData eventData)
     {
         ItemInstance droppedItem = StaticCanvasList.instance.inventoryManager.attachedItem;
+        //If there is an item attached to the mouse pointer
         if (droppedItem)
         {
+            //Disconnnect the item from the mouse
             droppedItem.attached = false;
             StaticCanvasList.instance.inventoryManager.attachedItem = null;
             //if there is an item in the slot, swap the items being dragged
             if(item != null)
             {
-                StaticCanvasList.instance.inventoryManager.attachedItem = item;
+                //Attach the item from this slot
                 item.SetItemAttached();
                 //Crucial to make the ItemDrop() work to exchange item correctly
                 item = null;
@@ -45,7 +47,8 @@ public class ItemSlot : MonoBehaviour, IDropHandler, IPointerClickHandler
     }
 
     //Handles when an item is dropped upon the slot
-    void ItemDrop(ItemInstance droppedItem)
+    //Does item exchanging, equipping and stuff like that
+    public void ItemDrop(ItemInstance droppedItem)
     {
         if (droppedItem == null)
         {
@@ -65,7 +68,7 @@ public class ItemSlot : MonoBehaviour, IDropHandler, IPointerClickHandler
                     {
                         //Update which slot contains the item
                         droppedItem.slot.item = null;
-                        droppedItem.slot = this;
+                        LinkItemAndSlot(droppedItem, this);
                     }
                     else
                     {
@@ -82,11 +85,15 @@ public class ItemSlot : MonoBehaviour, IDropHandler, IPointerClickHandler
             {
                 playerStats.UnequipItem(droppedItem);
             }
-            //Update which slot contains the item
-            droppedItem.slot.item = null;
-            droppedItem.slot = this;
+            //Keeps an item from setting its previous slot to null
+            //If the item has been exchanged with something else
+            if (droppedItem.slot.item == droppedItem)
+            {
+                droppedItem.slot.item = null;
+            }
+            LinkItemAndSlot(droppedItem, this);
         }
-        //Otherwise if the item slot is not empty
+        //Handles the exchange between two items
         else if(droppedItem.attached)
         {
             //If the dragged item is from an equipment slot
@@ -108,13 +115,17 @@ public class ItemSlot : MonoBehaviour, IDropHandler, IPointerClickHandler
     //Switches the dropped item to this slot and this slot's item to the dropped item's slot
     public void ExchangeItems(ItemInstance droppedItem)
     {
-        item.slot = droppedItem.slot;
-        item.transform.SetParent(droppedItem.slot.transform);
+        LinkItemAndSlot(item, droppedItem.slot);
+        LinkItemAndSlot(droppedItem, this);
+    }
 
+    //Link the item to a slot
+    public void LinkItemAndSlot(ItemInstance item, ItemSlot slot)
+    {
+        item.slot = slot;
+        item.transform.SetParent(slot.transform);
+        slot.item = item;
         item.ItemToParentSlot();
-
-        droppedItem.slot = this;
-        droppedItem.transform.SetParent(this.transform);
     }
 
 }
