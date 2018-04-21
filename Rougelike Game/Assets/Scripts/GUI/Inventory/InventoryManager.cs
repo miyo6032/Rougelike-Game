@@ -24,6 +24,7 @@ public class InventoryManager : MonoBehaviour {
         database = GetComponent<ItemDatabase>();
         database.ConstructItemDatabase();
 
+        //Add(instantiate) the inventory slots to the inventory panel
         for (int i = 0; i < 18; i++)
         {//Inventory slots for the inventory
             ItemSlot instance = Instantiate(slotPrefab);
@@ -72,6 +73,8 @@ public class InventoryManager : MonoBehaviour {
         }
     }
 
+    //Return true if a certain item is in the inventory
+    //Used for seeing if an item should stack into something
     public bool ItemInInventory(Item item)
     {
         for (int i = 0; i < slots.Count; i++)

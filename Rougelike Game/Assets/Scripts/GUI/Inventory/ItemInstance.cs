@@ -3,6 +3,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 //Represent the item game object in the inventory
+//Works closely with the item slot class to provide item dragging functionality
 public class ItemInstance : MonoBehaviour,
 IPointerEnterHandler, IPointerExitHandler, IBeginDragHandler,
 IDragHandler, IPointerDownHandler, IPointerUpHandler, IPointerClickHandler
@@ -86,11 +87,13 @@ IDragHandler, IPointerDownHandler, IPointerUpHandler, IPointerClickHandler
         transform.position = eventData.position;
     }
 
+    //Makes the item move when the player first clicks on it
     public void OnPointerDown(PointerEventData eventData)
     {
         transform.position = eventData.position;
     }
 
+    //Set the position back to the parent slot
     public void OnPointerUp(PointerEventData eventData)
     {
         ItemToParentSlot();

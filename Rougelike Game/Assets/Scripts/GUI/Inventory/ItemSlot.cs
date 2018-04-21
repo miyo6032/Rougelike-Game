@@ -48,6 +48,7 @@ public class ItemSlot : MonoBehaviour, IDropHandler, IPointerClickHandler
 
     //Handles when an item is dropped upon the slot
     //Does item exchanging, equipping and stuff like that
+    //Basically, its just a lot of edge cases
     public void ItemDrop(ItemInstance droppedItem)
     {
         if (droppedItem == null)
@@ -64,7 +65,7 @@ public class ItemSlot : MonoBehaviour, IDropHandler, IPointerClickHandler
                 if (playerStats.EquipItem(droppedItem))
                 {
                     //If the previous slot was empty, just add a new item to ti
-                    if (droppedItem.slot == null)
+                    if (item == null)
                     {
                         //Update which slot contains the item
                         droppedItem.slot.item = null;
