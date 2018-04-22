@@ -5,14 +5,16 @@ using UnityEngine.UI;
 //Represent the item game object in the inventory
 //Works closely with the item slot class to provide item dragging functionality
 public class ItemInstance : MonoBehaviour,
-IPointerEnterHandler, IPointerExitHandler, IBeginDragHandler,
-IDragHandler, IPointerDownHandler, IPointerUpHandler, IPointerClickHandler
+IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler
 {
     [HideInInspector]
-    public Item item;
-    public ItemSlot slot;
-    public int amount;
-    public bool equipped;
+    public Item item; //The item's data and stats are stored in this
+    [HideInInspector]
+    public ItemSlot slot; //Points to the item's slot
+    [HideInInspector]
+    public int amount; //The stack (amount of items)
+    [HideInInspector]
+    public bool equipped; //Whether or not this item is equipped
 
     private ShowTooltip tooltip;
     private PlayerStats playerStat;
@@ -21,6 +23,11 @@ IDragHandler, IPointerDownHandler, IPointerUpHandler, IPointerClickHandler
     //Whether the item is currently attached to the mouse pointer
     [HideInInspector]
     public bool attached = false;
+
+    void Start()
+    {
+        playerStat = GameObject.Find("Player").GetComponent<PlayerStats>();
+    }
 
     //Initialize a new item - used when the inventory adds a new item
     public void Initialize(Item i, ItemSlot s)
@@ -33,22 +40,34 @@ IDragHandler, IPointerDownHandler, IPointerUpHandler, IPointerClickHandler
         transform.localScale = new Vector3(1, 1, 1);
     }
 
-    //Clicking "picks up" the item to the player doesn't have to drag
-    public void OnPointerClick(PointerEventData eventData)
+    public void OnPointerDown(PointerEventData eventData)
     {
-        //If there is an item attached to the mouse pointer
         ItemInstance droppedItem = StaticCanvasList.instance.inventoryManager.attachedItem;
+        //If the player was already carrying an item with them
         if (droppedItem)
         {
-            //Disconnect the item from the mouse
-            droppedItem.attached = false;
-            //Attach this item to the mouse
-            SetItemAttached();
-            slot.ItemDrop(droppedItem);
+            //If this item is equipped, we know it is in an equipped slot, so 
+            //We have to call item drop first and see if we can equip the dropped item
+            if (equipped)
+            {
+                slot.ItemDrop(droppedItem);
+            }
+            //Otherwise, just do the normal operation
+            else
+            {
+                //Disconnect the item from the mouse
+                droppedItem.attached = false;
+                SetItemAttached();
+                slot.ItemDrop(droppedItem);
+            }
         }
         //If there is no item attached, just pick up the item with the mouse
         else
         {
+            if (equipped)
+            {
+                playerStat.UnequipItem(this);
+            }
             SetItemAttached();
         }
     }
@@ -73,32 +92,6 @@ IDragHandler, IPointerDownHandler, IPointerUpHandler, IPointerClickHandler
         slot.item = this;
     }
 
-    //When the player begins to drag, snap it to the center of the pointer - makes it look nice
-    public void OnBeginDrag(PointerEventData eventData)
-    {
-        transform.SetParent(transform.parent.parent.parent);
-        transform.position = eventData.position;
-        GetComponent<CanvasGroup>().blocksRaycasts = false;
-        slot.item = null;
-    }
-
-    public void OnDrag(PointerEventData eventData)
-    {
-        transform.position = eventData.position;
-    }
-
-    //Makes the item move when the player first clicks on it
-    public void OnPointerDown(PointerEventData eventData)
-    {
-        transform.position = eventData.position;
-    }
-
-    //Set the position back to the parent slot
-    public void OnPointerUp(PointerEventData eventData)
-    {
-        ItemToParentSlot();
-    }
-
     void Update()
     {
         if (attached)
@@ -116,5 +109,4 @@ IDragHandler, IPointerDownHandler, IPointerUpHandler, IPointerClickHandler
     {
         //tooltip.Deactivate();
     }
-
 }
