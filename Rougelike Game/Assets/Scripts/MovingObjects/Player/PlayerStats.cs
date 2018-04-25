@@ -20,9 +20,6 @@ public class PlayerStats : MonoBehaviour {
     public int maxFocus; //The maximum amount of focus a player can store at one time
     public float hitSpeed; //The speed that a player can it - influenced by strength and weapon weight
     public int strength; //Influences hit speed and attack
-    public InGameUI inGameUI;
-
-    private Item[] equippedItems = new Item[10];
 
     Animator damageCounter;
     Text damageText;
@@ -33,31 +30,24 @@ public class PlayerStats : MonoBehaviour {
         damageText = HelperScripts.GetComponentFromChildrenExc<Text>(transform);
     }
 
-    //Used by Item instance to see if a certain equipment slot is taken
-    public bool ItemEquipped(int equippedSlot)
-    {
-        return equippedItems[equippedSlot] != null;
-    }
-
     //Damage the player, generate the damage counter, and update the health ui
     public void DamagePlayer(int damage)
     {
         health = Mathf.Clamp(health - damage, 0, health);
         damageCounter.SetTrigger("damage");
         damageText.text = "" + damage;
-        inGameUI.UpdateHealth(health / (float)maxHealth * 100);
+        StaticCanvasList.instance.gameUI.UpdateHealth(health / (float)maxHealth * 100);
     }
 
     //Called by slots when equipping an item. 
     //If the item is being replaced, then there is no need to call
     //unequip item because the equip item simply replaces it.
-    public bool EquipItem(ItemInstance inst)
+    public bool EquipItem(ItemInstance inst, EquipSlot slot)
     {
         //If the item has the correct stats to equip
         if(level >= inst.item.ItemLevel)
         {
             inst.equipped = true;
-            equippedItems[inst.item.EquippedSlot] = inst.item;
             UpdateEquipStats();
             return true;
         }
@@ -66,25 +56,27 @@ public class PlayerStats : MonoBehaviour {
 
     public void UnequipItem(ItemInstance inst)
     {
-        equippedItems[inst.item.EquippedSlot] = null;
         inst.equipped = false;
         UpdateEquipStats();
     }
 
     //Update the player's stats by going over all the equipped items and summing their stats
-    void UpdateEquipStats()
+    public void UpdateEquipStats()
     {
         this.defence = 0;
         this.attack = new Vector2Int(1, 1);
 
-        for (int i = 0; i < equippedItems.Length; i++)
+        foreach(EquipSlot slot in StaticCanvasList.instance.inventoryManager.equipSlots)
         {
-            if (equippedItems[i] != null)
+            if (slot.item != null)
             {
-                defence += equippedItems[i].Defence;
-                attack += new Vector2Int(equippedItems[i].Attack, equippedItems[i].MaxAttack);
+                Item equippedItem = slot.item.item;
+                defence += equippedItem.Defence;
+                attack += new Vector2Int(equippedItem.Attack, equippedItem.MaxAttack);
             }
         }
+
+        StaticCanvasList.instance.statUI.UpdateStatUI(level, experience, health, focus, defence, attack);
 
     }
 

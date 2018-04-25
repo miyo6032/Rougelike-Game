@@ -3,19 +3,8 @@ using UnityEngine;
 
 //The item slot that items will go into
 //Responsbile for handling when the item is dropped on the item slot
-public class ItemSlot : MonoBehaviour, IPointerClickHandler
+public class ItemSlot : Slot<Item>, IPointerClickHandler
 {
-    public int id;
-    [HideInInspector]
-    public ItemInstance item;
-
-    protected PlayerStats playerStat;
-
-    void Start()
-    {
-        playerStat = GameObject.Find("Player").GetComponent<PlayerStats>();
-    }
-
     //When the player drops an item from clicking
     public virtual void OnPointerClick(PointerEventData eventData)
     {
@@ -32,7 +21,7 @@ public class ItemSlot : MonoBehaviour, IPointerClickHandler
 
     //Handles when an item is dropped upon the slot
     //Does item exchanging, equipping and stuff like that
-    public virtual void ItemDrop(ItemInstance droppedItem)
+    public override void ItemDrop(ItemInstance droppedItem)
     {
         if (droppedItem == null)
         {
@@ -47,7 +36,7 @@ public class ItemSlot : MonoBehaviour, IPointerClickHandler
     }
 
     //Link the item to a slot
-    public void LinkItemAndSlot(ItemInstance item, ItemSlot slot)
+    public override void LinkItemAndSlot(ItemInstance item, Slot<Item> slot)
     {
         item.slot = slot;
         item.transform.SetParent(slot.transform);

@@ -10,15 +10,13 @@ IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler
     [HideInInspector]
     public Item item; //The item's data and stats are stored in this
     [HideInInspector]
-    public ItemSlot slot; //Points to the item's slot
+    public Slot<Item> slot; //Points to the item's slot
     [HideInInspector]
     public int amount; //The stack (amount of items)
     [HideInInspector]
     public bool equipped; //Whether or not this item is equipped
 
-    private ShowTooltip tooltip;
     private PlayerStats playerStat;
-    private Player player;
 
     //Whether the item is currently attached to the mouse pointer
     [HideInInspector]
@@ -30,7 +28,7 @@ IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler
     }
 
     //Initialize a new item - used when the inventory adds a new item
-    public void Initialize(Item i, ItemSlot s)
+    public void Initialize(Item i, Slot<Item> s)
     {
         item = i;
         amount = 1;
@@ -64,11 +62,11 @@ IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler
         //If there is no item attached, just pick up the item with the mouse
         else
         {
+            SetItemAttached();
             if (equipped)
             {
                 playerStat.UnequipItem(this);
             }
-            SetItemAttached();
         }
     }
 

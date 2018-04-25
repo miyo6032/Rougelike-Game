@@ -1,4 +1,5 @@
 ﻿using UnityEngine.EventSystems;
+using UnityEngine;
 
 public class EquipSlot : ItemSlot, IPointerClickHandler
 {
@@ -20,10 +21,10 @@ public class EquipSlot : ItemSlot, IPointerClickHandler
     public override void ItemDrop(ItemInstance droppedItem)
     {
         //If the item can be equipped in that slot
-        if (droppedItem.item.EquippedSlot == id)
+        if (droppedItem.item.EquippedSlot == equipmentSlot)
         {
             //Attempt to equip the item. EquipItem() will return true if the item is equippable
-            if (playerStat.EquipItem(droppedItem))
+            if (playerStat.level >= droppedItem.item.ItemLevel)
             {
                 //If the previous slot was empty, just add a new item to ti
                 if (item == null)
@@ -37,6 +38,7 @@ public class EquipSlot : ItemSlot, IPointerClickHandler
                     item.SetItemAttached();
                     LinkItemAndSlot(droppedItem, this);
                 }
+                playerStat.EquipItem(droppedItem, this);
                 droppedItem.attached = false;
             }
         }

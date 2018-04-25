@@ -30,7 +30,6 @@ public class InventoryManager : MonoBehaviour {
             ItemSlot instance = Instantiate(slotPrefab);
             instance.transform.SetParent(inventoryPanel);
             instance.item = null;
-            instance.id = i;
             slots.Add(instance);
             instance.transform.localScale = new Vector3(1, 1, 1);
         }
@@ -38,6 +37,11 @@ public class InventoryManager : MonoBehaviour {
         AddItem(0);
         AddItem(1);
         AddItem(2);
+        AddItem(5);
+        AddItem(12);
+        AddItem(13);
+        AddItem(16);
+        AddItem(11);
 
     }
 
