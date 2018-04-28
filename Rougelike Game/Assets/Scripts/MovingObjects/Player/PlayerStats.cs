@@ -57,6 +57,7 @@ public class PlayerStats : MonoBehaviour {
     public void UnequipItem(ItemInstance inst)
     {
         inst.equipped = false;
+        ((EquipSlot)inst.slot).skillSlot.RemoveSkill();
         UpdateEquipStats();
     }
 

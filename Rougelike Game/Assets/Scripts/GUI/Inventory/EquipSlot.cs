@@ -5,6 +5,9 @@ public class EquipSlot : ItemSlot, IPointerClickHandler
 {
     public int equipmentSlot;
 
+    public SkillSlot skillSlot;
+    public SkillDatabase database;
+
     //When the player drops an item from clicking
     public override void OnPointerClick(PointerEventData eventData)
     {
@@ -26,17 +29,21 @@ public class EquipSlot : ItemSlot, IPointerClickHandler
             //Attempt to equip the item. EquipItem() will return true if the item is equippable
             if (playerStat.level >= droppedItem.item.ItemLevel)
             {
-                //If the previous slot was empty, just add a new item to ti
+                //If the previous slot was empty, just add a new item to it
                 if (item == null)
                 {
                     LinkItemAndSlot(droppedItem, this);
                     StaticCanvasList.instance.inventoryManager.attachedItem = null;
+                    //Generate a new skill and add that to the corresponding skillslot
+                    skillSlot.AddSkill(database.GetSkillByID(droppedItem.item.Skill));
                 }
                 else
                 {
                     playerStat.UnequipItem(item);
                     item.SetItemAttached();
                     LinkItemAndSlot(droppedItem, this);
+                    //Generate a new skill and add that to the corresponding skillslot
+                    skillSlot.AddSkill(database.GetSkillByID(droppedItem.item.Skill));
                 }
                 playerStat.EquipItem(droppedItem, this);
                 droppedItem.attached = false;

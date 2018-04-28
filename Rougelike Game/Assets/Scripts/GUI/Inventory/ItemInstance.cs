@@ -10,7 +10,7 @@ IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler
     [HideInInspector]
     public Item item; //The item's data and stats are stored in this
     [HideInInspector]
-    public Slot<Item> slot; //Points to the item's slot
+    public ItemSlot slot; //Points to the item's slot
     [HideInInspector]
     public int amount; //The stack (amount of items)
     [HideInInspector]
@@ -28,7 +28,7 @@ IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler
     }
 
     //Initialize a new item - used when the inventory adds a new item
-    public void Initialize(Item i, Slot<Item> s)
+    public void Initialize(Item i, ItemSlot s)
     {
         item = i;
         amount = 1;

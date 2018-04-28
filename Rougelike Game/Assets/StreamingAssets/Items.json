@@ -5,7 +5,7 @@
 		"value":10,
 		"itemLevel":1,
 		"equippedSlot":1,
-		"skill":0,
+		"skill":-1,
 		"stats":{
 			"attack":0,
 			"maxattack":0,
@@ -22,7 +22,7 @@
 		"value":10,
 		"itemLevel":1,
 		"equippedSlot":0,
-		"skill":-2,
+		"skill":0,
 		"stats":{
 			"attack":8,
 			"maxattack":16,
@@ -39,7 +39,7 @@
 		"value":10,
 		"itemLevel":1,
 		"equippedSlot":0,
-		"skill":0,
+		"skill":1,
 		"stats":{
 			"attack":6,
 			"maxattack":9,
@@ -56,7 +56,7 @@
 		"value":20,
 		"itemLevel":2,
 		"equippedSlot":0,
-		"skill":-2,
+		"skill":0,
 		"stats":{
 			"attack":6,
 			"maxattack":9,
@@ -73,7 +73,7 @@
 		"value":40,
 		"itemLevel":2,
 		"equippedSlot":0,
-		"skill":-3,
+		"skill":1,
 		"stats":{
 			"attack":9,
 			"maxattack":11,
@@ -90,7 +90,7 @@
 		"value":10,
 		"itemLevel":1,
 		"equippedSlot":3,
-		"skill":0,
+		"skill":-1,
 		"stats":{
 			"attack":0,
 			"maxattack":0,
@@ -107,7 +107,7 @@
 		"value":20,
 		"itemLevel":3,
 		"equippedSlot":3,
-		"skill":0,
+		"skill":-1,
 		"stats":{
 			"attack":0,
 			"maxattack":0,
@@ -124,7 +124,7 @@
 		"value":20,
 		"itemLevel":4,
 		"equippedSlot":2,
-		"skill":0,
+		"skill":-1,
 		"stats":{
 			"attack":0,
 			"maxattack":0,
@@ -141,7 +141,7 @@
 		"value":10,
 		"itemLevel":1,
 		"equippedSlot":1,
-		"skill":0,
+		"skill":-1,
 		"stats":{
 			"attack":0,
 			"maxattack":0,
@@ -158,7 +158,7 @@
 		"value":40,
 		"itemLevel":4,
 		"equippedSlot":2,
-		"skill":0,
+		"skill":-1,
 		"stats":{
 			"attack":0,
 			"maxattack":0,
@@ -175,7 +175,7 @@
 		"value":50,
 		"itemLevel":3,
 		"equippedSlot":0,
-		"skill":-2,
+		"skill":0,
 		"stats":{
 			"attack":8,
 			"maxattack":11,
@@ -192,7 +192,7 @@
 		"value":30,
 		"itemLevel":5,
 		"equippedSlot":6,
-		"skill":0,
+		"skill":3,
 		"stats":{
 			"attack":0,
 			"maxattack":1,
@@ -209,7 +209,7 @@
 		"value":40,
 		"itemLevel":4,
 		"equippedSlot":5,
-		"skill":0,
+		"skill":-1,
 		"stats":{
 			"attack":0,
 			"maxattack":0,
@@ -226,7 +226,7 @@
 		"value":30,
 		"itemLevel":6,
 		"equippedSlot":7,
-		"skill":0,
+		"skill":2,
 		"stats":{
 			"attack":0,
 			"maxattack":1,
@@ -243,7 +243,7 @@
 		"value":20,
 		"itemLevel":3,
 		"equippedSlot":1,
-		"skill":0,
+		"skill":-1,
 		"stats":{
 			"attack":0,
 			"maxattack":0,
@@ -260,7 +260,7 @@
 		"value":40,
 		"itemLevel":3,
 		"equippedSlot":1,
-		"skill":0,
+		"skill":-1,
 		"stats":{
 			"attack":0,
 			"maxattack":0,
@@ -277,7 +277,7 @@
 		"value":20,
 		"itemLevel":4,
 		"equippedSlot":4,
-		"skill":0,
+		"skill":-1,
 		"stats":{
 			"attack":0,
 			"maxattack":0,
@@ -294,7 +294,7 @@
 		"value":80,
 		"itemLevel":5,
 		"equippedSlot":0,
-		"skill":-3,
+		"skill":0,
 		"stats":{
 			"attack":9,
 			"maxattack":21,
@@ -311,7 +311,7 @@
 		"value":60,
 		"itemLevel":4,
 		"equippedSlot":0,
-		"skill":-2,
+		"skill":0,
 		"stats":{
 			"attack":11,
 			"maxattack":15,

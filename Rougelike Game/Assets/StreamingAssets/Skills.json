@@ -1,0 +1,29 @@
+[
+	{
+		"id":0,
+		"title": "Critical Hit",
+		"description": "Deal a critical strike on the enemy your are facing",
+		"sprite": "critical_hit"
+	},
+
+	{
+		"id":1,
+		"title": "Circle Slash",
+		"description": "Deal a critical strike on the enemy your are facing",
+		"sprite": "circle_slash"
+	},
+
+	{
+		"id":2,
+		"title": "Heal",
+		"description": "Deal a critical strike on the enemy your are facing",
+		"sprite": "Heal"
+	},
+
+	{
+		"id":3,
+		"title": "Swift",
+		"description": "Deal a critical strike on the enemy your are facing",
+		"sprite": "swift"
+	}
+]
