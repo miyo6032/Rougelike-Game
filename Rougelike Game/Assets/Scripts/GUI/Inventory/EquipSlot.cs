@@ -4,8 +4,6 @@ using UnityEngine;
 public class EquipSlot : ItemSlot, IPointerClickHandler
 {
     public int equipmentSlot;
-
-    public SkillSlot skillSlot;
     public SkillDatabase database;
 
     //When the player drops an item from clicking
@@ -35,7 +33,6 @@ public class EquipSlot : ItemSlot, IPointerClickHandler
                     LinkItemAndSlot(droppedItem, this);
                     StaticCanvasList.instance.inventoryManager.attachedItem = null;
                     //Generate a new skill and add that to the corresponding skillslot
-                    skillSlot.AddSkill(database.GetSkillByID(droppedItem.item.Skill));
                 }
                 else
                 {
@@ -43,7 +40,6 @@ public class EquipSlot : ItemSlot, IPointerClickHandler
                     item.SetItemAttached();
                     LinkItemAndSlot(droppedItem, this);
                     //Generate a new skill and add that to the corresponding skillslot
-                    skillSlot.AddSkill(database.GetSkillByID(droppedItem.item.Skill));
                 }
                 playerStat.EquipItem(droppedItem, this);
                 droppedItem.attached = false;

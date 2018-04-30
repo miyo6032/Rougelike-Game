@@ -22,7 +22,6 @@ public class InventoryManager : MonoBehaviour {
     void Start () {
 
         database = GetComponent<ItemDatabase>();
-        database.ConstructItemDatabase();
 
         //Add(instantiate) the inventory slots to the inventory panel
         for (int i = 0; i < 18; i++)
@@ -84,7 +83,7 @@ public class InventoryManager : MonoBehaviour {
     {
         for (int i = 0; i < slots.Count; i++)
         {
-            if (slots[i].item != null && slots[i].item.item.Id == item.Id)
+            if (slots[i].item != null && slots[i].item.item == item)
             {
                 return true;
             }

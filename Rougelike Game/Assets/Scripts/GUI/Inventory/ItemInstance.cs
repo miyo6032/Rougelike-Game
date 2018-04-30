@@ -34,7 +34,7 @@ IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler
         amount = 1;
         slot = s;
         transform.SetParent(slot.transform);
-        GetComponent<Image>().sprite = i.Sprite;
+        GetComponent<Image>().sprite = Resources.Load<Sprite>(i.Sprite);
         transform.localScale = new Vector3(1, 1, 1);
     }
 
