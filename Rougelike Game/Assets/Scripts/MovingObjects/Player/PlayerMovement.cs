@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using UnityEngine.Tilemaps;
 
 //Handles the player movement and when the player can't move
 public class PlayerMovement : MovingObject

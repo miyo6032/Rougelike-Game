@@ -23,6 +23,11 @@ public class InventoryManager : MonoBehaviour {
 
         database = GetComponent<ItemDatabase>();
 
+        AddTheSlots();
+    }
+
+    void AddTheSlots()
+    {
         //Add(instantiate) the inventory slots to the inventory panel
         for (int i = 0; i < 18; i++)
         {//Inventory slots for the inventory
@@ -32,20 +37,10 @@ public class InventoryManager : MonoBehaviour {
             slots.Add(instance);
             instance.transform.localScale = new Vector3(1, 1, 1);
         }
-
-        AddItem(0);
-        AddItem(1);
-        AddItem(2);
-        AddItem(5);
-        AddItem(12);
-        AddItem(13);
-        AddItem(16);
-        AddItem(11);
-
     }
 
     //Adds an item to the inventory into an empty slot - or stack it
-    public void AddItem(int id)
+    /*public void AddItem(int id)
     {
         Item itemToAdd = database.GetItemByID(id);//Searches the database for the item
 
@@ -75,7 +70,7 @@ public class InventoryManager : MonoBehaviour {
                 }
             }
         }
-    }
+    }*/
 
     //Return true if a certain item is in the inventory
     //Used for seeing if an item should stack into something

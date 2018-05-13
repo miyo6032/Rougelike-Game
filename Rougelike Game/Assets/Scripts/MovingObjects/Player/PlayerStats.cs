@@ -66,6 +66,7 @@ public class PlayerStats : MonoBehaviour {
         this.defence = 0;
         this.attack = new Vector2Int(1, 1);
 
+        //Sum all of the equipment stats
         foreach(EquipSlot slot in StaticCanvasList.instance.inventoryManager.equipSlots)
         {
             if (slot.item != null)

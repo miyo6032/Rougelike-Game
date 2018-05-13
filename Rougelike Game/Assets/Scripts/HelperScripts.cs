@@ -1,5 +1,10 @@
 ﻿using UnityEngine;
 
+/*
+ * Update - changes UI
+ * 
+ * */
+
 //Random hodgepodge of scripts that help with many different things
 public class HelperScripts {
 

@@ -62,7 +62,7 @@ public class EnemyMovement : MovingObject
     }
 
     //LINECAST our way to VICTORY
-    //Uses a modified sssp algorithm to find the next move for the enemy
+    //Uses a modified BFS algorithm to find the next move for the enemy
     public Vector2 GetNextMove(LayerMask layers)
     {
         //Helper directional vectors

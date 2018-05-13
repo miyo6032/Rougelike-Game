@@ -11,7 +11,6 @@ public class EquipSlot : ItemSlot, IPointerClickHandler
     {
         ItemInstance droppedItem = StaticCanvasList.instance.inventoryManager.attachedItem;
         //If there is an item attached to the mouse pointer
-
         if (droppedItem)
         {
             //Do the item drop first to check to see if the item can be equipped
@@ -21,29 +20,30 @@ public class EquipSlot : ItemSlot, IPointerClickHandler
 
     public override void ItemDrop(ItemInstance droppedItem)
     {
-        //If the item can be equipped in that slot
-        if (droppedItem.item.EquippedSlot == equipmentSlot)
+        if (ItemCanBeEquipped(droppedItem))
         {
-            //Attempt to equip the item. EquipItem() will return true if the item is equippable
-            if (playerStat.level >= droppedItem.item.ItemLevel)
+            //If the previous slot was empty, just add a new item to it
+            if (item == null)
             {
-                //If the previous slot was empty, just add a new item to it
-                if (item == null)
-                {
-                    LinkItemAndSlot(droppedItem, this);
-                    StaticCanvasList.instance.inventoryManager.attachedItem = null;
-                    //Generate a new skill and add that to the corresponding skillslot
-                }
-                else
-                {
-                    playerStat.UnequipItem(item);
-                    item.SetItemAttached();
-                    LinkItemAndSlot(droppedItem, this);
-                    //Generate a new skill and add that to the corresponding skillslot
-                }
-                playerStat.EquipItem(droppedItem, this);
-                droppedItem.attached = false;
+                LinkItemAndSlot(droppedItem, this);
+                StaticCanvasList.instance.inventoryManager.attachedItem = null;
+                //Generate a new skill and add that to the corresponding skillslot
             }
+            else
+            {
+                playerStat.UnequipItem(item);
+                item.SetItemAttached();
+                LinkItemAndSlot(droppedItem, this);
+                //Generate a new skill and add that to the corresponding skillslot
+            }
+            playerStat.EquipItem(droppedItem, this);
+            droppedItem.attached = false;
         }
     }
+
+    bool ItemCanBeEquipped(ItemInstance droppedItem)
+    {
+        return droppedItem.item.EquippedSlot == equipmentSlot && playerStat.level >= droppedItem.item.ItemLevel;
+    }
+
 }

@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using UnityEngine.EventSystems;
 
 //The base class for all slots
 public abstract class Slot <T> : MonoBehaviour

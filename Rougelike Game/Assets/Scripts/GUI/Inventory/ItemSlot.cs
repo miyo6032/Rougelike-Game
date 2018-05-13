@@ -20,30 +20,32 @@ public class ItemSlot : MonoBehaviour, IPointerClickHandler
     public virtual void OnPointerClick(PointerEventData eventData)
     {
         ItemInstance droppedItem = StaticCanvasList.instance.inventoryManager.attachedItem;
-        //If there is an item attached to the mouse pointer
-        if (droppedItem)
-        {
-            //Disconnnect the item from the mouse
-            droppedItem.attached = false;
-            StaticCanvasList.instance.inventoryManager.attachedItem = null;
-            ItemDrop(droppedItem);
-        }
+
+        ItemDrop(droppedItem);
     }
 
     //Handles when an item is dropped upon the slot
     //Does item exchanging, equipping and stuff like that
     public virtual void ItemDrop(ItemInstance droppedItem)
     {
-        if (droppedItem == null)
+        //If there is an item attached to the mouse pointer
+        if (droppedItem)
         {
-            return;
-        }
-        else if(item != null)
-        {
-            item.SetItemAttached();
-        }
+            //Disconnnect the item from the mouse
+            droppedItem.attached = false;
+            StaticCanvasList.instance.inventoryManager.attachedItem = null;
 
-        LinkItemAndSlot(droppedItem, this);
+            if (droppedItem == null)
+            {
+                return;
+            }
+            else if (item != null)
+            {
+                item.SetItemAttached();
+            }
+
+            LinkItemAndSlot(droppedItem, this);
+        }
     }
 
     //Link the item to a slot

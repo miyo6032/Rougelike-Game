@@ -41,32 +41,40 @@ IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler
     public void OnPointerDown(PointerEventData eventData)
     {
         ItemInstance droppedItem = StaticCanvasList.instance.inventoryManager.attachedItem;
-        //If the player was already carrying an item with them
         if (droppedItem)
         {
-            //If this item is equipped, we know it is in an equipped slot, so 
-            //We have to call item drop first and see if we can equip the dropped item
-            if (equipped)
-            {
-                slot.ItemDrop(droppedItem);
-            }
-            //Otherwise, just do the normal operation
-            else
-            {
-                //Disconnect the item from the mouse
-                droppedItem.attached = false;
-                SetItemAttached();
-                slot.ItemDrop(droppedItem);
-            }
+            PutItemDown(droppedItem);
         }
-        //If there is no item attached, just pick up the item with the mouse
         else
         {
+            PickItemUp();
+        }
+    }
+
+    void PutItemDown(ItemInstance droppedItem)
+    {
+        //If this item is equipped, we know it is in an equipped slot, so 
+        //We have to call item drop first and see if we can equip the dropped item
+        if (equipped)
+        {
+            slot.ItemDrop(droppedItem);
+        }
+        //Otherwise, just do the normal operation
+        else
+        {
+            //Disconnect the item from the mouse
+            droppedItem.attached = false;
             SetItemAttached();
-            if (equipped)
-            {
-                playerStat.UnequipItem(this);
-            }
+            slot.ItemDrop(droppedItem);
+        }
+    }
+
+    void PickItemUp()
+    {
+        SetItemAttached();
+        if (equipped)
+        {
+            playerStat.UnequipItem(this);
         }
     }
 
