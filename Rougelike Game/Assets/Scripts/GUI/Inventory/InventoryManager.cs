@@ -22,8 +22,11 @@ public class InventoryManager : MonoBehaviour {
     void Start () {
 
         database = GetComponent<ItemDatabase>();
-
+        database.PopulateItemModuleDatabase();
         AddTheSlots();
+
+        AddItem(database.GenerateItem(0, 0));
+
     }
 
     void AddTheSlots()
@@ -36,6 +39,20 @@ public class InventoryManager : MonoBehaviour {
             instance.item = null;
             slots.Add(instance);
             instance.transform.localScale = new Vector3(1, 1, 1);
+        }
+    }
+
+    public void AddItem(Item item)
+    {
+        for (int i = 0; i < slots.Count; i++)
+        {//If there is no item in the slot, Adds new item to that slot
+            if (slots[i].item == null)
+            {
+                ItemInstance itemObj = Instantiate(itemPrefab);
+                itemObj.Initialize(item, slots[i]);
+                slots[i].item = itemObj;
+                return;
+            }
         }
     }
 

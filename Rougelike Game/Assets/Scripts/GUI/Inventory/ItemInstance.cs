@@ -22,20 +22,27 @@ IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler
     [HideInInspector]
     public bool attached = false;
 
+    public Image[] itemSprites;
+
     void Start()
     {
         playerStat = GameObject.Find("Player").GetComponent<PlayerStats>();
     }
 
     //Initialize a new item - used when the inventory adds a new item
-    public void Initialize(Item i, ItemSlot s)
+    public void Initialize(Item Item, ItemSlot Slot)
     {
-        item = i;
+        item = Item;
         amount = 1;
-        slot = s;
+        slot = Slot;
         transform.SetParent(slot.transform);
-        GetComponent<Image>().sprite = Resources.Load<Sprite>(i.Sprite);
         transform.localScale = new Vector3(1, 1, 1);
+
+        //Load sprites
+        for(int i = 0; i < item.Sprites.Length; i++)
+        {
+            itemSprites[i].sprite = Resources.Load<Sprite>("ItemIcons/ItemParts/" + item.Sprites[i]);
+        }
     }
 
     public void OnPointerDown(PointerEventData eventData)

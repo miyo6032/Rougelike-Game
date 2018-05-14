@@ -1,0 +1,14 @@
+[
+	{
+		"title": "of The Night",
+		"description" : "Unique desc 5",
+		"sprite" : "handles/night"
+	},
+
+	{
+		"title": "of Fire",
+		"description" : "Unique desc 6",
+		"sprite" : "handles/fire"
+	}
+
+]

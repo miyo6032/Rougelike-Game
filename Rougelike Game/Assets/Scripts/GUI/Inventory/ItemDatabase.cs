@@ -10,6 +10,25 @@ public class ItemDatabase : MonoBehaviour {
     List<ItemModule> hilts = new List<ItemModule>();
     List<ItemModule> handles = new List<ItemModule>();
 
+    public void PopulateItemModuleDatabase()
+    {
+        DataIntoList(JsonMapper.ToObject(File.ReadAllText(Application.dataPath + "/StreamingAssets/Blades.json")), blades);
+        DataIntoList(JsonMapper.ToObject(File.ReadAllText(Application.dataPath + "/StreamingAssets/Hilts.json")), hilts);
+        DataIntoList(JsonMapper.ToObject(File.ReadAllText(Application.dataPath + "/StreamingAssets/Handles.json")), handles);
+    }
+
+    void DataIntoList(JsonData itemData, List<ItemModule> parts)
+    {
+        for (int i = 0; i < itemData.Count; i++)
+        {
+            parts.Add(new ItemModule(
+                itemData[i]["title"].ToString(),
+                itemData[i]["description"].ToString(),
+                itemData[i]["sprite"].ToString()
+            ));
+        }
+    }
+
     public Item GenerateItem(int level, int equipmentType)
     {
         //The sword
@@ -20,9 +39,29 @@ public class ItemDatabase : MonoBehaviour {
             ItemModule handle = handles[Random.Range(0, handles.Count)];
 
             string title = hilt.Title + blade.Title + handle.Title;
-            //other stats
+            int attack = (int)(level * Random.Range(0f, 1));
+            int maxAttack = (int)(attack + level * Random.Range(0f, 1));
+            int defence = (int)(level * Random.Range(0f, 1));
+            int value = attack + maxAttack + defence;
+            bool stackable = false;
+            string description = "";
+            string[] sprites = { blade.Sprite, hilt.Sprite, handle.Sprite };
+            
+            Item sword = new Item(
+                title,
+                value,
+                attack,
+                maxAttack, 
+                defence,
+                description,
+                stackable,
+                equipmentType,
+                level,
+                -1,
+                sprites
+            );
 
-            Item sword = new Item();
+            return sword;
         }
 
         return null;
@@ -34,13 +73,13 @@ public class ItemDatabase : MonoBehaviour {
 public class ItemModule
 {
     public string Title;
-    public string Type;
+    public string Description;
     public string Sprite;
 
-    public ItemModule(string title, string type, string sprite)
+    public ItemModule(string title, string description, string sprite)
     {
         Title = title;
-        Type = type;
+        Description = description;
         Sprite = sprite;
     }
 
@@ -55,12 +94,11 @@ public class Item{
     public int Defence { get; set;}
 	public string Description { get; set;}
 	public bool Stackable { get; set;}
-	public string Slug { get; set;}
-	public string Sprite { get; set;}
+	public string[] Sprites { get; set;}
 	public int EquippedSlot { get; set;}
 	public int ItemLevel { get; set;}
 
-    public Item(string title, int value, int attack, int maxAttack, int defence, string description, bool stackable, string slug, int equippedSlot, int itemLevel, int skill){
+    public Item(string title, int value, int attack, int maxAttack, int defence, string description, bool stackable, int equippedSlot, int itemLevel, int skill, string[] sprites){
 		this.Title = title;
 		this.Value = value;
 		this.Attack = attack;
@@ -68,9 +106,8 @@ public class Item{
 		this.Defence = defence;
 		this.Description = description;
 		this.Stackable = stackable;
-		this.Slug = slug;
 		this.EquippedSlot = equippedSlot;
-		this.Sprite = "ItemIcons/" + slug;
+		this.Sprites = sprites;
 		this.ItemLevel = itemLevel;
 	}
 

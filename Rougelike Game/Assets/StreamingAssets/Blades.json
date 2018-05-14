@@ -1,0 +1,14 @@
+[
+	{
+		"title": "Dragonbone Sword",
+		"description" : "Unique desc 1",
+		"sprite" : "blades/dragonbone"
+	},
+
+	{
+		"title": "Iron Sword",
+		"description" : "Unique desc 2",
+		"sprite" : "blades/iron"
+	}
+
+]
