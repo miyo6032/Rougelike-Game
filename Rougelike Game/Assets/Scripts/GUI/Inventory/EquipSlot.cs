@@ -14,28 +14,31 @@ public class EquipSlot : ItemSlot, IPointerClickHandler
         if (droppedItem)
         {
             //Do the item drop first to check to see if the item can be equipped
-            ItemDrop(droppedItem);
+            ItemDropIntoEmpty(droppedItem);
         }
     }
 
-    public override void ItemDrop(ItemInstance droppedItem)
+    //Handles when an item is dropped upon the slot
+    //Does item exchanging, equipping and stuff like that
+    public override void ItemDropIntoEmpty(ItemInstance droppedItem)
     {
-        if (ItemCanBeEquipped(droppedItem))
+        //If there is an item attached to the mouse pointer
+        if (droppedItem && item == null && ItemCanBeEquipped(droppedItem))
         {
-            //If the previous slot was empty, just add a new item to it
-            if (item == null)
-            {
-                LinkItemAndSlot(droppedItem, this);
-                StaticCanvasList.instance.inventoryManager.attachedItem = null;
-                //Generate a new skill and add that to the corresponding skillslot
-            }
-            else
-            {
-                playerStat.UnequipItem(item);
-                item.SetItemAttached();
-                LinkItemAndSlot(droppedItem, this);
-                //Generate a new skill and add that to the corresponding skillslot
-            }
+            LinkItemAndSlot(droppedItem, this);
+            StaticCanvasList.instance.inventoryManager.attachedItem = null;
+            playerStat.EquipItem(droppedItem, this);
+            droppedItem.attached = false;
+        }
+    }
+
+    public override void ItemDropIntoFull(ItemInstance droppedItem)
+    {
+        if (droppedItem && item != null && ItemCanBeEquipped(droppedItem))
+        {
+            playerStat.UnequipItem(item);
+            item.PickItemUp();
+            LinkItemAndSlot(droppedItem, this);
             playerStat.EquipItem(droppedItem, this);
             droppedItem.attached = false;
         }
@@ -43,7 +46,7 @@ public class EquipSlot : ItemSlot, IPointerClickHandler
 
     bool ItemCanBeEquipped(ItemInstance droppedItem)
     {
-        return droppedItem.item.EquippedSlot == equipmentSlot && playerStat.level >= droppedItem.item.ItemLevel;
+        return droppedItem.item.EquippedSlot == equipmentSlot && playerStat.GetLevel() >= droppedItem.item.ItemLevel;
     }
 
 }

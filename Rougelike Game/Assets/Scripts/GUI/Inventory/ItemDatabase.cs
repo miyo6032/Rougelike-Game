@@ -34,38 +34,43 @@ public class ItemDatabase : MonoBehaviour {
         //The sword
         if(equipmentType == 0)
         {
-            ItemModule blade = blades[Random.Range(0, blades.Count)];
-            ItemModule hilt = hilts[Random.Range(0, hilts.Count)];
-            ItemModule handle = handles[Random.Range(0, handles.Count)];
-
-            string title = hilt.Title + blade.Title + handle.Title;
-            int attack = (int)(level * Random.Range(0f, 1));
-            int maxAttack = (int)(attack + level * Random.Range(0f, 1));
-            int defence = (int)(level * Random.Range(0f, 1));
-            int value = attack + maxAttack + defence;
-            bool stackable = false;
-            string description = "";
-            string[] sprites = { blade.Sprite, hilt.Sprite, handle.Sprite };
-            
-            Item sword = new Item(
-                title,
-                value,
-                attack,
-                maxAttack, 
-                defence,
-                description,
-                stackable,
-                equipmentType,
-                level,
-                -1,
-                sprites
-            );
-
-            return sword;
+            return GenerateSword(level, equipmentType);
         }
 
         return null;
 
+    }
+
+    Item GenerateSword(int level, int equipmentType)
+    {
+        ItemModule blade = blades[Random.Range(0, blades.Count)];
+        ItemModule hilt = hilts[Random.Range(0, hilts.Count)];
+        ItemModule handle = handles[Random.Range(0, handles.Count)];
+
+        string title = hilt.Title + " " + blade.Title + " " + handle.Title;
+        int attack = (int)(level * Random.Range(0.5f, 1));
+        int maxAttack = (int)(attack + level * Random.Range(0.5f, 1));
+        int defence = (int)(level * Random.Range(0f, 0.5f));
+        int value = attack + maxAttack + defence;
+        bool stackable = false;
+        string description = "";
+        string[] sprites = { blade.Sprite, hilt.Sprite, handle.Sprite };
+
+        Item sword = new Item(
+            title,
+            value,
+            attack,
+            maxAttack,
+            defence,
+            description,
+            stackable,
+            equipmentType,
+            level,
+            -1,
+            sprites
+        );
+
+        return sword;
     }
 
 }

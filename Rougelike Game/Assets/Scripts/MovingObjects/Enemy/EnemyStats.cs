@@ -4,8 +4,9 @@ using UnityEngine.UI;
 //Keeps track of enemy stats like attack and health - nothing too special
 public class EnemyStats : MonoBehaviour {
 
-    public int attack;
-    public int health;
+    public int minAttack;
+    public int maxAttack;
+    private int health;
     public int maxHealth;
 
     Animator damageCounter;
@@ -17,6 +18,7 @@ public class EnemyStats : MonoBehaviour {
         damageCounter = HelperScripts.GetComponentFromChildrenExc<Animator>(transform);
         damageText = HelperScripts.GetComponentFromChildrenExc<Text>(transform);
         healthSlider = HelperScripts.GetComponentFromChildrenExc<Slider>(transform);
+        health = maxHealth;
     }
 
     //Damage the enemy, generate the damage counter, and update the health ui

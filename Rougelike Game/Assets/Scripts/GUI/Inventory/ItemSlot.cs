@@ -5,7 +5,6 @@ using UnityEngine;
 //Responsbile for handling when the item is dropped on the item slot
 public class ItemSlot : MonoBehaviour, IPointerClickHandler
 {
-
     [HideInInspector]
     public ItemInstance item;
 
@@ -21,29 +20,31 @@ public class ItemSlot : MonoBehaviour, IPointerClickHandler
     {
         ItemInstance droppedItem = StaticCanvasList.instance.inventoryManager.attachedItem;
 
-        ItemDrop(droppedItem);
+        ItemDropIntoEmpty(droppedItem);
     }
 
     //Handles when an item is dropped upon the slot
     //Does item exchanging, equipping and stuff like that
-    public virtual void ItemDrop(ItemInstance droppedItem)
+    public virtual void ItemDropIntoEmpty(ItemInstance droppedItem)
     {
         //If there is an item attached to the mouse pointer
-        if (droppedItem)
+        if (droppedItem && item == null)
         {
             //Disconnnect the item from the mouse
             droppedItem.attached = false;
+            LinkItemAndSlot(droppedItem, this);
             StaticCanvasList.instance.inventoryManager.attachedItem = null;
+        }
+    }
 
-            if (droppedItem == null)
-            {
-                return;
-            }
-            else if (item != null)
-            {
-                item.SetItemAttached();
-            }
-
+    public virtual void ItemDropIntoFull(ItemInstance droppedItem)
+    {
+        //If there is an item attached to the mouse pointer
+        if (droppedItem && item != null)
+        {
+            //Disconnnect the item from the mouse
+            droppedItem.attached = false;
+            item.PickItemUp();
             LinkItemAndSlot(droppedItem, this);
         }
     }

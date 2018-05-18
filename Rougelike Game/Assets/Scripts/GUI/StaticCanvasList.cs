@@ -9,6 +9,7 @@ public class StaticCanvasList : MonoBehaviour {
     public InGameUI gameUI;
     public PauseUI pauseUI;
     public PlayerStatUI statUI;
+    public Tooltip inventoryTooltip;
 
 	void Start () {
 		if(instance == null)

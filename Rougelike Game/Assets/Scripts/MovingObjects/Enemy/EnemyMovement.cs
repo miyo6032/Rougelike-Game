@@ -163,6 +163,6 @@ public class EnemyMovement : MovingObject
     {
         PlayerStats hitPlayer = component as PlayerStats;
         animator.SetTrigger("EnemyAttack");
-        hitPlayer.DamagePlayer(stats.attack);
+        hitPlayer.DamagePlayer(Random.Range(stats.minAttack, stats.maxAttack + 1));
     }
 }

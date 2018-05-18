@@ -32,11 +32,13 @@ IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler
     //Initialize a new item - used when the inventory adds a new item
     public void Initialize(Item Item, ItemSlot Slot)
     {
+        name = Item.Title;
         item = Item;
         amount = 1;
         slot = Slot;
         transform.SetParent(slot.transform);
         transform.localScale = new Vector3(1, 1, 1);
+        transform.localPosition = Vector2.zero;
 
         //Load sprites
         for(int i = 0; i < item.Sprites.Length; i++)
@@ -50,7 +52,7 @@ IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler
         ItemInstance droppedItem = StaticCanvasList.instance.inventoryManager.attachedItem;
         if (droppedItem)
         {
-            PutItemDown(droppedItem);
+            slot.ItemDropIntoFull(droppedItem);
         }
         else
         {
@@ -58,25 +60,7 @@ IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler
         }
     }
 
-    void PutItemDown(ItemInstance droppedItem)
-    {
-        //If this item is equipped, we know it is in an equipped slot, so 
-        //We have to call item drop first and see if we can equip the dropped item
-        if (equipped)
-        {
-            slot.ItemDrop(droppedItem);
-        }
-        //Otherwise, just do the normal operation
-        else
-        {
-            //Disconnect the item from the mouse
-            droppedItem.attached = false;
-            SetItemAttached();
-            slot.ItemDrop(droppedItem);
-        }
-    }
-
-    void PickItemUp()
+    public void PickItemUp()
     {
         SetItemAttached();
         if (equipped)
@@ -87,7 +71,7 @@ IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler
 
     //Set the item to be dragged automatically by the mouse
     //Called by slot when items are exchanged in dragging
-    public void SetItemAttached()
+    void SetItemAttached()
     {
         attached = true;
         StaticCanvasList.instance.inventoryManager.attachedItem = this;
@@ -115,11 +99,11 @@ IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        //tooltip.Activate(item, this);
+        StaticCanvasList.instance.inventoryTooltip.ShowTooltip(item);
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        //tooltip.Deactivate();
+        StaticCanvasList.instance.inventoryTooltip.gameObject.SetActive(false);
     }
 }

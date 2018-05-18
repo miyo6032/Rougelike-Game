@@ -64,7 +64,7 @@ public class PlayerMovement : MovingObject
         Invoke("HittingFalse", stats.hitSpeed);
         animatorHandler.AnimateAttack();
         EnemyStats hitEnemy = component as EnemyStats;
-        hitEnemy.DamageEnemy(stats.attack.x);
+        hitEnemy.DamageEnemy(Random.Range(stats.minAttack, stats.maxAttack + 1));
     }
 
     //Called by invoke with a delay to keep hitting timed
