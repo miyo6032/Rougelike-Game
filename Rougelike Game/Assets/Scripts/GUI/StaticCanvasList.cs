@@ -10,6 +10,7 @@ public class StaticCanvasList : MonoBehaviour {
     public PauseUI pauseUI;
     public PlayerStatUI statUI;
     public Tooltip inventoryTooltip;
+    public UIColoring uiColoring;
 
 	void Start () {
 		if(instance == null)

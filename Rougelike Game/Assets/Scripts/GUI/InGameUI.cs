@@ -6,6 +6,7 @@ public class InGameUI : MonoBehaviour {
     public Slider healthSlider; //The player's in-game health bar
     public GameObject pauseUI;
     public GameObject invUI;
+    public GameObject menuPopup;
 
 	void Start () {
 	}
@@ -27,6 +28,11 @@ public class InGameUI : MonoBehaviour {
     {
         invUI.SetActive(true);
         gameObject.SetActive(false);
+    }
+
+    public void TogglePopupMenu()
+    {
+        menuPopup.SetActive(!menuPopup.activeSelf);
     }
 
 }

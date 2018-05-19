@@ -20,4 +20,9 @@ public class PlayerStatUI : MonoBehaviour {
         this.attack.text = "Total Damage per Hit: " + minAtack + " to " + maxAttack;
     }
 
+    public void Toggle()
+    {
+        gameObject.SetActive(!gameObject.activeSelf);
+    }
+
 }

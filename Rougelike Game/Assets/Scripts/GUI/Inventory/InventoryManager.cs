@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.IO;
 
+//Holds the inventory slot information, and implements some necessary item operations
 public class InventoryManager : MonoBehaviour {
     public List<ItemSlot> slots = new List<ItemSlot>();
     public List<ItemSlot> equipSlots = new List<ItemSlot>();
@@ -54,6 +55,23 @@ public class InventoryManager : MonoBehaviour {
             }
         }
         return false;
+    }
+
+    public void Toggle()
+    {
+        if (gameObject.activeSelf)
+        {
+            if(attachedItem != null)
+            {
+                AddItem(attachedItem.item);
+                Destroy(attachedItem.gameObject);
+            }
+            gameObject.SetActive(false);
+        }
+        else
+        {
+            gameObject.SetActive(true);
+        }
     }
 
 }

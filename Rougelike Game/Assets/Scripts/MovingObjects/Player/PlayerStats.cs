@@ -26,6 +26,7 @@ public class PlayerStats : MonoBehaviour {
     {
         damageCounter = HelperScripts.GetComponentFromChildrenExc<Animator>(transform);
         damageText = HelperScripts.GetComponentFromChildrenExc<Text>(transform);
+        health = maxHealth;
         UpdateEquipStats();
         StaticCanvasList.instance.statUI.UpdateStatUI(level, experience, health, focus, defence, minAttack, maxAttack);
     }
