@@ -5,7 +5,7 @@ public class PauseUI : MonoBehaviour {
     public GameObject gameUI;
 	
 	void Start () {
-		
+
 	}
 	
     public void Resume()

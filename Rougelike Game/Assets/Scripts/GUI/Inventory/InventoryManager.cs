@@ -18,7 +18,6 @@ public class InventoryManager : MonoBehaviour {
     ItemDatabase database;
 
     void Start () {
-
         database = GetComponent<ItemDatabase>();
         database.PopulateItemModuleDatabase();
 
@@ -26,6 +25,7 @@ public class InventoryManager : MonoBehaviour {
         AddItemToSlot(database.GenerateItem(5, 0), FindNextOpenSlot(slots));
         AddItemToSlot(database.GenerateItem(3, 0), FindNextOpenSlot(slots));
 
+        gameObject.SetActive(false);
     }
 
     public void AddItemToSlot(Item item, ItemSlot slot)

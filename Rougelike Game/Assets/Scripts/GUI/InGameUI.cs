@@ -48,4 +48,14 @@ public class InGameUI : MonoBehaviour {
         }
     }
 
+    public void OpenLootPanel()
+    {
+        lootPopupPanel.SetActive(true);
+    }
+
+    public void CloseLootPanel()
+    {
+        lootPopupPanel.SetActive(false);
+    }
+
 }

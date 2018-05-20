@@ -10,7 +10,7 @@ public class CameraMovement : MonoBehaviour
 
     void Awake()
     {
-        GetComponent<Camera>().orthographicSize = Screen.height / 8;
+        GetComponent<Camera>().orthographicSize = Screen.height / 16;
         player = GameObject.FindGameObjectWithTag("Player").transform;
         pixelMovement = GetComponent<PixelMovement>();
     }

@@ -8,6 +8,8 @@ public class EnemyMovement : MovingObject
 {
     public float turnDelay; //How many seconds an enemy has to wait until they can move again 
     public int enemySight = 3;
+    public LayerMask playerLayer;//a way to ignore the player's collider without actually disabling the loot bag, because otherwise
+    //the loot bag detects everytime the collider is turned off and on
     public LayerMask pathfindingLayer; //We want enemy pathfinding to disreguard enemies in the way of doorways and stuff like that,
     //So we only use the environment layer to do the pathfinding
 
@@ -15,6 +17,7 @@ public class EnemyMovement : MovingObject
     protected EnemyStats stats;
     protected Transform target; //Stores the player position
     protected BoxCollider2D playerCol; //Disabled during the linecast for pathfinding
+    protected BoxCollider2D enemyCol;
     bool altMove = false; //Responsible for alternating the move priorities - will sometimes be horizontal, and sometimes be vertical
 
     protected override void Start()
@@ -22,8 +25,14 @@ public class EnemyMovement : MovingObject
         animator = GetComponent<Animator>();
         target = GameObject.Find("Player").GetComponent<PlayerMovement>().transform;
         playerCol = target.gameObject.GetComponent<BoxCollider2D>();
+        enemyCol = GetComponent<BoxCollider2D>();
         stats = GetComponent<EnemyStats>();
         base.Start();
+        Invoke("DelayedStart", Random.Range(0f, turnDelay));
+    }
+
+    void DelayedStart()
+    {
         StartCoroutine(moveCounter());
     }
 
@@ -33,10 +42,8 @@ public class EnemyMovement : MovingObject
         while (this) //Will be changed to while the enemy is not dead
         {
             //Disable Box colliders for future linecasts
-            playerCol.enabled = false;
-            Vector2 nextMove = GetNextMove(blockingLayer + pathfindingLayer);
-            playerCol.enabled = true;
-
+            enemyCol.enabled = false;
+            Vector2 nextMove = GetNextMove(blockingLayer + pathfindingLayer - playerLayer);
             //If there is a blockage, it might be because an enemy is in the way, so then we look for a path
             //with the enemy's layer disabled
             if (nextMove.x == Vector2.positiveInfinity.x)
@@ -54,6 +61,7 @@ public class EnemyMovement : MovingObject
                     altMove = !altMove;
                 }
             }
+            enemyCol.enabled = true;
             //Wait for however many second for the turn delay
             yield return new WaitForSeconds(turnDelay);
         }
@@ -78,7 +86,7 @@ public class EnemyMovement : MovingObject
         Vector2Int relTarPos = targetPos - currentPos + relCurPos;
 
         //Return no path - player out of vision
-        if (Mathf.Abs((targetPos - currentPos).x) > enemySight || Mathf.Abs((targetPos - currentPos).y) > enemySight)
+        if (Vector2.SqrMagnitude(targetPos - currentPos) > enemySight * enemySight)
         {
             return Vector2.positiveInfinity;
         }
@@ -101,7 +109,6 @@ public class EnemyMovement : MovingObject
         Queue<Vector2Int> Q = new Queue<Vector2Int>();
         //Start at the player's position and work back to the enemy
         Q.Enqueue(relTarPos);
-
         //Do the search
         while (Q.Count > 0)
         {
