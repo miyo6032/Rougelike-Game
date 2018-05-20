@@ -17,7 +17,7 @@ public class PlayerStatUI : MonoBehaviour {
         this.maxHealth.text = "Max Health: " + maxHealth;
         this.maxFocus.text = "Max Focus: " + maxFocus;
         this.defense.text = "Total Defense: " + defence;
-        this.attack.text = "Total Damage per Hit: " + minAtack + " to " + maxAttack;
+        this.attack.text = "Total Damage per Hit:\n" + minAtack + " to " + maxAttack;
     }
 
     public void Toggle()

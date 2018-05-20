@@ -7,6 +7,7 @@ public class InGameUI : MonoBehaviour {
     public GameObject pauseUI;
     public GameObject invUI;
     public GameObject menuPopup;
+    public GameObject lootPopupPanel;
 
 	void Start () {
 	}
@@ -33,6 +34,18 @@ public class InGameUI : MonoBehaviour {
     public void TogglePopupMenu()
     {
         menuPopup.SetActive(!menuPopup.activeSelf);
+    }
+
+    public void ToggleLootPanel()
+    {
+        if (lootPopupPanel.activeSelf)
+        {
+            lootPopupPanel.SetActive(false);
+        }
+        else
+        {
+            lootPopupPanel.SetActive(true);
+        }
     }
 
 }

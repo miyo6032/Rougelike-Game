@@ -33,10 +33,8 @@ public class EnemyMovement : MovingObject
         while (this) //Will be changed to while the enemy is not dead
         {
             //Disable Box colliders for future linecasts
-            boxCollider.enabled = false;
             playerCol.enabled = false;
             Vector2 nextMove = GetNextMove(blockingLayer + pathfindingLayer);
-            boxCollider.enabled = true;
             playerCol.enabled = true;
 
             //If there is a blockage, it might be because an enemy is in the way, so then we look for a path
@@ -159,7 +157,7 @@ public class EnemyMovement : MovingObject
     }
 
     //When the enemy encounters the player
-    protected override void OnCantMove<T>(T component)
+    protected override void Attack<T>(T component)
     {
         PlayerStats hitPlayer = component as PlayerStats;
         animator.SetTrigger("EnemyAttack");

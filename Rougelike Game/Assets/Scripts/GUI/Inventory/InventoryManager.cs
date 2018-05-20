@@ -9,7 +9,6 @@ public class InventoryManager : MonoBehaviour {
     public List<ItemSlot> slots = new List<ItemSlot>();
     public List<ItemSlot> equipSlots = new List<ItemSlot>();
 
-    public ItemSlot slotPrefab;
     public ItemInstance itemPrefab;
     public Transform inventoryPanel;
 
@@ -23,24 +22,30 @@ public class InventoryManager : MonoBehaviour {
         database = GetComponent<ItemDatabase>();
         database.PopulateItemModuleDatabase();
 
-        AddItem(database.GenerateItem(4, 0));
-        AddItem(database.GenerateItem(5, 0));
-        AddItem(database.GenerateItem(3, 0));
+        AddItemToSlot(database.GenerateItem(4, 0), FindNextOpenSlot(slots));
+        AddItemToSlot(database.GenerateItem(5, 0), FindNextOpenSlot(slots));
+        AddItemToSlot(database.GenerateItem(3, 0), FindNextOpenSlot(slots));
 
     }
 
-    public void AddItem(Item item)
+    public void AddItemToSlot(Item item, ItemSlot slot)
     {
-        for (int i = 0; i < slots.Count; i++)
+        ItemInstance itemObj = Instantiate(itemPrefab);
+        itemObj.Initialize(item, slot);
+        slot.item = itemObj;
+    }
+
+    //
+    public ItemSlot FindNextOpenSlot(List<ItemSlot> slotList)
+    {
+        for (int i = 0; i < slotList.Count; i++)
         {//If there is no item in the slot, Adds new item to that slot
-            if (slots[i].item == null)
+            if (slotList[i].item == null)
             {
-                ItemInstance itemObj = Instantiate(itemPrefab);
-                itemObj.Initialize(item, slots[i]);
-                slots[i].item = itemObj;
-                return;
+                return slotList[i].GetComponent<ItemSlot>();
             }
         }
+        return null;
     }
 
     //Return true if a certain item is in the inventory
@@ -57,15 +62,17 @@ public class InventoryManager : MonoBehaviour {
         return false;
     }
 
+    //Toggles the inventory to show or hide
     public void Toggle()
     {
         if (gameObject.activeSelf)
         {
             if(attachedItem != null)
             {
-                AddItem(attachedItem.item);
+                AddItemToSlot(attachedItem.item, FindNextOpenSlot(slots));
                 Destroy(attachedItem.gameObject);
             }
+            StaticCanvasList.instance.inventoryTooltip.gameObject.SetActive(false);
             gameObject.SetActive(false);
         }
         else

@@ -13,13 +13,11 @@ public abstract class MovingObject : MonoBehaviour {
     [HideInInspector]
     public bool moving = false;
 
-    protected BoxCollider2D boxCollider;
     protected MovementTracker moveManager;
 	private Rigidbody2D rb2D;
 	private float inverseMoveTime;
 
     protected virtual void Start () {
-		boxCollider = GetComponent<BoxCollider2D>();
 		rb2D = GetComponent<Rigidbody2D>();
         moveManager = GameObject.Find("GameManager").GetComponent<MovementTracker>();
         //Makes the coroutine more efficient
@@ -32,9 +30,9 @@ public abstract class MovingObject : MonoBehaviour {
 		Vector2 end = start + new Vector2 (xDir, yDir) * moveScale;
 
         //Do the detection to see if there is anyting in the way
-		boxCollider.enabled = false;
-		hit = Physics2D.Linecast (start, end, blockingLayer);
-		boxCollider.enabled = true;
+        Physics2D.queriesHitTriggers = false;
+        hit = Physics2D.Linecast(start, end, blockingLayer);
+        Physics2D.queriesHitTriggers = true;
 
         //If the way is clear, go ahead and move
 		if (hit.transform == null) {
@@ -88,10 +86,10 @@ public abstract class MovingObject : MonoBehaviour {
 
         //Only call OnCantMove if the hit actually has the component
 		if (!canMove && hitComponent != null)
-			OnCantMove (hitComponent);
+			Attack (hitComponent);
 	}
 
-	protected abstract void OnCantMove<T>(T component)
+	protected abstract void Attack<T>(T component)
 		where T : Component;
 
 }

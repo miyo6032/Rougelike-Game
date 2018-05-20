@@ -52,19 +52,23 @@ public class PlayerMovement : MovingObject
 
         //Only call OnCantMove if the hit actually has the component
         if (!canMove && hitComponent != null)
-            OnCantMove(hitComponent);
+            Attack(hitComponent);
         else
             animatorHandler.SetIdle(new Vector2(xDir, yDir));
     }
 
-    //When the player collides with something, anything
-    protected override void OnCantMove<T>(T component) {
+    protected override void Attack<T>(T component) {
         if (hitting) return;
         hitting = true;
         Invoke("HittingFalse", stats.hitSpeed);
         animatorHandler.AnimateAttack();
         EnemyStats hitEnemy = component as EnemyStats;
         hitEnemy.DamageEnemy(Random.Range(stats.minAttack, stats.maxAttack + 1));
+    }
+
+    void OpenLoot()
+    {
+
     }
 
     //Called by invoke with a delay to keep hitting timed

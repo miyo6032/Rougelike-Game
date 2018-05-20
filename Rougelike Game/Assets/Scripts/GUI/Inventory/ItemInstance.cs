@@ -47,6 +47,7 @@ IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler
         }
     }
 
+    //Pick up a new item, or exchange it with the current one
     public void OnPointerDown(PointerEventData eventData)
     {
         ItemInstance droppedItem = StaticCanvasList.instance.inventoryManager.attachedItem;
@@ -75,7 +76,7 @@ IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler
     {
         attached = true;
         StaticCanvasList.instance.inventoryManager.attachedItem = this;
-        transform.SetParent(transform.parent.parent.parent);
+        transform.SetParent(StaticCanvasList.instance.inventoryManager.transform);
         GetComponent<CanvasGroup>().blocksRaycasts = false;
         slot.item = null;
     }
@@ -89,6 +90,7 @@ IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler
         slot.item = this;
     }
 
+    //Let the item be "attached" to the mouse - follow its position
     void Update()
     {
         if (attached)

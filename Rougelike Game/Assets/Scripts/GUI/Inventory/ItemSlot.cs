@@ -37,6 +37,7 @@ public class ItemSlot : MonoBehaviour, IPointerClickHandler
         }
     }
 
+    //When the item is dropped into a slot that is already full
     public virtual void ItemDropIntoFull(ItemInstance droppedItem)
     {
         //If there is an item attached to the mouse pointer

@@ -11,6 +11,7 @@ public class StaticCanvasList : MonoBehaviour {
     public PlayerStatUI statUI;
     public Tooltip inventoryTooltip;
     public UIColoring uiColoring;
+    public LootInventory lootInventory;
 
 	void Start () {
 		if(instance == null)
