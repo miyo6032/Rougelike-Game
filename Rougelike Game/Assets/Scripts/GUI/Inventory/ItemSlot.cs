@@ -8,13 +8,6 @@ public class ItemSlot : MonoBehaviour, IPointerClickHandler
     [HideInInspector]
     public ItemInstance item;
 
-    protected PlayerStats playerStat;
-
-    void Start()
-    {
-        playerStat = GameObject.Find("Player").GetComponent<PlayerStats>();
-    }
-
     //When the player drops an item from clicking
     public virtual void OnPointerClick(PointerEventData eventData)
     {

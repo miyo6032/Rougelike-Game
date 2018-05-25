@@ -64,6 +64,7 @@ public class PlayerStats : MonoBehaviour {
     public void UnequipItem(ItemInstance inst)
     {
         inst.equipped = false;
+        inst.slot.GetComponent<EquipSlot>().SlotImageToEmpty();
         UpdateEquipStats();
     }
 

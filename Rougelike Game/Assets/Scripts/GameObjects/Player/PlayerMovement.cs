@@ -44,6 +44,7 @@ public class PlayerMovement : MovingObject
         {
             //We were able to move, so animate that movement
             animatorHandler.AnimateMovement(new Vector2(xDir, yDir));
+            StaticCanvasList.instance.chestInventory.CloseChest();
             return;
         }
 
@@ -52,9 +53,18 @@ public class PlayerMovement : MovingObject
 
         //Only call OnCantMove if the hit actually has the component
         if (!canMove && hitComponent != null)
+        {
             Attack(hitComponent);
+        }
         else
+        {
+            Chest chest = hit.transform.GetComponent<Chest>();
+            if (!canMove && chest != null)
+            {
+                StaticCanvasList.instance.chestInventory.OpenChest(chest);
+            }
             animatorHandler.SetIdle(new Vector2(xDir, yDir));
+        }
     }
 
     protected override void Attack<T>(T component) {
@@ -64,11 +74,6 @@ public class PlayerMovement : MovingObject
         animatorHandler.AnimateAttack();
         EnemyStats hitEnemy = component as EnemyStats;
         hitEnemy.DamageEnemy(Random.Range(stats.minAttack, stats.maxAttack + 1));
-    }
-
-    void OpenLoot()
-    {
-
     }
 
     //Called by invoke with a delay to keep hitting timed

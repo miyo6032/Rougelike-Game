@@ -1,0 +1,14 @@
+[
+	{
+		"title": "Ruby Clawed",
+		"description" : "Unique desc 3",
+		"sprite" : "armor/Gloves_0"
+	},
+
+	{
+		"title": "Iron Fisted",
+		"description" : "Unique desc 2",
+		"sprite" : "armor/Gloves_1"
+	}
+
+]

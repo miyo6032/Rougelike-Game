@@ -1,0 +1,52 @@
+[
+	{
+		"title": "Icicle",
+		"sprite" : "swords/Swords_0"
+	},
+
+	{
+		"title": "Dragonbone Sword",
+		"sprite" : "swords/Swords_1"
+	},
+
+	{
+		"title": "Obsidian Blade",
+		"sprite" : "swords/Swords_2"
+	},
+
+	{
+		"title": "Claymore",
+		"sprite" : "swords/Swords_3"
+	},
+
+	{
+		"title": "Destroyer",
+		"sprite" : "swords/Swords_4"
+	},
+
+	{
+		"title": "Weed Whacker",
+		"sprite" : "swords/Swords_5"
+	},
+
+	{
+		"title": "Mist Saber",
+		"sprite" : "swords/Swords_6"
+	},
+
+	{
+		"title": "Magma Blade",
+		"sprite" : "swords/Swords_7"
+	},
+
+	{
+		"title": "Lightsaber",
+		"sprite" : "swords/Swords_8"
+	},
+
+	{
+		"title": "Khopesh",
+		"sprite" : "swords/Swords_9"
+	}
+
+]

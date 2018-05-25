@@ -1,0 +1,53 @@
+[
+	{
+		"title": "Gilded",
+		"sprite" : "swords/Hilts_0"
+	},
+
+	{
+		"title": "Oblivion",
+		"sprite" : "swords/Hilts_1"
+	},
+
+	{
+		"title": "Kings",
+		"sprite" : "swords/Hilts_2"
+	},
+
+	{
+		"title": "Jeweled",
+		"sprite" : "swords/Hilts_3"
+	},
+
+	{
+		"title": "Sturdy",
+		"sprite" : "swords/Hilts_4"
+	},
+
+	{
+		"title": "Overgrown",
+		"sprite" : "swords/Hilts_5"
+	},
+
+	{
+		"title": "Paladin's",
+		"sprite" : "swords/Hilts_6"
+	},
+
+	{
+		"title": "Ancient",
+		"sprite" : "swords/Hilts_7"
+	},
+
+	{
+		"title": "Ignition",
+		"sprite" : "swords/Hilts_8"
+	},
+
+	{
+		"title": "Spectral",
+		"sprite" : "swords/Hilts_9"
+	}
+
+
+]

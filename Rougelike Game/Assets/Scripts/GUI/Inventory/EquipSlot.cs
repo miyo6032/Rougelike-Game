@@ -1,10 +1,23 @@
 ﻿using UnityEngine.EventSystems;
+using UnityEngine.UI;
 using UnityEngine;
 
 public class EquipSlot : ItemSlot, IPointerClickHandler
 {
     public int equipmentSlot;
     public SkillDatabase database;
+
+    Image slotImage;
+    public Sprite emptySprite;
+    public Sprite fullSprite;
+
+    protected PlayerStats playerStat;
+
+    void Start()
+    {
+        playerStat = GameObject.Find("Player").GetComponent<PlayerStats>();
+        slotImage = GetComponent<Image>();
+    }
 
     //When the player drops an item from clicking
     public override void OnPointerClick(PointerEventData eventData)
@@ -29,6 +42,7 @@ public class EquipSlot : ItemSlot, IPointerClickHandler
             StaticCanvasList.instance.inventoryManager.attachedItem = null;
             playerStat.EquipItem(droppedItem, this);
             droppedItem.attached = false;
+            slotImage.sprite = fullSprite;
         }
     }
 
@@ -42,6 +56,11 @@ public class EquipSlot : ItemSlot, IPointerClickHandler
             playerStat.EquipItem(droppedItem, this);
             droppedItem.attached = false;
         }
+    }
+
+    public void SlotImageToEmpty()
+    {
+        slotImage.sprite = emptySprite;
     }
 
     bool ItemCanBeEquipped(ItemInstance droppedItem)

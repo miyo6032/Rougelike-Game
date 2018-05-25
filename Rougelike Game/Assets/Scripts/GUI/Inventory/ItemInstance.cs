@@ -43,7 +43,7 @@ IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler
         //Load sprites
         for(int i = 0; i < item.Sprites.Length; i++)
         {
-            itemSprites[i].sprite = Resources.Load<Sprite>("ItemIcons/ItemParts/" + item.Sprites[i]);
+            itemSprites[i].sprite = StaticCanvasList.instance.itemDatabase.LoadTexture(item.Sprites[i]);
         }
     }
 
