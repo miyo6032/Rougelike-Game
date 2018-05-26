@@ -1,14 +1,32 @@
 [
 	{
 		"title": "of the Void",
-		"description" : "Unique desc 3",
-		"sprite" : "armor/Belts&Collars_0"
+		"sprite" : "armor/Belts&Collars_0",
+		"color" : ""
 	},
 
 	{
-		"title": "of the Darkness",
-		"description" : "Unique desc 2",
-		"sprite" : "armor/Belts&Collars_1"
+		"title": "of Coral",
+		"sprite" : "armor/Belts&Collars_1",
+		"color" : ""
+	},
+
+	{
+		"title": "of Ruby",
+		"sprite" : "armor/Belts&Collars_2",
+		"color" : ""
+	},
+
+	{
+		"title": "of the Jungle",
+		"sprite" : "armor/Belts&Collars_3",
+		"color" : ""
+	},
+
+	{
+		"title": "of Red Magic",
+		"sprite" : "armor/Belts&Collars_4",
+		"color" : ""
 	}
 
 ]

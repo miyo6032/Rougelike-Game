@@ -20,6 +20,7 @@ public class PlayerStats : MonoBehaviour {
     public float hitSpeed; //The speed that a player can it - influenced by strength and weapon weight
 
     Animator damageCounter;
+    PlayerAnimation playerAnimation;
     Text damageText;
 
     void Start()
@@ -29,6 +30,7 @@ public class PlayerStats : MonoBehaviour {
         health = maxHealth;
         UpdateEquipStats();
         StaticCanvasList.instance.statUI.UpdateStatUI(level, experience, health, focus, defence, minAttack, maxAttack);
+        playerAnimation = GetComponent<PlayerAnimation>();
     }
 
     public int GetLevel()
@@ -56,6 +58,7 @@ public class PlayerStats : MonoBehaviour {
         {
             inst.equipped = true;
             UpdateEquipStats();
+            playerAnimation.ColorAnimator(inst.item.EquippedSlot, inst.item.ItemColor);
             return true;
         }
         return false;

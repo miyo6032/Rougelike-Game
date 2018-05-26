@@ -9,22 +9,24 @@ public class ItemDatabase : MonoBehaviour {
     List<ItemModule> blades = new List<ItemModule>();
     List<ItemModule> hilts = new List<ItemModule>();
     List<ItemModule> handles = new List<ItemModule>();
-    List<ItemModule> baseArmor = new List<ItemModule>();
+    List<LeveledItemModule> baseArmor = new List<LeveledItemModule>();
     List<ItemModule> beltsAndCollars = new List<ItemModule>();
-    List<ItemModule> gloves = new List<ItemModule>();
+    List<LeveledItemModule> helmets = new List<LeveledItemModule>();
+    List<ItemModule> helmetAccessories = new List<ItemModule>();
 
     Dictionary<string, Sprite> textures = new Dictionary<string, Sprite>();
 
-    string[] itemCategories = { "armor", "swords" };
+    string[] itemCategories = { "armor", "swords", "helmets" };
 
     public void PopulateItemModuleDatabase()
     {
-        DataIntoList(JsonMapper.ToObject(File.ReadAllText(Application.dataPath + "/StreamingAssets/ItemPieces/Blades.json")), blades);
-        DataIntoList(JsonMapper.ToObject(File.ReadAllText(Application.dataPath + "/StreamingAssets/ItemPieces/Hilts.json")), hilts);
-        DataIntoList(JsonMapper.ToObject(File.ReadAllText(Application.dataPath + "/StreamingAssets/ItemPieces/Handles.json")), handles);
-        DataIntoList(JsonMapper.ToObject(File.ReadAllText(Application.dataPath + "/StreamingAssets/ItemPieces/BaseArmor.json")), baseArmor);
-        DataIntoList(JsonMapper.ToObject(File.ReadAllText(Application.dataPath + "/StreamingAssets/ItemPieces/Belts&Collars.json")), beltsAndCollars);
-        DataIntoList(JsonMapper.ToObject(File.ReadAllText(Application.dataPath + "/StreamingAssets/ItemPieces/Gloves.json")), gloves);
+        DataIntoItemModules(JsonMapper.ToObject(File.ReadAllText(Application.dataPath + "/StreamingAssets/ItemPieces/Blades.json")), blades);
+        DataIntoItemModules(JsonMapper.ToObject(File.ReadAllText(Application.dataPath + "/StreamingAssets/ItemPieces/Hilts.json")), hilts);
+        DataIntoItemModules(JsonMapper.ToObject(File.ReadAllText(Application.dataPath + "/StreamingAssets/ItemPieces/Handles.json")), handles);
+        DataIntoLeveledItemModules(JsonMapper.ToObject(File.ReadAllText(Application.dataPath + "/StreamingAssets/ItemPieces/BaseArmor.json")), baseArmor);
+        DataIntoItemModules(JsonMapper.ToObject(File.ReadAllText(Application.dataPath + "/StreamingAssets/ItemPieces/Belts&Collars.json")), beltsAndCollars);
+        DataIntoLeveledItemModules(JsonMapper.ToObject(File.ReadAllText(Application.dataPath + "/StreamingAssets/ItemPieces/Helmets.json")), helmets);
+        DataIntoItemModules(JsonMapper.ToObject(File.ReadAllText(Application.dataPath + "/StreamingAssets/ItemPieces/HelmetAccessories.json")), helmetAccessories);
         LoadAllTextures();
     }
 
@@ -49,13 +51,27 @@ public class ItemDatabase : MonoBehaviour {
         return sprite;
     }
 
-    void DataIntoList(JsonData itemData, List<ItemModule> parts)
+    void DataIntoItemModules(JsonData itemData, List<ItemModule> parts)
     {
         for (int i = 0; i < itemData.Count; i++)
         {
             parts.Add(new ItemModule(
                 itemData[i]["title"].ToString(),
-                itemData[i]["sprite"].ToString()
+                itemData[i]["sprite"].ToString(),
+                itemData[i]["color"].ToString()
+            ));
+        }
+    }
+
+    void DataIntoLeveledItemModules(JsonData itemData, List<LeveledItemModule> parts)
+    {
+        for (int i = 0; i < itemData.Count; i++)
+        {
+            parts.Add(new LeveledItemModule(
+                itemData[i]["title"].ToString(),
+                itemData[i]["sprite"].ToString(),
+                itemData[i]["color"].ToString(),
+                (int)itemData[i]["level"]
             ));
         }
     }
@@ -67,13 +83,7 @@ public class ItemDatabase : MonoBehaviour {
         {
             return GenerateSword(level, equipmentType);
         }
-        else if(equipmentType == 1)
-        {
-            return GenerateArmor(level, equipmentType);
-        }
-
-        return null;
-
+        return GenerateArmor(level, equipmentType);
     }
 
     Item GenerateSword(int level, int equipmentType)
@@ -102,7 +112,8 @@ public class ItemDatabase : MonoBehaviour {
             equipmentType,
             level,
             -1,
-            sprites
+            sprites,
+            blade.Color
         );
 
         return sword;
@@ -110,20 +121,33 @@ public class ItemDatabase : MonoBehaviour {
 
     Item GenerateArmor(int level, int equipmentType)
     {
-        ItemModule armor = baseArmor[Random.Range(0, baseArmor.Count)];
-        ItemModule accessory = beltsAndCollars[Random.Range(0, beltsAndCollars.Count)];
-        ItemModule glove = gloves[Random.Range(0, gloves.Count)];
+        LeveledItemModule armor;
+        ItemModule accessory;
+        string title;
+        if (equipmentType == 1)
+        {
+            armor = findLeveledItem(level, baseArmor);
+            accessory = beltsAndCollars[Random.Range(0, beltsAndCollars.Count)];
+            title = armor.itemModule.Title + " " + accessory.Title;
+        }
+        else
+        {
+            armor = findLeveledItem(level, helmets);
+            accessory = helmetAccessories[Random.Range(0, helmetAccessories.Count)];
+            title = accessory.Title + " " + armor.itemModule.Title;
+        }
 
-        string title = glove.Title + " " + armor.Title + " " + accessory.Title;
+        level = armor.level + Mathf.Clamp(Random.Range(-1, 2), 1, 30); //Change levels a little bit
+
         int attack = 0;
         int maxAttack = 0;
-        int defence = Mathf.CeilToInt(level * Random.Range(1f, 2f));
+        int defence = Mathf.CeilToInt(level * Random.Range(1f, 2f) * 0.8f);
         int value = attack + maxAttack + defence;
         bool stackable = false;
         string description = "";
-        string[] sprites = { armor.Sprite, accessory.Sprite, glove.Sprite };
+        string[] sprites = { armor.itemModule.Sprite, accessory.Sprite };
 
-        Item sword = new Item(
+        Item item = new Item(
             title,
             value,
             attack,
@@ -134,10 +158,29 @@ public class ItemDatabase : MonoBehaviour {
             equipmentType,
             level,
             -1,
-            sprites
+            sprites,
+            armor.itemModule.Color
         );
 
-        return sword;
+
+
+        return item;
+    }
+
+    LeveledItemModule findLeveledItem(int level, List<LeveledItemModule> modules){
+        List<LeveledItemModule> possibleModules = new List<LeveledItemModule>();
+        foreach(LeveledItemModule module in modules)
+        {
+            if(module.level >= level - 1 && module.level <= level + 1)
+            {
+                possibleModules.Add(module);
+            }
+        }
+        if(possibleModules.Count > 0)
+        {
+            return possibleModules[Random.Range(0, possibleModules.Count)];
+        }
+        return null;
     }
 
 }
@@ -146,13 +189,27 @@ public class ItemModule
 {
     public string Title;
     public string Sprite;
+    public string Color;
 
-    public ItemModule(string title, string sprite)
+    public ItemModule(string title, string sprite, string color)
     {
         Title = title;
         Sprite = sprite;
+        Color = color;
     }
 
+}
+
+public class LeveledItemModule
+{
+    public ItemModule itemModule;
+    public int level;
+
+    public LeveledItemModule(string title, string sprite, string color, int level)
+    {
+        itemModule = new ItemModule(title, sprite, color);
+        this.level = level;
+    }
 }
 
 [System.Serializable]
@@ -167,8 +224,9 @@ public class Item{
 	public string[] Sprites { get; set;}
 	public int EquippedSlot { get; set;}
 	public int ItemLevel { get; set;}
+    public string ItemColor { get; set; }
 
-    public Item(string title, int value, int attack, int maxAttack, int defence, string description, bool stackable, int equippedSlot, int itemLevel, int skill, string[] sprites){
+    public Item(string title, int value, int attack, int maxAttack, int defence, string description, bool stackable, int equippedSlot, int itemLevel, int skill, string[] sprites, string itemColor){
 		this.Title = title;
 		this.Value = value;
 		this.Attack = attack;
@@ -179,6 +237,7 @@ public class Item{
 		this.EquippedSlot = equippedSlot;
 		this.Sprites = sprites;
 		this.ItemLevel = itemLevel;
+        this.ItemColor = itemColor;
 	}
 
 	public Item(){}

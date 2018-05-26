@@ -2,15 +2,16 @@
 
 public class PlayerAnimation : MonoBehaviour {
 
-    Animator animator;
+    public Animator[] animators;
+
+    public SpriteRenderer sword;
+    public SpriteRenderer armor;
+    public SpriteRenderer helmet;
+
     bool facingRight = true; //Used in animation to face left or right depending on movement
     Vector2 attackDirection = Vector2.zero; //Used in animations to tell which way to face for an attack
     Vector2 moveDirection = Vector2.zero; //tell which way to face when moving
     Vector2 idleDirection = Vector2.zero; //which way to face when idle
-
-    void Start () {
-        animator = GetComponent<Animator>();
-	}
 
     //Called when the player was able to move - the update will do the rest
     public void AnimateMovement(Vector2 dir)
@@ -45,9 +46,9 @@ public class PlayerAnimation : MonoBehaviour {
     //Called when the player successfully lands an attack
     public void AnimateAttack()
     {
-        if (attackDirection.x != 0) animator.SetTrigger("attackSide");
-        if (attackDirection.y < 0) animator.SetTrigger("attackFront");
-        if (attackDirection.y > 0) animator.SetTrigger("attackBack");
+        if (attackDirection.x != 0) SetTriggers("attackSide");
+        if (attackDirection.y < 0) SetTriggers("attackFront");
+        if (attackDirection.y > 0) SetTriggers("attackBack");
     }
 
     //Sets the idle direction to be used when the player is idle
@@ -61,10 +62,10 @@ public class PlayerAnimation : MonoBehaviour {
     {
         if (Time.timeScale > 0)
         {
-            animator.SetFloat("horizontalMove", Mathf.Abs(moveDirection.x));
-            animator.SetFloat("verticalMove", moveDirection.y);
-            animator.SetFloat("horizontalIdle", Mathf.Abs(idleDirection.x));
-            animator.SetFloat("verticalIdle", idleDirection.y);
+            SetFloats("horizontalMove", Mathf.Abs(moveDirection.x));
+            SetFloats("verticalMove", moveDirection.y);
+            SetFloats("horizontalIdle", Mathf.Abs(idleDirection.x));
+            SetFloats("verticalIdle", idleDirection.y);
         }
     }
 
@@ -75,6 +76,42 @@ public class PlayerAnimation : MonoBehaviour {
         Vector3 scale = transform.localScale;
         scale.x *= -1;
         transform.localScale = scale;
+    }
+
+    void SetTriggers(string trigger)
+    {
+        foreach(Animator animator in animators)
+        {
+            animator.SetTrigger(trigger);
+        }
+    }
+
+    void SetFloats(string trigger, float dir)
+    {
+        foreach (Animator animator in animators)
+        {
+            animator.SetFloat(trigger, dir);
+        }
+    }
+
+    public void ColorAnimator(int equipmentType, string color)
+    {
+        Color itemColor;
+        if (ColorUtility.TryParseHtmlString(color, out itemColor))
+        {
+            switch (equipmentType)
+            {
+                case 0:
+                    sword.color = itemColor;
+                    break;
+                case 1:
+                    armor.color = itemColor;
+                    break;
+                case 2:
+                    helmet.color = itemColor;
+                    break;
+            }
+        }
     }
 
 }

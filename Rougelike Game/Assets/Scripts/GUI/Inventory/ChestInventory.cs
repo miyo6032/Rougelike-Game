@@ -15,6 +15,8 @@ public class ChestInventory : MonoBehaviour {
         {
             loadedChest = newchest;
 
+            newchest.SetOpenSprite();
+
             foreach (ItemSave itemSave in newchest.chestItems)
             {
                 inventoryManager.AddItemToSlot(itemSave.item, chestSlots[itemSave.slotPosition]);
@@ -33,6 +35,7 @@ public class ChestInventory : MonoBehaviour {
     {
         if (loadedChest != null)
         {
+            loadedChest.SetClosedSprite();
             loadedChest.chestItems = ExtractItemsFromInventory();
             loadedChest = null;
             StaticCanvasList.instance.inventoryTooltip.gameObject.SetActive(false);

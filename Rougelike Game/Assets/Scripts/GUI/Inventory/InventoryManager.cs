@@ -21,13 +21,10 @@ public class InventoryManager : MonoBehaviour {
         database = GetComponent<ItemDatabase>();
         database.PopulateItemModuleDatabase();
 
-        AddItemToSlot(database.GenerateItem(1, 1), FindNextOpenSlot(slots));
-        AddItemToSlot(database.GenerateItem(2, 1), FindNextOpenSlot(slots));
-        AddItemToSlot(database.GenerateItem(3, 1), FindNextOpenSlot(slots));
-
         AddItemToSlot(database.GenerateItem(1, 0), FindNextOpenSlot(slots));
-        AddItemToSlot(database.GenerateItem(2, 0), FindNextOpenSlot(slots));
-        AddItemToSlot(database.GenerateItem(3, 0), FindNextOpenSlot(slots));
+        AddItemToSlot(database.GenerateItem(1, 0), FindNextOpenSlot(slots));
+        AddItemToSlot(database.GenerateItem(1, 1), FindNextOpenSlot(slots));
+        AddItemToSlot(database.GenerateItem(1, 2), FindNextOpenSlot(slots));
 
         gameObject.SetActive(false);
     }

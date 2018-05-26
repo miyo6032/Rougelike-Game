@@ -1,0 +1,213 @@
+[
+	{
+		"title": "Leather Cap",
+		"sprite" : "helmets/Helmets_0",
+		"color" : "#704f22o",
+		"level" : 3
+	},
+
+	{
+		"title": "Lion Hide Cap",
+		"sprite" : "helmets/Helmets_1",
+		"color" : "#cdba75",
+		"level" : 4
+	},
+
+	{
+		"title": "Elven Cap",
+		"sprite" : "helmets/Helmets_2",
+		"color" : "#4c784c",
+		"level" : 11
+	},
+
+	{
+		"title": "Iron Helmet",
+		"sprite" : "helmets/Helmets_3",
+		"color" : "#8b8b8b",
+		"level" : 6
+	},
+
+	{
+		"title": "Copper Helmet",
+		"sprite" : "helmets/Helmets_4",
+		"color" : "#8f572a",
+		"level" : 5
+	},
+
+	{
+		"title": "Gold Helmet",
+		"sprite" : "helmets/Helmets_5",
+		"color" : "#eee886",
+		"level" : 13
+	},
+
+	{
+		"title": "Nether Helmet",
+		"sprite" : "helmets/Helmets_6",
+		"color" : "#8c3224",
+		"level" : 21
+	},
+
+	{
+		"title": "Black Iron Helmet",
+		"sprite" : "helmets/Helmets_7",
+		"color" : "#3a3a3a",
+		"level" : 12
+	},
+
+	{
+		"title": "Oceanic Helmet",
+		"sprite" : "helmets/Helmets_8",
+		"color" : "#2648a9",
+		"level" : 24
+	},
+
+	{
+		"title": "Iron Barbute",
+		"sprite" : "helmets/Helmets_9",
+		"color" : "#8b8b8b",
+		"level" : 9
+	},
+
+	{
+		"title": "Clot Barbute",
+		"sprite" : "helmets/Helmets_10",
+		"color" : "#702f22",
+		"level" : 8
+	},
+
+	{
+		"title": "Steel Barbute",
+		"sprite" : "helmets/Helmets_11",
+		"color" : "#cbcbcb",
+		"level" : 10
+	},
+
+	{
+		"title": "Lithium Helm",
+		"sprite" : "helmets/Helmets_12",
+		"color" : "#8585b8",
+		"level" : 17
+	},
+
+	{
+		"title": "Knight's Helm",
+		"sprite" : "helmets/Helmets_13",
+		"color" : "#969696",
+		"level" : 16
+	},
+
+	{
+		"title": "Executioner Barbute",
+		"sprite" : "helmets/Helmets_14",
+		"color" : "#1b1b1b",
+		"level" : 22
+	},
+
+	{
+		"title": "Grass Sunhat",
+		"sprite" : "helmets/Helmets_15",
+		"color" : "#cdba75",
+		"level" : 1
+	},
+
+	{
+		"title": "Weed Sunhat",
+		"sprite" : "helmets/Helmets_16",
+		"color" : "#727953",
+		"level" : 2
+	},
+
+	{
+		"title": "Amethyst Sunhat",
+		"sprite" : "helmets/Helmets_17",
+		"color" : "#635cc6",
+		"level" : 20
+	},
+
+	{
+		"title": "Emberbronze Kabuto",
+		"sprite" : "helmets/Helmets_18",
+		"color" : "#ed582f",
+		"level" : 27
+	},
+
+	{
+		"title": "Abyss Kabuto",
+		"sprite" : "helmets/Helmets_19",
+		"color" : "#150079",
+		"level" : 29
+	},
+
+	{
+		"title": "Azure Kabuto",
+		"sprite" : "helmets/Helmets_20",
+		"color" : "#5a70ff",
+		"level" : 18
+	},
+
+	{
+		"title": "Ember Kabuto",
+		"sprite" : "helmets/Helmets_21",
+		"color" : "#72372e",
+		"level" : 28
+	},
+
+	{
+		"title": "Basilisk Kabuto",
+		"sprite" : "helmets/Helmets_22",
+		"color" : "#4c9b3d",
+		"level" : 26
+	},
+
+	{
+		"title": "Magic Helmet",
+		"sprite" : "helmets/Helmets_23",
+		"color" : "#5f2282",
+		"level" : 19
+	},
+
+	{
+		"title": "Ironleaf Helmet",
+		"sprite" : "helmets/Helmets_24",
+		"color" : "#485f58",
+		"level" : 7
+	},
+
+	{
+		"title": "Ruby Helmet",
+		"sprite" : "helmets/Helmets_25",
+		"color" : "#de5959",
+		"level" : 15
+	},
+
+	{
+		"title": "Diamond Helm",
+		"sprite" : "helmets/Helmets_26",
+		"color" : "#de5959",
+		"level" : 23
+	},
+
+	{
+		"title": "Golden Helm",
+		"sprite" : "helmets/Helmets_27",
+		"color" : "#eee886",
+		"level" : 14
+	},
+
+	{
+		"title": "Crystal Barbute",
+		"sprite" : "helmets/Helmets_28",
+		"color" : "#bc77e3",
+		"level" : 25
+	},
+
+	{
+		"title": "God's Sunhat",
+		"sprite" : "helmets/Helmets_29",
+		"color" : "#eee886",
+		"level" : 30
+	}
+
+
+]

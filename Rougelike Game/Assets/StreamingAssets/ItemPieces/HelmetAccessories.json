@@ -1,0 +1,63 @@
+[
+	{
+		"title": "Blackened",
+		"sprite" : "helmets/Accessories_0",
+		"color" : ""
+	},
+
+	{
+		"title": "Embroidered",
+		"sprite" : "helmets/Accessories_1",
+		"color" : ""
+	},
+
+	{
+		"title": "Overgrown",
+		"sprite" : "helmets/Accessories_2",
+		"color" : ""
+	},
+
+	{
+		"title": "Emerald Encrusted",
+		"sprite" : "helmets/Accessories_3",
+		"color" : ""
+	},
+
+	{
+		"title": "Cinnebar Encrusted",
+		"sprite" : "helmets/Accessories_4",
+		"color" : ""
+	},
+
+	{
+		"title": "Sapphire Encrusted",
+		"sprite" : "helmets/Accessories_5",
+		"color" : ""
+	},
+
+	{
+		"title": "Onyx Encrusted",
+		"sprite" : "helmets/Accessories_6",
+		"color" : ""
+	},
+
+	{
+		"title": "Corrupted",
+		"sprite" : "helmets/Accessories_7",
+		"color" : ""
+	},
+
+	{
+		"title": "Hellbound",
+		"sprite" : "helmets/Accessories_8",
+		"color" : ""
+	},
+
+	{
+		"title": "Living",
+		"sprite" : "helmets/Accessories_9",
+		"color" : ""
+	}
+
+
+]

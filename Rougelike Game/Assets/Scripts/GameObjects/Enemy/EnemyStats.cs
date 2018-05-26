@@ -13,6 +13,7 @@ public class EnemyStats : MonoBehaviour {
 
     public LootBag lootBagPrefab;
     public LayerMask bagLayerMask;
+    public Vector2Int dropRange = new Vector2Int(0, 3);
 
     Animator damageCounter;
     Text damageText;
@@ -29,7 +30,7 @@ public class EnemyStats : MonoBehaviour {
     List<Item> GenerateItemDrops()
     {
         List<Item> items = new List<Item>();
-        int numItems = Random.Range(1, 4);
+        int numItems = Random.Range(dropRange.x, dropRange.y);
         for(int i = 0; i < numItems; i++)
         {
             items.Add(StaticCanvasList.instance.itemDatabase.GenerateItem(level, 0));
