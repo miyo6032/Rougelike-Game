@@ -10,7 +10,12 @@ public class Chest : MonoBehaviour {
 
     public Sprite chestOpen;
     public Sprite chestClosed;
-    
+
+    void Start()
+    {
+        GenerateItems();
+    }
+
     public void SetOpenSprite()
     {
         GetComponent<SpriteRenderer>().sprite = chestOpen;
@@ -21,13 +26,13 @@ public class Chest : MonoBehaviour {
         GetComponent<SpriteRenderer>().sprite = chestClosed;
     }
 
-    void Start()
+    void GenerateItems()
     {
         List<ItemSave> items = new List<ItemSave>();
-        for(int i = 0; i < fullness; i++)
+        for (int i = 0; i < fullness; i++)
         {
             int itemType = Random.Range(0, 3);
-            ItemSave item = new ItemSave(StaticCanvasList.instance.itemDatabase.GenerateItem(lootLevel, itemType), i);
+            ItemSave item = new ItemSave(StaticCanvasList.instance.itemGenerator.GenerateItem(lootLevel, itemType), i);
             items.Add(item);
         }
         chestItems = items;

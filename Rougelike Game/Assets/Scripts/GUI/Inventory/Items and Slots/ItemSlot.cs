@@ -5,8 +5,7 @@ using UnityEngine;
 //Responsbile for handling when the item is dropped on the item slot
 public class ItemSlot : MonoBehaviour, IPointerClickHandler
 {
-    [HideInInspector]
-    public ItemInstance item;
+    protected ItemInstance item;
 
     //When the player drops an item from clicking
     public virtual void OnPointerClick(PointerEventData eventData)
@@ -50,6 +49,16 @@ public class ItemSlot : MonoBehaviour, IPointerClickHandler
         item.transform.SetParent(slot.transform);
         slot.item = item;
         item.ItemToParentSlot();
+    }
+
+    public ItemInstance GetItem()
+    {
+        return item;
+    }
+
+    public virtual void SetItem(ItemInstance item)
+    {
+        this.item = item;
     }
 
 }

@@ -94,6 +94,7 @@ public class PlayerAnimation : MonoBehaviour {
         }
     }
 
+    //Color the player's armor and swords
     public void ColorAnimator(int equipmentType, string color)
     {
         Color itemColor;

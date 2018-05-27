@@ -1,5 +1,4 @@
-﻿using UnityEngine.UI;
-using UnityEngine;
+﻿using UnityEngine;
 using System.Collections.Generic;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.IO;
@@ -15,25 +14,46 @@ public class InventoryManager : MonoBehaviour {
     //The item attached to the mouse pointer, if any
     public ItemInstance attachedItem = null;
 
-    ItemDatabase database;
-
     void Start () {
-        database = GetComponent<ItemDatabase>();
-        database.PopulateItemModuleDatabase();
+        StaticCanvasList.instance.itemModuleDatabase.PopulateItemModuleDatabase();
 
-        AddItemToSlot(database.GenerateItem(1, 0), FindNextOpenSlot(slots));
-        AddItemToSlot(database.GenerateItem(1, 0), FindNextOpenSlot(slots));
-        AddItemToSlot(database.GenerateItem(1, 1), FindNextOpenSlot(slots));
-        AddItemToSlot(database.GenerateItem(1, 2), FindNextOpenSlot(slots));
+        TextureDatabase textures = StaticCanvasList.instance.textureDatabase;
+        ItemDatabase itemDatabase = StaticCanvasList.instance.itemDatabase;
+        ItemGenerator itemGenerator = StaticCanvasList.instance.itemGenerator;
+
+        itemDatabase.ConstructItemDatabase();
+        textures.LoadAllTextures();
+
+        AddItem(itemGenerator.GenerateItem(1, 0));
+        AddItem(itemGenerator.GenerateItem(1, 0));
+        AddItem(itemGenerator.GenerateItem(1, 1));
+        AddItem(itemGenerator.GenerateItem(1, 2));
+
+        
+        AddItem(itemDatabase.GetItemByName("Minor Health Potion"));
+        AddItem(itemDatabase.GetItemByName("Minor Health Potion"));
 
         gameObject.SetActive(false);
+    }
+
+    public void AddItem(Item item)
+    {
+        ItemSlot slot = FindSlotWithItem(item.Title, slots);
+        if (slot)
+        {
+            slot.GetItem().ChangeAmount(1);
+        }
+        else
+        {
+            AddItemToSlot(item, FindNextOpenSlot(slots));
+        }
     }
 
     public void AddItemToSlot(Item item, ItemSlot slot)
     {
         ItemInstance itemObj = Instantiate(itemPrefab);
         itemObj.Initialize(item, slot);
-        slot.item = itemObj;
+        slot.SetItem(itemObj);
     }
 
     // Find the next slot to place a new item in
@@ -41,11 +61,24 @@ public class InventoryManager : MonoBehaviour {
     {
         for (int i = 0; i < slotList.Count; i++)
         {//If there is no item in the slot, Adds new item to that slot
-            if (slotList[i].item == null)
+            if (slotList[i].GetItem() == null)
             {
                 return slotList[i].GetComponent<ItemSlot>();
             }
         }
+        return null;
+    }
+
+    public ItemSlot FindSlotWithItem(string itemId, List<ItemSlot> slotList)
+    {
+        for (int i = 0; i < slotList.Count; i++)
+        {//If there is no item in the slot, Adds new item to that slot
+            if (slotList[i].GetItem() != null && slotList[i].GetItem().item.Title == itemId)
+            {
+                return slotList[i].GetComponent<ItemSlot>();
+            }
+        }
+        //No existing items
         return null;
     }
 
@@ -55,7 +88,7 @@ public class InventoryManager : MonoBehaviour {
     {
         for (int i = 0; i < slots.Count; i++)
         {
-            if (slots[i].item != null && slots[i].item.item == item)
+            if (slots[i].GetItem() != null && slots[i].GetItem().item == item)
             {
                 return true;
             }

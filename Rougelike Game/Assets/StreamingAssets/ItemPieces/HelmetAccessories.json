@@ -1,61 +1,61 @@
 [
 	{
-		"title": "Blackened",
-		"sprite" : "helmets/Accessories_0",
+		"title": "of Darkness",
+		"sprite" : "Accessories_0",
 		"color" : ""
 	},
 
 	{
-		"title": "Embroidered",
-		"sprite" : "helmets/Accessories_1",
+		"title": "of the Sun",
+		"sprite" : "Accessories_1",
 		"color" : ""
 	},
 
 	{
-		"title": "Overgrown",
-		"sprite" : "helmets/Accessories_2",
+		"title": "of the Jungle",
+		"sprite" : "Accessories_2",
 		"color" : ""
 	},
 
 	{
-		"title": "Emerald Encrusted",
-		"sprite" : "helmets/Accessories_3",
+		"title": "of Emerald",
+		"sprite" : "Accessories_3",
 		"color" : ""
 	},
 
 	{
-		"title": "Cinnebar Encrusted",
-		"sprite" : "helmets/Accessories_4",
+		"title": "of Fire",
+		"sprite" : "Accessories_4",
 		"color" : ""
 	},
 
 	{
-		"title": "Sapphire Encrusted",
-		"sprite" : "helmets/Accessories_5",
+		"title": "of Sapphire",
+		"sprite" : "Accessories_5",
 		"color" : ""
 	},
 
 	{
-		"title": "Onyx Encrusted",
-		"sprite" : "helmets/Accessories_6",
+		"title": "of Onyx",
+		"sprite" : "Accessories_6",
 		"color" : ""
 	},
 
 	{
-		"title": "Corrupted",
-		"sprite" : "helmets/Accessories_7",
+		"title": "of Ice",
+		"sprite" : "Accessories_7",
 		"color" : ""
 	},
 
 	{
-		"title": "Hellbound",
-		"sprite" : "helmets/Accessories_8",
+		"title": "of Blood",
+		"sprite" : "Accessories_8",
 		"color" : ""
 	},
 
 	{
-		"title": "Living",
-		"sprite" : "helmets/Accessories_9",
+		"title": "of Nature",
+		"sprite" : "Accessories_9",
 		"color" : ""
 	}
 

@@ -13,7 +13,6 @@ public class LootBag : MonoBehaviour
         {
             if (items.Count < 9)
             {
-                Debug.Log(items.Count);
                 items.Add(new ItemSave(item, items.Count));
             }
         }
@@ -36,6 +35,10 @@ public class LootBag : MonoBehaviour
         {
             StaticCanvasList.instance.lootInventory.UnloadInventory();
             StaticCanvasList.instance.gameUI.ToggleLootPanel();
+            if(items.Count == 0)
+            {
+                Destroy(gameObject);
+            }
         }
     }
 

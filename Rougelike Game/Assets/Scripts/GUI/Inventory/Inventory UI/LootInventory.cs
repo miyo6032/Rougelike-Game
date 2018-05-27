@@ -38,9 +38,9 @@ public class LootInventory : MonoBehaviour {
         List<Item> items = new List<Item>();
         foreach(ItemSlot slot in lootSlots)
         {
-            if(slot.item != null)
+            if(slot.GetItem() != null)
             {
-                items.Add(slot.item.item);
+                items.Add(slot.GetItem().item);
             }
         }
         return items;
@@ -52,11 +52,11 @@ public class LootInventory : MonoBehaviour {
         List<ItemSave> items = new List<ItemSave>();
         for(int i = 0; i < lootSlots.Count; i++)
         {
-            if(lootSlots[i].item != null)
+            if(lootSlots[i].GetItem() != null)
             {
-                items.Add(new ItemSave(lootSlots[i].item.item, i));
-                Destroy(lootSlots[i].item.gameObject);
-                lootSlots[i].item = null;
+                items.Add(new ItemSave(lootSlots[i].GetItem().item, i));
+                Destroy(lootSlots[i].GetItem().gameObject);
+                lootSlots[i].SetItem(null);
             }
         }
         return items;

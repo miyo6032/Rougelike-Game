@@ -81,16 +81,16 @@ public class PlayerStats : MonoBehaviour {
         //Sum all of the equipment stats
         foreach(EquipSlot slot in StaticCanvasList.instance.inventoryManager.equipSlots)
         {
-            if (slot.item != null)
+            if (slot.GetItem() != null)
             {
-                Item equippedItem = slot.item.item;
+                Item equippedItem = slot.GetItem().item;
                 defence += equippedItem.Defence;
                 minAttack += equippedItem.Attack;
                 maxAttack += equippedItem.MaxAttack;
             }
         }
 
-        StaticCanvasList.instance.statUI.UpdateStatUI(level, experience, health, focus, defence, minAttack, maxAttack);
+        StaticCanvasList.instance.statUI.UpdateStatUI(level, experience, maxHealth, maxFocus, defence, minAttack, maxAttack);
 
     }
 

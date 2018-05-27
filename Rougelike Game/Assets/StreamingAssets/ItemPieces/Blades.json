@@ -1,61 +1,61 @@
 [
 	{
 		"title": "Icicle",
-		"sprite" : "swords/Swords_0",
+		"sprite" : "Swords_0",
 		"color" : "#C3FFFFFF"
 	},
 
 	{
 		"title": "Dragonbone Sword",
-		"sprite" : "swords/Swords_1",
+		"sprite" : "Swords_1",
 		"color" : "FFFFFFFF"
 	},
 
 	{
 		"title": "Obsidian Blade",
-		"sprite" : "swords/Swords_2",
+		"sprite" : "Swords_2",
 		"color" : "000000FF"
 	},
 
 	{
 		"title": "Claymore",
-		"sprite" : "swords/Swords_3",
+		"sprite" : "Swords_3",
 		"color" : "#E79A3AFF"
 	},
 
 	{
 		"title": "Destroyer",
-		"sprite" : "swords/Swords_4",
+		"sprite" : "Swords_4",
 		"color" : "#626262FF"
 	},
 
 	{
 		"title": "Weed Whacker",
-		"sprite" : "swords/Swords_5",
+		"sprite" : "Swords_5",
 		"color" : "#99DA32FF"
 	},
 
 	{
 		"title": "Mist Saber",
-		"sprite" : "swords/Swords_6",
+		"sprite" : "Swords_6",
 		"color" : "#948CD8FF"
 	},
 
 	{
 		"title": "Magma Blade",
-		"sprite" : "swords/Swords_7",
+		"sprite" : "Swords_7",
 		"color" : "#FF5A00FF"
 	},
 
 	{
 		"title": "Lightsaber",
-		"sprite" : "swords/Swords_8",
+		"sprite" : "Swords_8",
 		"color" : "#C700FFFF"
 	},
 
 	{
 		"title": "Khopesh",
-		"sprite" : "swords/Swords_9",
+		"sprite" : "Swords_9",
 		"color" : "#FFED00FF"
 	}
 

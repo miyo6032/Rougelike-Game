@@ -49,11 +49,11 @@ public class ChestInventory : MonoBehaviour {
         List<ItemSave> items = new List<ItemSave>();
         for (int i = 0; i < chestSlots.Count; i++)
         {
-            if (chestSlots[i].item != null)
+            if (chestSlots[i].GetItem() != null)
             {
-                items.Add(new ItemSave(chestSlots[i].item.item, i));
-                Destroy(chestSlots[i].item.gameObject);
-                chestSlots[i].item = null;
+                items.Add(new ItemSave(chestSlots[i].GetItem().item, i));
+                Destroy(chestSlots[i].GetItem().gameObject);
+                chestSlots[i].SetItem(null);
             }
         }
         return items;

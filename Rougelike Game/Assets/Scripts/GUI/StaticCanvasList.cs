@@ -13,7 +13,10 @@ public class StaticCanvasList : MonoBehaviour {
     public UIColoring uiColoring;
     public LootInventory lootInventory;
     public ChestInventory chestInventory;
+    public ItemGenerator itemGenerator;
+    public ItemModuleDatabase itemModuleDatabase;
     public ItemDatabase itemDatabase;
+    public TextureDatabase textureDatabase;
 
 	void Start () {
 		if(instance == null)

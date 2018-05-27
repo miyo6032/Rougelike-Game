@@ -33,7 +33,7 @@ public class EnemyStats : MonoBehaviour {
         int numItems = Random.Range(dropRange.x, dropRange.y);
         for(int i = 0; i < numItems; i++)
         {
-            items.Add(StaticCanvasList.instance.itemDatabase.GenerateItem(level, 0));
+            items.Add(StaticCanvasList.instance.itemGenerator.GenerateItem(level, Random.Range(0, 3)));
         }
         return items;
     }
@@ -86,7 +86,6 @@ public class EnemyStats : MonoBehaviour {
             LootBag bag = col.GetComponent<LootBag>();
             if (bag)
             {
-                Debug.Log("FOUND");
                 return bag;
             }
         }

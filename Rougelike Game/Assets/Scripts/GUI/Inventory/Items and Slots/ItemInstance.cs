@@ -12,11 +12,15 @@ IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler
     [HideInInspector]
     public ItemSlot slot; //Points to the item's slot
     [HideInInspector]
-    public int amount; //The stack (amount of items)
-    [HideInInspector]
     public bool equipped; //Whether or not this item is equipped
 
+    public Text stackText;
+
+    private int amount; //The stack (amount of items)
+
     private PlayerStats playerStat;
+
+    private InventoryManager inventory;
 
     //Whether the item is currently attached to the mouse pointer
     [HideInInspector]
@@ -27,6 +31,7 @@ IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler
     void Start()
     {
         playerStat = GameObject.Find("Player").GetComponent<PlayerStats>();
+        inventory = StaticCanvasList.instance.inventoryManager;
     }
 
     //Initialize a new item - used when the inventory adds a new item
@@ -43,21 +48,24 @@ IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler
         //Load sprites
         for(int i = 0; i < item.Sprites.Length; i++)
         {
-            itemSprites[i].sprite = StaticCanvasList.instance.itemDatabase.LoadTexture(item.Sprites[i]);
+            itemSprites[i].sprite = StaticCanvasList.instance.textureDatabase.LoadTexture(item.Sprites[i]);
         }
     }
 
     //Pick up a new item, or exchange it with the current one
     public void OnPointerDown(PointerEventData eventData)
     {
-        ItemInstance droppedItem = StaticCanvasList.instance.inventoryManager.attachedItem;
-        if (droppedItem)
+        if (eventData.button == PointerEventData.InputButton.Left)
         {
-            slot.ItemDropIntoFull(droppedItem);
-        }
-        else
-        {
-            PickItemUp();
+            ItemInstance droppedItem = inventory.attachedItem;
+            if (droppedItem)
+            {
+                slot.ItemDropIntoFull(droppedItem);
+            }
+            else
+            {
+                PickItemUp();
+            }
         }
     }
 
@@ -75,10 +83,10 @@ IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler
     void SetItemAttached()
     {
         attached = true;
-        StaticCanvasList.instance.inventoryManager.attachedItem = this;
-        transform.SetParent(StaticCanvasList.instance.inventoryManager.transform);
+        inventory.attachedItem = this;
+        transform.SetParent(inventory.transform);
         GetComponent<CanvasGroup>().blocksRaycasts = false;
-        slot.item = null;
+        slot.SetItem(null);
     }
 
     //Set the item back from begin dragged to its rightful parent
@@ -87,7 +95,7 @@ IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler
         transform.SetParent(slot.transform);
         transform.position = slot.transform.position;
         GetComponent<CanvasGroup>().blocksRaycasts = true;
-        slot.item = this;
+        slot.SetItem(this);
     }
 
     //Let the item be "attached" to the mouse - follow its position
@@ -107,5 +115,22 @@ IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler
     public void OnPointerExit(PointerEventData eventData)
     {
         StaticCanvasList.instance.inventoryTooltip.gameObject.SetActive(false);
+    }
+
+    public void ChangeAmount(int i)
+    {
+        amount += i;
+        if (amount > 1)
+        {
+            stackText.text = amount.ToString();
+        }
+        else if(amount == 1)
+        {
+            stackText.text = "";
+        }
+        else
+        {
+            //Destroy Item
+        }
     }
 }

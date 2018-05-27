@@ -1,61 +1,61 @@
 [
 	{
 		"title": "of Lava",
-		"sprite" : "swords/Handles_0",
+		"sprite" : "Handles_0",
 		"color" : ""
 	},
 
 	{
 		"title": "of the Rose",
-		"sprite" : "swords/Handles_1",
+		"sprite" : "Handles_1",
 		"color" : ""
 	},
 
 	{
 		"title": "of the Golem",
-		"sprite" : "swords/Handles_2",
+		"sprite" : "Handles_2",
 		"color" : ""
 	},
 
 	{
 		"title": "of the Ocean",
-		"sprite" : "swords/Handles_3",
+		"sprite" : "Handles_3",
 		"color" : ""
 	},
 
 	{
 		"title": "of the Light",
-		"sprite" : "swords/Handles_4",
+		"sprite" : "Handles_4",
 		"color" : ""
 	},
 
 	{
 		"title": "of the Depths",
-		"sprite" : "swords/Handles_5",
+		"sprite" : "Handles_5",
 		"color" : ""
 	},
 
 	{
 		"title": "of Sorcery",
-		"sprite" : "swords/Handles_6",
+		"sprite" : "Handles_6",
 		"color" : ""
 	},
 
 	{
 		"title": "of the Night",
-		"sprite" : "swords/Handles_7",
+		"sprite" : "Handles_7",
 		"color" : ""
 	},
 
 	{
 		"title": "of Hell",
-		"sprite" : "swords/Handles_8",
+		"sprite" : "Handles_8",
 		"color" : ""
 	},
 
 	{
 		"title": "of the Ent",
-		"sprite" : "swords/Handles_9",
+		"sprite" : "Handles_9",
 		"color" : ""
 	}
 
