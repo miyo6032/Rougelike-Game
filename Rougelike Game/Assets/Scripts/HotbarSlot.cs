@@ -37,7 +37,11 @@ public class HotbarSlot : MonoBehaviour, IPointerClickHandler{
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        //Use the item
+        UseItem();
+    }
+
+    public void UseItem()
+    {
         if (itemInstance != null)
         {
             itemUse.ApplyItemEffect(itemInstance);

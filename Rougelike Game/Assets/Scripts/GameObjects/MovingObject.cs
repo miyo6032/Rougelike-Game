@@ -8,7 +8,6 @@ public abstract class MovingObject : MonoBehaviour {
 	public float moveTime = 0.1F;
     //Keeps the player from moving extra
 	public LayerMask blockingLayer;
-    public static float moveScale = 8;
 
     [HideInInspector]
     public bool moving = false;
@@ -27,7 +26,7 @@ public abstract class MovingObject : MonoBehaviour {
     //If nothing is in the way, move
 	protected bool Move(int xDir, int yDir, out RaycastHit2D hit){
 		Vector2 start = transform.position;
-		Vector2 end = start + new Vector2 (xDir, yDir) * moveScale;
+		Vector2 end = start + new Vector2 (xDir, yDir);
 
         //Do the detection to see if there is anyting in the way
         Physics2D.queriesHitTriggers = false;
