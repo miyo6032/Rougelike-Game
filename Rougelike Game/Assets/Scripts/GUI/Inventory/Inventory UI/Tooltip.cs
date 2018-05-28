@@ -6,7 +6,6 @@ public class Tooltip : MonoBehaviour {
 
     public Text title;
     public Text description;
-    public CanvasGroup canvas;
 
     public void ShowTooltip(Item item)
     {

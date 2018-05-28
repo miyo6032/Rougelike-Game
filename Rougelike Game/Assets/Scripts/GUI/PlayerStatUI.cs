@@ -23,6 +23,14 @@ public class PlayerStatUI : MonoBehaviour {
     public void Toggle()
     {
         gameObject.SetActive(!gameObject.activeSelf);
+        if (gameObject.activeSelf)
+        {
+            StaticCanvasList.instance.panelManagement.SetRightPanel(gameObject);
+        }
+        else
+        {
+            StaticCanvasList.instance.panelManagement.SetRightPanel(null);
+        }
     }
 
 }

@@ -78,13 +78,22 @@ IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler
         }
     }
 
+    public void DestroyItem()
+    {
+        if(slot != null)
+        {
+            slot.SetItem(null);
+        }
+        Destroy(gameObject);
+    }
+
     //Set the item to be dragged automatically by the mouse
     //Called by slot when items are exchanged in dragging
     void SetItemAttached()
     {
         attached = true;
         inventory.attachedItem = this;
-        transform.SetParent(inventory.transform);
+        transform.SetParent(inventory.transform.parent);
         GetComponent<CanvasGroup>().blocksRaycasts = false;
         slot.SetItem(null);
     }
@@ -131,6 +140,22 @@ IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler
         else
         {
             //Destroy Item
+        }
+    }
+
+    public int GetAmount()
+    {
+        return amount;
+    }
+
+    public void UseItem()
+    {
+
+        ChangeAmount(-1);
+
+        if (amount == 0)
+        {
+            DestroyItem();
         }
     }
 }

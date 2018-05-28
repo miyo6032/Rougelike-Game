@@ -8,6 +8,7 @@ public class TextureDatabase : MonoBehaviour {
 
     string[] itemCategories = { "Armor", "Swords", "Helmets" };
 
+    //Called by inventoryManager
     public void LoadAllTextures()
     {
         Sprite[] sprites = Resources.LoadAll<Sprite>("ItemIcons/Items");
@@ -26,6 +27,7 @@ public class TextureDatabase : MonoBehaviour {
         textures.Add("Invisible", Resources.Load<Sprite>("ItemIcons/Invisible"));
     }
 
+    //Loads textures for item pieces for equipment
     Dictionary<string, Sprite> LoadModuleTextures()
     {
         Dictionary<string, Sprite> textures = new Dictionary<string, Sprite>();

@@ -1,4 +1,5 @@
-﻿public class InventoryHotbarSlot : ItemSlot {
+﻿//Detects when an item is placed in this slot, and updates the hotbar
+public class InventoryHotbarSlot : ItemSlot {
 
     public HotbarSlot hotbarSlot;
 

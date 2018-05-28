@@ -34,15 +34,10 @@ public class ItemDatabase : MonoBehaviour
             items.Add(itemData[i]["title"].ToString(), new Item(
             itemData[i]["title"].ToString(),
             (int)itemData[i]["value"],
-            (int)itemData[i]["stats"]["attack"],
-            (int)itemData[i]["stats"]["maxattack"],
-            (int)itemData[i]["stats"]["defence"],
              itemData[i]["description"].ToString(),
             (bool)itemData[i]["stackable"],
-            (int)itemData[i]["equippedSlot"],
             (int)itemData[i]["itemLevel"],
-            sprites,
-            itemData[i]["itemColor"].ToString()
+            sprites
         ));
         }
     }

@@ -17,6 +17,7 @@ public class StaticCanvasList : MonoBehaviour {
     public ItemModuleDatabase itemModuleDatabase;
     public ItemDatabase itemDatabase;
     public TextureDatabase textureDatabase;
+    public PanelManagement panelManagement;
 
 	void Start () {
 		if(instance == null)

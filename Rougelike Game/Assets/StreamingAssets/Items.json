@@ -4,14 +4,7 @@
 		"sprite" : "Consumables_7",
 		"value":10,
 		"itemLevel":1,
-		"stats":{
-			"attack":0,
-			"maxattack":0,
-			"defence":0
-		},
-		"equippedSlot":-1,
 		"description": "Heals 20 percent of health",
-		"stackable": true,
-		"itemColor": ""
+		"stackable": true
 	}
 ]

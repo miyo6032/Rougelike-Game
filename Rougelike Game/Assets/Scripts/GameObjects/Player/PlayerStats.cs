@@ -48,6 +48,12 @@ public class PlayerStats : MonoBehaviour {
         StaticCanvasList.instance.gameUI.UpdateHealth(health / (float)maxHealth * 100);
     }
 
+    public void Heal(int amount)
+    {
+        health = Mathf.Clamp(health + amount, 0, maxHealth);
+        StaticCanvasList.instance.gameUI.UpdateHealth(health / (float)maxHealth * 100);
+    }
+
     //Called by slots when equipping an item. 
     //If the item is being replaced, then there is no need to call
     //unequip item because the equip item simply replaces it.

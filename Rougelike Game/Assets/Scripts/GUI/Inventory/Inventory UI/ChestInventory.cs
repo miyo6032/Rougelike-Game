@@ -24,6 +24,7 @@ public class ChestInventory : MonoBehaviour {
         }
 
         gameObject.SetActive(true);
+        StaticCanvasList.instance.panelManagement.SetRightPanel(gameObject);
 
         if (!inventoryManager.gameObject.activeSelf)
         {
@@ -40,6 +41,7 @@ public class ChestInventory : MonoBehaviour {
             loadedChest = null;
             StaticCanvasList.instance.inventoryTooltip.gameObject.SetActive(false);
             gameObject.SetActive(false);
+            StaticCanvasList.instance.panelManagement.SetRightPanel(null);
         }
     }
 

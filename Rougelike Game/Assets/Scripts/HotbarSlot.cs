@@ -2,11 +2,16 @@
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
+//Used for the hotbar slot in the hotbar - the hotbar detector in the inventory is in InventoryHotbarSlot
 public class HotbarSlot : MonoBehaviour, IPointerClickHandler{
 
     private ItemInstance itemInstance;
 
     public Image[] itemSprites;
+
+    public Text stackAmount;
+
+    public ItemUse itemUse;
 
     public void UpdateItem(ItemInstance item)
     {
@@ -18,8 +23,12 @@ public class HotbarSlot : MonoBehaviour, IPointerClickHandler{
             {
                 itemSprites[i].sprite = StaticCanvasList.instance.textureDatabase.LoadTexture(itemInstance.item.Sprites[i]);
             }
+
+            //Only show number amount if item amount is not 1
+            stackAmount.text = (item.GetAmount() == 1) ? "" : item.GetAmount().ToString();
         }
 
+        //Set the rest of the item images to invisible
         for(; i < 3; i++)
         {
             itemSprites[i].sprite = StaticCanvasList.instance.textureDatabase.LoadTexture("Invisible");
@@ -31,7 +40,8 @@ public class HotbarSlot : MonoBehaviour, IPointerClickHandler{
         //Use the item
         if (itemInstance != null)
         {
-            itemInstance.ChangeAmount(-1);
+            itemUse.ApplyItemEffect(itemInstance);
+            UpdateItem(itemInstance);
         }
     }
 }

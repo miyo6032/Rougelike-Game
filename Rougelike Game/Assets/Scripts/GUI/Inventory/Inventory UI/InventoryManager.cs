@@ -30,8 +30,7 @@ public class InventoryManager : MonoBehaviour {
         AddItem(itemGenerator.GenerateItem(1, 2));
 
         
-        AddItem(itemDatabase.GetItemByName("Minor Health Potion"));
-        AddItem(itemDatabase.GetItemByName("Minor Health Potion"));
+        AddItem(itemDatabase.GetItemByName("Minor Health Potion"), 3);
 
         gameObject.SetActive(false);
     }
@@ -46,6 +45,14 @@ public class InventoryManager : MonoBehaviour {
         else
         {
             AddItemToSlot(item, FindNextOpenSlot(slots));
+        }
+    }
+
+    public void AddItem(Item item, int amount)
+    {
+        for(int i = 0; i < amount; i++)
+        {
+            AddItem(item);
         }
     }
 

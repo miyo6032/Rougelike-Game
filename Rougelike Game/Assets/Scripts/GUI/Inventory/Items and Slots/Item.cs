@@ -28,5 +28,20 @@ public class Item
         this.ItemColor = itemColor;
     }
 
+    public Item(string title, int value, string description, bool stackable, int itemLevel, string[] sprites)
+    {
+        this.Title = title;
+        this.Value = value;
+        this.Attack = 0;
+        this.MaxAttack = 0;
+        this.Defence = 0;
+        this.Description = description;
+        this.Stackable = stackable;
+        this.EquippedSlot = -1;
+        this.Sprites = sprites;
+        this.ItemLevel = itemLevel;
+        this.ItemColor = "";
+    }
+
     public Item() { }
 }
