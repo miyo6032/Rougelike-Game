@@ -12,6 +12,7 @@ public class EnemyMovement : MovingObject
     //the loot bag detects everytime the collider is turned off and on
     public LayerMask pathfindingLayer; //We want enemy pathfinding to disreguard enemies in the way of doorways and stuff like that,
     //So we only use the environment layer to do the pathfinding
+    public Animator attackAnimator;
 
     protected Animator animator;
     protected EnemyStats stats;
@@ -22,6 +23,7 @@ public class EnemyMovement : MovingObject
 
     protected override void Start()
     {
+        attackAnimator.speed = attackAnimator.speed / turnDelay;
         animator = GetComponent<Animator>();
         target = GameObject.Find("Player").GetComponent<PlayerMovement>().transform;
         playerCol = target.gameObject.GetComponent<BoxCollider2D>();
@@ -63,6 +65,7 @@ public class EnemyMovement : MovingObject
             }
             enemyCol.enabled = true;
             //Wait for however many second for the turn delay
+            attackAnimator.SetTrigger("Animate Indicator");
             yield return new WaitForSeconds(turnDelay);
         }
     }
