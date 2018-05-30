@@ -4,7 +4,8 @@ public class PlayerAnimation : MonoBehaviour {
 
     public Animator[] animators;
 
-    public SpriteRenderer sword;
+    public SpriteRenderer leftSword;
+    public SpriteRenderer rightSword;
     public SpriteRenderer armor;
     public SpriteRenderer helmet;
 
@@ -95,20 +96,23 @@ public class PlayerAnimation : MonoBehaviour {
     }
 
     //Color the player's armor and swords
-    public void ColorAnimator(int equipmentType, string color)
+    public void ColorAnimator(string equipmentType, string color)
     {
         Color itemColor;
         if (ColorUtility.TryParseHtmlString(color, out itemColor))
         {
             switch (equipmentType)
             {
-                case 0:
-                    sword.color = itemColor;
+                case "LeftSwordSlot":
+                    leftSword.color = itemColor;
                     break;
-                case 1:
+                case "RightSwordSlot":
+                    rightSword.color = itemColor;
+                    break;
+                case "ChestSlot":
                     armor.color = itemColor;
                     break;
-                case 2:
+                case "HelmetSlot":
                     helmet.color = itemColor;
                     break;
             }

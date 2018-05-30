@@ -24,9 +24,9 @@ public abstract class MovingObject : MonoBehaviour {
 	}
 
     //If nothing is in the way, move
-	protected bool Move(int xDir, int yDir, out RaycastHit2D hit){
+	protected bool Move(Vector2Int dir, out RaycastHit2D hit){
 		Vector2 start = transform.position;
-		Vector2 end = start + new Vector2 (xDir, yDir);
+        Vector2 end = start + dir;
 
         //Do the detection to see if there is anyting in the way
         Physics2D.queriesHitTriggers = false;
@@ -35,7 +35,7 @@ public abstract class MovingObject : MonoBehaviour {
 
         //If the way is clear, go ahead and move
 		if (hit.transform == null) {
-            moveManager.ClaimSpot(Vector2Int.RoundToInt(end));
+            moveManager.ClaimSpot(Vector2Int.FloorToInt(end));
             StartCoroutine(SmoothMovement (end));
             return true;
 		}
@@ -64,17 +64,17 @@ public abstract class MovingObject : MonoBehaviour {
             yield return new WaitForFixedUpdate();
 
         }
-        moveManager.RemoveClaim(Vector2Int.RoundToInt(end));
+        moveManager.RemoveClaim(Vector2Int.FloorToInt(end));
         moving = false;
     }
 
     //Try to move, if not call OnCantMove()
-    protected virtual void AttemptMove<T>(int xDir, int yDir)
+    protected virtual void AttemptMove<T>(Vector2Int dir)
 		where T : Component
 	{
         //Hit to see if something is in the way
 		RaycastHit2D hit;
-		bool canMove = Move (xDir, yDir, out hit);
+		bool canMove = Move (dir, out hit);
 
 		if (hit.transform == null) {
 			return;

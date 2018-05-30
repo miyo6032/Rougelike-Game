@@ -85,7 +85,7 @@ public class ItemGenerator : MonoBehaviour {
 
         int attack = 0;
         int maxAttack = 0;
-        int defence = Mathf.CeilToInt(level * Random.Range(0.5f, 1.5f));
+        int defence = Mathf.CeilToInt(level * Random.Range(0.5f, 1f));
         int value = attack + maxAttack + defence;
         bool stackable = false;
         string description = "";

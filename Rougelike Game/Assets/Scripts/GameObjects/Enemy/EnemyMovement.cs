@@ -55,9 +55,9 @@ public class EnemyMovement : MovingObject
             if (nextMove.x != Vector2.positiveInfinity.x)
             {
                 //As long at the spot is not claimed already something else, we can try to move into the position
-                if (!moveManager.SpotClaimed(Vector2Int.RoundToInt((Vector2)transform.position + nextMove)))
+                if (!moveManager.SpotClaimed(Vector2Int.FloorToInt(transform.position) + Vector2Int.FloorToInt(nextMove)))
                 {
-                    AttemptMove<PlayerStats>((int)nextMove.x, (int)nextMove.y);
+                    AttemptMove<PlayerStats>(Vector2Int.FloorToInt(nextMove));
                     altMove = !altMove;
                 }
             }

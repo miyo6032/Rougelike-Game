@@ -28,10 +28,11 @@ public class SkillDatabase : MonoBehaviour
         JsonData SkillData = JsonMapper.ToObject(File.ReadAllText(Application.dataPath + "/StreamingAssets/Skills.json"));
         for (int i = 0; i < SkillData.Count; i++)
         {
-            Skills.Add((int)SkillData[i]["id"], new Skill(
+            Skills.Add(
+                 (int)SkillData[i]["id"], new Skill(
             (int)SkillData[i]["id"],
             SkillData[i]["title"].ToString(),
-             SkillData[i]["description"].ToString(),
+            SkillData[i]["description"].ToString(),
             (string)SkillData[i]["sprite"]
         ));
         }

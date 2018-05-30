@@ -14,31 +14,44 @@ public class InventoryManager : MonoBehaviour {
     //The item attached to the mouse pointer, if any
     public ItemInstance attachedItem = null;
 
+    ItemGenerator itemGenerator;
+
     void Start () {
         StaticCanvasList.instance.itemModuleDatabase.PopulateItemModuleDatabase();
 
         TextureDatabase textures = StaticCanvasList.instance.textureDatabase;
         ItemDatabase itemDatabase = StaticCanvasList.instance.itemDatabase;
-        ItemGenerator itemGenerator = StaticCanvasList.instance.itemGenerator;
+        itemGenerator = StaticCanvasList.instance.itemGenerator;
 
         itemDatabase.ConstructItemDatabase();
         textures.LoadAllTextures();
 
-        AddItem(itemGenerator.GenerateItem(1, 0));
-        AddItem(itemGenerator.GenerateItem(1, 0));
-        AddItem(itemGenerator.GenerateItem(1, 1));
-        AddItem(itemGenerator.GenerateItem(1, 2));
+        AddGeneratedItem(1, 0, 2);
+        AddGeneratedItem(1, 1, 1);
+        AddGeneratedItem(1, 2, 1);
 
-        
         AddItem(itemDatabase.GetItemByName("Minor Health Potion"), 3);
 
         gameObject.SetActive(false);
     }
 
+    public void AddGeneratedItem(int level, int equipment, int amount)
+    {
+        for (int i = 0; i < amount; i++)
+        {
+            AddGeneratedItem(level, equipment);
+        }
+    }
+
+    public void AddGeneratedItem(int level, int equipment)
+    {
+        AddItem(itemGenerator.GenerateItem(level, equipment));
+    }
+
     public void AddItem(Item item)
     {
         ItemSlot slot = FindSlotWithItem(item.Title, slots);
-        if (slot)
+        if (slot && item.Stackable)
         {
             slot.GetItem().ChangeAmount(1);
         }

@@ -11,8 +11,10 @@ public class ChestInventory : MonoBehaviour {
 
     public void OpenChest(Chest newchest)
     {
-        if (loadedChest == null)
+        if (loadedChest != newchest)
         {
+            CloseChest();
+
             loadedChest = newchest;
 
             newchest.SetOpenSprite();

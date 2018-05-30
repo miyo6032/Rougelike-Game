@@ -64,7 +64,7 @@ public class PlayerStats : MonoBehaviour {
         {
             inst.equipped = true;
             UpdateEquipStats();
-            playerAnimation.ColorAnimator(inst.item.EquippedSlot, inst.item.ItemColor);
+            playerAnimation.ColorAnimator(slot.gameObject.name, inst.item.ItemColor);
             return true;
         }
         return false;

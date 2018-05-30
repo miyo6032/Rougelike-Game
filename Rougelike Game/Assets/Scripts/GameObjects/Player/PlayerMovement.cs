@@ -6,13 +6,19 @@ public class PlayerMovement : MovingObject
 
     public int range = 10;
 
+    public LayerMask pathfindingLayer;
+    public LayerMask enemyLayer;
+    public LayerMask chestLayer;
+
     PlayerStats stats;
     PlayerAnimation animatorHandler;
     bool hitting;
 
+    //Variables that handle automatic movement when the player clicks a position
     bool automoving;
     bool altMove;
-    Vector2 automoveTarget;
+    Vector2 automovePosition;
+    Transform automoveTarget;
 
     protected override void Start() {
         base.Start();
@@ -20,15 +26,23 @@ public class PlayerMovement : MovingObject
         animatorHandler = GetComponent<PlayerAnimation>();
     }
 
-    public void SetAutomove(Vector2 target)
+    public void StartAutomoveWithTarget(Transform target)
     {
         automoveTarget = target;
+        automoving = true;
+    }
+
+    public void StartAutomove(Vector2 target)
+    {
+        automoveTarget = null;
+        automovePosition = target;
         automoving = true;
     }
 
     public void StopAutomove()
     {
         automoving = false;
+        automoveTarget = null;
     }
 
     void Update() {
@@ -46,42 +60,55 @@ public class PlayerMovement : MovingObject
         //Execute the MOVE
         if (input.x != 0 || input.y != 0) {
             //check to make sure the spot is not claimed - and keeps enemies and players from moving into the same spot.
-            if (!moveManager.SpotClaimed(Vector2Int.RoundToInt((Vector2)transform.position + input)))
+            if (!moveManager.SpotClaimed(Vector2Int.FloorToInt((Vector2)transform.position + input)))
+            {
                 automoving = false;
-                AttemptMove<EnemyStats>(input.x, input.y);//The player moves (or at least tries to)
+                AttemptMove<EnemyStats>(input);//The player moves (or at least tries to)
+            }
         }
 
         if (automoving)
         {
-            Vector2 nextMove = HelperScripts.GetNextMove(Vector2Int.FloorToInt(transform.position), Vector2Int.FloorToInt(automoveTarget), blockingLayer, range, altMove);
+            Vector2 nextMove;
+            if (automoveTarget != null)
+            {
+                //Automovement to an enemy target
+                automovePosition = Vector2Int.FloorToInt(automoveTarget.position);
+                nextMove = HelperScripts.GetNextMove(Vector2Int.FloorToInt(transform.position), Vector2Int.FloorToInt(automovePosition), pathfindingLayer + chestLayer, range, altMove);
+            }
+            else
+            {
+                //Automovement to a position
+                nextMove = HelperScripts.GetNextMove(Vector2Int.FloorToInt(transform.position), Vector2Int.FloorToInt(automovePosition), pathfindingLayer + enemyLayer, range, altMove);
+            }
 
-            //We are done with automoving
-            if (Vector2Int.FloorToInt(automoveTarget) == Vector2Int.FloorToInt(transform.position))
+            //We are done with automoving (we reached the target position)
+            if (Vector2Int.FloorToInt(automovePosition) == Vector2Int.FloorToInt(transform.position))
             {
                 automoving = false;
                 return;
             }
 
-            if (nextMove.x != Vector2.positiveInfinity.x && !moveManager.SpotClaimed(Vector2Int.RoundToInt((Vector2)transform.position + nextMove)))
+            if (nextMove.x != Vector2.positiveInfinity.x && !moveManager.SpotClaimed(Vector2Int.FloorToInt((Vector2)transform.position) + Vector2Int.FloorToInt(nextMove)))
             {
                 //Update the animator to align with the player's input
                 animatorHandler.SetAnimationDirection(nextMove);
-                AttemptMove<EnemyStats>((int)nextMove.x, (int)nextMove.y);//The player moves (or at least tries to)
-                //altMove = !altMove;
+                AttemptMove<EnemyStats>(Vector2Int.FloorToInt(nextMove));//The player moves (or at least tries to)
+                altMove = !altMove;
             }
         }
     }
 
-    protected override void AttemptMove<T>(int xDir, int yDir)
+    protected override void AttemptMove<T>(Vector2Int dir)
     {
         //Hit to see if something is in the way
         RaycastHit2D hit;
-        bool canMove = Move(xDir, yDir, out hit);
+        bool canMove = Move(dir, out hit);
 
         if (hit.transform == null)
         {
             //We were able to move, so animate that movement
-            animatorHandler.AnimateMovement(new Vector2(xDir, yDir));
+            animatorHandler.AnimateMovement(dir);
             StaticCanvasList.instance.chestInventory.CloseChest();
             return;
         }
@@ -101,7 +128,7 @@ public class PlayerMovement : MovingObject
             {
                 StaticCanvasList.instance.chestInventory.OpenChest(chest);
             }
-            animatorHandler.SetIdle(new Vector2(xDir, yDir));
+            animatorHandler.SetIdle(dir);
         }
     }
 

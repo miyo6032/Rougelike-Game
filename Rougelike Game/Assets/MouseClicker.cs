@@ -2,10 +2,12 @@
 using UnityEngine.EventSystems;
 
 //An object that follows the mouse and does things like automoving when clicked
-public class MouseClicker : MonoBehaviour, IPointerClickHandler
+public class MouseClicker : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 {
 
     public PlayerMovement playerMovement;
+
+    bool pointerIsDown = false;
 
 	void Update()
     {
@@ -19,12 +21,22 @@ public class MouseClicker : MonoBehaviour, IPointerClickHandler
         transform.position = convertedMousePosition + -1 * cameraOffset + (Vector2)Camera.main.transform.position;
 
         transform.position = new Vector2(Mathf.Round(transform.position.x), Mathf.Round(transform.position.y));
+
+        if (pointerIsDown)
+        {
+            playerMovement.StartAutomove(new Vector2(Mathf.Round(transform.position.x), Mathf.Round(transform.position.y)));
+        }
+
     }
 
-    public void OnPointerClick(PointerEventData eventData)
+    public void OnPointerDown(PointerEventData eventData)
     {
-        Debug.Log("click");
-        playerMovement.SetAutomove(new Vector2(Mathf.Round(transform.position.x), Mathf.Round(transform.position.y)));
+        pointerIsDown = true;
+    }
+
+    public void OnPointerUp(PointerEventData eventData)
+    {
+        pointerIsDown = false;
     }
 
 }
