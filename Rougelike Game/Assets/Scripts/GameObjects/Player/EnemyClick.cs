@@ -1,8 +1,9 @@
 ﻿using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class EnemyClick : MonoBehaviour, IPointerClickHandler {
-
+//When the enemy is clicked upon, the player goes and attacks that enemy
+public class EnemyClick : MonoBehaviour, IPointerClickHandler
+{
     PlayerMovement playerMovement;
 
     void Start()
@@ -10,10 +11,8 @@ public class EnemyClick : MonoBehaviour, IPointerClickHandler {
         playerMovement = GameObject.Find("Player").GetComponent<PlayerMovement>();
     }
 
-    //Direct the player to attack this enemy
     public void OnPointerClick(PointerEventData eventData)
     {
         playerMovement.StartAutomoveWithTarget(transform);
     }
-
 }

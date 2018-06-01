@@ -7,13 +7,13 @@ public class LootBag : MonoBehaviour
 
     public List<ItemSave> items = new List<ItemSave>();
 
-    public void AddItems(List<Item> itemDrops)
+    public void AddItems(List<ItemSave> itemDrops)
     {
-        foreach(Item item in itemDrops)
+        foreach(ItemSave item in itemDrops)
         {
             if (items.Count < 9)
             {
-                items.Add(new ItemSave(item, items.Count));
+                items.Add(item);
             }
         }
     }

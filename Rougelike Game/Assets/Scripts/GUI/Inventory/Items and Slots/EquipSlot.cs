@@ -7,17 +7,11 @@ public class EquipSlot : ItemSlot, IPointerClickHandler
     public int equipmentSlot;
     public SkillDatabase database;
 
-    Image slotImage;
     public Sprite emptySprite;
     public Sprite fullSprite;
 
-    protected PlayerStats playerStat;
-
-    void Start()
-    {
-        playerStat = GameObject.Find("Player").GetComponent<PlayerStats>();
-        slotImage = GetComponent<Image>();
-    }
+    public Image slotImage;
+    public PlayerStats playerStat;
 
     //When the player drops an item from clicking
     public override void OnPointerClick(PointerEventData eventData)
@@ -46,6 +40,7 @@ public class EquipSlot : ItemSlot, IPointerClickHandler
         }
     }
 
+    //Overrides to address a few differences with equipping
     public override void ItemDropIntoFull(ItemInstance droppedItem)
     {
         if (droppedItem && item != null && ItemCanBeEquipped(droppedItem))
@@ -55,6 +50,7 @@ public class EquipSlot : ItemSlot, IPointerClickHandler
             LinkItemAndSlot(droppedItem, this);
             playerStat.EquipItem(droppedItem, this);
             droppedItem.attached = false;
+            slotImage.sprite = fullSprite;
         }
     }
 
@@ -65,7 +61,8 @@ public class EquipSlot : ItemSlot, IPointerClickHandler
 
     bool ItemCanBeEquipped(ItemInstance droppedItem)
     {
-        return droppedItem.item.EquippedSlot == equipmentSlot && playerStat.GetLevel() >= droppedItem.item.ItemLevel;
+        return droppedItem.item.EquippedSlot == equipmentSlot 
+            && playerStat.GetLevel() >= droppedItem.item.ItemLevel;
     }
 
 }

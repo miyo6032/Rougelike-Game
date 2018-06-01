@@ -6,7 +6,7 @@ using System.IO;
 //Loads all of the item data from the json file and holds it for other scripts to use
 public class ItemModuleDatabase : MonoBehaviour {
 
-    List<ItemModule> blades = new List<ItemModule>();
+    List<LeveledItemModule> blades = new List<LeveledItemModule>();
     List<ItemModule> hilts = new List<ItemModule>();
     List<ItemModule> handles = new List<ItemModule>();
     List<LeveledItemModule> baseArmor = new List<LeveledItemModule>();
@@ -16,7 +16,7 @@ public class ItemModuleDatabase : MonoBehaviour {
 
     public void PopulateItemModuleDatabase()
     {
-        DataIntoItemModules(JsonMapper.ToObject(File.ReadAllText(Application.dataPath + "/StreamingAssets/ItemPieces/Blades.json")), blades);
+        DataIntoLeveledItemModules(JsonMapper.ToObject(File.ReadAllText(Application.dataPath + "/StreamingAssets/ItemPieces/Blades.json")), blades);
         DataIntoItemModules(JsonMapper.ToObject(File.ReadAllText(Application.dataPath + "/StreamingAssets/ItemPieces/Hilts.json")), hilts);
         DataIntoItemModules(JsonMapper.ToObject(File.ReadAllText(Application.dataPath + "/StreamingAssets/ItemPieces/Handles.json")), handles);
         DataIntoLeveledItemModules(JsonMapper.ToObject(File.ReadAllText(Application.dataPath + "/StreamingAssets/ItemPieces/BaseArmor.json")), baseArmor);
@@ -88,10 +88,10 @@ public class ItemModuleDatabase : MonoBehaviour {
         }
     }
 
-    public ItemModule[] GetRandomSword()
+    public ItemModule[] GetSword(int level)
     {
         ItemModule[] items = new ItemModule[3];
-        items[0] = blades[Random.Range(0, blades.Count)];
+        items[0] = FindLeveledItem(level, blades);
         items[1] = hilts[Random.Range(0, hilts.Count)];
         items[2] = handles[Random.Range(0, handles.Count)];
         return items;

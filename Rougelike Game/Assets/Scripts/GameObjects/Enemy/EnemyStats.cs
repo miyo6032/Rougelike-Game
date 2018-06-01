@@ -27,17 +27,6 @@ public class EnemyStats : MonoBehaviour {
         health = maxHealth;
     }
 
-    List<Item> GenerateItemDrops()
-    {
-        List<Item> items = new List<Item>();
-        int numItems = Random.Range(dropRange.x, dropRange.y);
-        for(int i = 0; i < numItems; i++)
-        {
-            items.Add(StaticCanvasList.instance.itemGenerator.GenerateItem(level, Random.Range(0, 3)));
-        }
-        return items;
-    }
-
     //Damage the enemy, generate the damage counter, and update the health ui
     public void DamageEnemy(int damage)
     {
@@ -53,7 +42,7 @@ public class EnemyStats : MonoBehaviour {
 
     void Death()
     {
-        List<Item> itemDrops = GenerateItemDrops();
+        List<ItemSave> itemDrops = StaticCanvasList.instance.itemDropGenerator.GenerateItemDrops(level, dropRange);
         if(itemDrops.Count > 0)
         {
             LootBag existingBag = GetBag();
@@ -70,7 +59,7 @@ public class EnemyStats : MonoBehaviour {
         Destroy(gameObject);
     }
 
-    void DropNewBag(List<Item> itemDrops)
+    void DropNewBag(List<ItemSave> itemDrops)
     {
         LootBag bag = Instantiate(lootBagPrefab);
         bag.AddItems(itemDrops);

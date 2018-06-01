@@ -119,6 +119,7 @@ public class PlayerMovement : MovingObject
         //Only call OnCantMove if the hit actually has the component
         if (!canMove && hitComponent != null)
         {
+            automoving = false;
             Attack(hitComponent);
         }
         else

@@ -34,19 +34,14 @@ IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler
         inventory = StaticCanvasList.instance.inventoryManager;
     }
 
-    //Initialize a new item - used when the inventory adds a new item
-    public void Initialize(Item Item, ItemSlot Slot)
+    public void Initialize(Item Item)
     {
         name = Item.Title;
         item = Item;
         amount = 1;
-        slot = Slot;
-        transform.SetParent(slot.transform);
-        transform.localScale = new Vector3(1, 1, 1);
-        transform.localPosition = Vector2.zero;
 
         //Load sprites
-        for(int i = 0; i < item.Sprites.Length; i++)
+        for (int i = 0; i < item.Sprites.Length; i++)
         {
             itemSprites[i].sprite = StaticCanvasList.instance.textureDatabase.LoadTexture(item.Sprites[i]);
         }
@@ -76,6 +71,7 @@ IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler
         {
             playerStat.UnequipItem(this);
         }
+        slot = null;
     }
 
     public void DestroyItem()

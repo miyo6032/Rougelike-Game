@@ -26,21 +26,15 @@ public class InventoryManager : MonoBehaviour {
         itemDatabase.ConstructItemDatabase();
         textures.LoadAllTextures();
 
-        AddGeneratedItem(1, 0, 2);
-        AddGeneratedItem(1, 1, 1);
-        AddGeneratedItem(1, 2, 1);
+        // Automatically equip the four starting items
+        AddItemToSlot(itemGenerator.GenerateItem(3, 0), equipSlots[0]);
+        AddItemToSlot(itemGenerator.GenerateItem(3, 0), equipSlots[1]);
+        AddItemToSlot(itemGenerator.GenerateItem(3, 1), equipSlots[2]);
+        AddItemToSlot(itemGenerator.GenerateItem(3, 2), equipSlots[3]);
 
         AddItem(itemDatabase.GetItemByName("Minor Health Potion"), 3);
 
         gameObject.SetActive(false);
-    }
-
-    public void AddGeneratedItem(int level, int equipment, int amount)
-    {
-        for (int i = 0; i < amount; i++)
-        {
-            AddGeneratedItem(level, equipment);
-        }
     }
 
     public void AddGeneratedItem(int level, int equipment)
@@ -53,7 +47,9 @@ public class InventoryManager : MonoBehaviour {
         ItemSlot slot = FindSlotWithItem(item.Title, slots);
         if (slot && item.Stackable)
         {
-            slot.GetItem().ChangeAmount(1);
+            ItemInstance instance = slot.GetItem();
+            instance.ChangeAmount(1);
+            slot.SetItem(instance);
         }
         else
         {
@@ -72,8 +68,8 @@ public class InventoryManager : MonoBehaviour {
     public void AddItemToSlot(Item item, ItemSlot slot)
     {
         ItemInstance itemObj = Instantiate(itemPrefab);
-        itemObj.Initialize(item, slot);
-        slot.SetItem(itemObj);
+        itemObj.Initialize(item);
+        slot.ItemDropIntoEmpty(itemObj);
     }
 
     // Find the next slot to place a new item in
@@ -123,8 +119,7 @@ public class InventoryManager : MonoBehaviour {
         {
             if(attachedItem != null)
             {
-                AddItemToSlot(attachedItem.item, FindNextOpenSlot(slots));
-                Destroy(attachedItem.gameObject);
+                FindNextOpenSlot(slots).ItemDropIntoEmpty(attachedItem);
             }
             StaticCanvasList.instance.inventoryTooltip.gameObject.SetActive(false);
             gameObject.SetActive(false);

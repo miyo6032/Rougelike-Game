@@ -6,14 +6,14 @@ public class Chest : MonoBehaviour {
 
     public List<ItemSave> chestItems = new List<ItemSave>();
     public int lootLevel;
-    public int fullness;
+    public Vector2Int dropRange;
 
     public Sprite chestOpen;
     public Sprite chestClosed;
 
     void Start()
     {
-        GenerateItems();
+        chestItems = StaticCanvasList.instance.itemDropGenerator.GenerateItemDrops(lootLevel, dropRange);
     }
 
     public void SetOpenSprite()
@@ -26,18 +26,7 @@ public class Chest : MonoBehaviour {
         GetComponent<SpriteRenderer>().sprite = chestClosed;
     }
 
-    void GenerateItems()
-    {
-        List<ItemSave> items = new List<ItemSave>();
-        for (int i = 0; i < fullness; i++)
-        {
-            int itemType = Random.Range(0, 3);
-            ItemSave item = new ItemSave(StaticCanvasList.instance.itemGenerator.GenerateItem(lootLevel, itemType), i);
-            items.Add(item);
-        }
-        chestItems = items;
-    }
-
+    //Called when saving, because the player potentially changed the chest contents
     public void AddItems(List<Item> itemDrops)
     {
         foreach (Item item in itemDrops)

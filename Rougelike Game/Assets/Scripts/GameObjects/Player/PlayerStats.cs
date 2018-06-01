@@ -60,7 +60,7 @@ public class PlayerStats : MonoBehaviour {
     public bool EquipItem(ItemInstance inst, EquipSlot slot)
     {
         //If the item has the correct stats to equip
-        if(level >= inst.item.ItemLevel)
+        if (level >= inst.item.ItemLevel)
         {
             inst.equipped = true;
             UpdateEquipStats();
