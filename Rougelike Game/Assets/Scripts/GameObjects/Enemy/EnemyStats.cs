@@ -15,15 +15,16 @@ public class EnemyStats : MonoBehaviour {
     public LayerMask bagLayerMask;
     public Vector2Int dropRange = new Vector2Int(0, 3);
 
-    Animator damageCounter;
+    public Animator damageCounter;
+    Animator animator;
     Text damageText;
     Slider healthSlider;
 
     void Start()
     {
-        damageCounter = HelperScripts.GetComponentFromChildrenExc<Animator>(transform);
         damageText = HelperScripts.GetComponentFromChildrenExc<Text>(transform);
         healthSlider = HelperScripts.GetComponentFromChildrenExc<Slider>(transform);
+        animator = GetComponent<Animator>();
         health = maxHealth;
     }
 
@@ -32,6 +33,7 @@ public class EnemyStats : MonoBehaviour {
     {
         health = Mathf.Clamp(health - damage, 0, health);
         damageCounter.SetTrigger("damage");
+        animator.SetTrigger("damage");
         damageText.text = "" + damage;
         healthSlider.value = health / (float)maxHealth * 100;
         if(health <= 0)

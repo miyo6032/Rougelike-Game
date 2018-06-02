@@ -27,10 +27,10 @@ public class InventoryManager : MonoBehaviour {
         textures.LoadAllTextures();
 
         // Automatically equip the four starting items
-        AddItemToSlot(itemGenerator.GenerateItem(3, 0), equipSlots[0]);
-        AddItemToSlot(itemGenerator.GenerateItem(3, 0), equipSlots[1]);
-        AddItemToSlot(itemGenerator.GenerateItem(3, 1), equipSlots[2]);
-        AddItemToSlot(itemGenerator.GenerateItem(3, 2), equipSlots[3]);
+        AddItemToSlot(itemGenerator.GenerateItem(1, 0), equipSlots[0]);
+        AddItemToSlot(itemGenerator.GenerateItem(1, 0), equipSlots[1]);
+        AddItemToSlot(itemGenerator.GenerateItem(1, 1), equipSlots[2]);
+        AddItemToSlot(itemGenerator.GenerateItem(1, 2), equipSlots[3]);
 
         AddItem(itemDatabase.GetItemByName("Minor Health Potion"), 3);
 

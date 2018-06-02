@@ -20,11 +20,13 @@ public class PlayerStats : MonoBehaviour {
     public float hitSpeed; //The speed that a player can it - influenced by strength and weapon weight
 
     Animator damageCounter;
+    Animator animator;
     PlayerAnimation playerAnimation;
     Text damageText;
 
     void Start()
     {
+        animator = GetComponent<Animator>();
         damageCounter = HelperScripts.GetComponentFromChildrenExc<Animator>(transform);
         damageText = HelperScripts.GetComponentFromChildrenExc<Text>(transform);
         health = maxHealth;
@@ -44,6 +46,7 @@ public class PlayerStats : MonoBehaviour {
         damage = Mathf.Clamp(damage - defence, 0, damage);
         health = Mathf.Clamp(health - damage, 0, health);
         damageCounter.SetTrigger("damage");
+        animator.SetTrigger("damage");
         damageText.text = "" + damage;
         StaticCanvasList.instance.gameUI.UpdateHealth(health / (float)maxHealth * 100);
     }
