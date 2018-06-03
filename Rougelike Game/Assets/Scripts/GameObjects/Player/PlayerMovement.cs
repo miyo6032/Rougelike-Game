@@ -128,6 +128,7 @@ public class PlayerMovement : MovingObject
             if (!canMove && chest != null)
             {
                 StaticCanvasList.instance.chestInventory.OpenChest(chest);
+                automoving = false;
             }
             animatorHandler.SetIdle(dir);
         }

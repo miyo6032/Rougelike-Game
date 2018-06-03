@@ -13,6 +13,8 @@ public class ItemSlot : MonoBehaviour, IPointerClickHandler
         ItemInstance droppedItem = StaticCanvasList.instance.inventoryManager.attachedItem;
 
         ItemDropIntoEmpty(droppedItem);
+
+        StaticCanvasList.instance.inventoryManager.attachedItem = null;
     }
 
     //Handles when an item is dropped upon the slot
@@ -25,7 +27,6 @@ public class ItemSlot : MonoBehaviour, IPointerClickHandler
             //Disconnnect the item from the mouse
             droppedItem.attached = false;
             LinkItemAndSlot(droppedItem, this);
-            StaticCanvasList.instance.inventoryManager.attachedItem = null;
         }
     }
 

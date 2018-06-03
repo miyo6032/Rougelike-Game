@@ -22,6 +22,7 @@ public class EquipSlot : ItemSlot, IPointerClickHandler
         {
             //Do the item drop first to check to see if the item can be equipped
             ItemDropIntoEmpty(droppedItem);
+            StaticCanvasList.instance.inventoryManager.attachedItem = null;
         }
     }
 
@@ -33,7 +34,6 @@ public class EquipSlot : ItemSlot, IPointerClickHandler
         if (droppedItem && item == null && ItemCanBeEquipped(droppedItem))
         {
             LinkItemAndSlot(droppedItem, this);
-            StaticCanvasList.instance.inventoryManager.attachedItem = null;
             playerStat.EquipItem(droppedItem, this);
             droppedItem.attached = false;
             slotImage.sprite = fullSprite;

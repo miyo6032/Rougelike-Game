@@ -133,10 +133,6 @@ IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler
         {
             stackText.text = "";
         }
-        else
-        {
-            //Destroy Item
-        }
     }
 
     public int GetAmount()

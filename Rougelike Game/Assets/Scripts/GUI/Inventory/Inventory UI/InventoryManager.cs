@@ -120,6 +120,7 @@ public class InventoryManager : MonoBehaviour {
             if(attachedItem != null)
             {
                 FindNextOpenSlot(slots).ItemDropIntoEmpty(attachedItem);
+                attachedItem = null;
             }
             StaticCanvasList.instance.inventoryTooltip.gameObject.SetActive(false);
             gameObject.SetActive(false);
