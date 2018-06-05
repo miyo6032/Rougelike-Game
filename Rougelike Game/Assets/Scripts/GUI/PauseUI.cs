@@ -1,12 +1,11 @@
 ﻿using UnityEngine;
 
+/// <summary>
+/// Pausing the game, options, and quitting
+/// </summary>
 public class PauseUI : MonoBehaviour {
 
     public GameObject gameUI;
-	
-	void Start () {
-
-	}
 	
     public void Resume()
     {

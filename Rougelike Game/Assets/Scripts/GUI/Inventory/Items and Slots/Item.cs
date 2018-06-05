@@ -1,4 +1,7 @@
-﻿[System.Serializable]
+﻿/// <summary>
+/// Represents an item's data
+/// </summary>
+[System.Serializable]
 public class Item
 {
     public string Title { get; set; }
@@ -15,32 +18,32 @@ public class Item
 
     public Item(string title, int value, int attack, int maxAttack, int defence, string description, bool stackable, int equippedSlot, int itemLevel, string[] sprites, string itemColor)
     {
-        this.Title = title;
-        this.Value = value;
-        this.Attack = attack;
-        this.MaxAttack = maxAttack;
-        this.Defence = defence;
-        this.Description = description;
-        this.Stackable = stackable;
-        this.EquippedSlot = equippedSlot;
-        this.Sprites = sprites;
-        this.ItemLevel = itemLevel;
-        this.ItemColor = itemColor;
+        Title = title;
+        Value = value;
+        Attack = attack;
+        MaxAttack = maxAttack;
+        Defence = defence;
+        Description = description;
+        Stackable = stackable;
+        EquippedSlot = equippedSlot;
+        Sprites = sprites;
+        ItemLevel = itemLevel;
+        ItemColor = itemColor;
     }
 
     public Item(string title, int value, string description, bool stackable, int itemLevel, string[] sprites)
     {
-        this.Title = title;
-        this.Value = value;
-        this.Attack = 0;
-        this.MaxAttack = 0;
-        this.Defence = 0;
-        this.Description = description;
-        this.Stackable = stackable;
-        this.EquippedSlot = -1;
-        this.Sprites = sprites;
-        this.ItemLevel = itemLevel;
-        this.ItemColor = "";
+        Title = title;
+        Value = value;
+        Attack = 0;
+        MaxAttack = 0;
+        Defence = 0;
+        Description = description;
+        Stackable = stackable;
+        EquippedSlot = -1;
+        Sprites = sprites;
+        ItemLevel = itemLevel;
+        ItemColor = "";
     }
 
     public Item() { }

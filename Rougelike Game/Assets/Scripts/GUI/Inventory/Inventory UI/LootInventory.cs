@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-//Handles the loot portion of the inventory
+/// <summary>
+/// Handles the loot bag inventory
+/// </summary>
 public class LootInventory : MonoBehaviour {
 
 	public List<ItemSlot> lootSlots;
@@ -10,12 +12,15 @@ public class LootInventory : MonoBehaviour {
 
     private LootBag loadedBag;
 
-    //Get data from the loot bag and load the items into the loot inventory
-    public void LoadInventory(LootBag loadedBag)
+    /// <summary>
+    /// Get data from the loot bag and load the items into the loot inventory
+    /// </summary>
+    /// <param name="bag"></param>
+    public void LoadInventory(LootBag bag)
     {
-        this.loadedBag = loadedBag;
+        loadedBag = bag;
 
-        foreach(ItemSave itemSave in loadedBag.items)
+        foreach(ItemSave itemSave in bag.items)
         {
             inventoryManager.AddItemToSlot(itemSave.item, lootSlots[itemSave.slotPosition]);
         }
@@ -23,7 +28,9 @@ public class LootInventory : MonoBehaviour {
         gameObject.SetActive(true);
     }
 
-    //Unload the inventory items - called when the player walks away from the bag
+    /// <summary>
+    /// Unload the inventory items - called when the player walks away from the bag
+    /// </summary>
     public void UnloadInventory()
     {
         loadedBag.items = ExtractItemsFromInventory();
@@ -32,21 +39,10 @@ public class LootInventory : MonoBehaviour {
         gameObject.SetActive(false);
     }
 
-    //Find all items in the loot inventory and record them as a list of items
-    List<Item> ListItemsInInventory()
-    {
-        List<Item> items = new List<Item>();
-        foreach(ItemSlot slot in lootSlots)
-        {
-            if(slot.GetItem() != null)
-            {
-                items.Add(slot.GetItem().item);
-            }
-        }
-        return items;
-    }
-
-    //Removes everything from inventor and stores it in an array to pass to the loot bag
+    /// <summary>
+    /// Removes everything from inventory and stores it in an array to pass to the loot bag
+    /// </summary>
+    /// <returns></returns>
     List<ItemSave> ExtractItemsFromInventory()
     {
         List<ItemSave> items = new List<ItemSave>();
@@ -62,7 +58,8 @@ public class LootInventory : MonoBehaviour {
         return items;
     }
 
-    //Actually open the ui for the loot - if the inventory is closed, open that as well
+    // Actually open the ui for the loot - if the inventory is closed, open that as well
+    // Called from a button
     public void OpenLoot()
     {
         if (!inventoryManager.gameObject.activeSelf)

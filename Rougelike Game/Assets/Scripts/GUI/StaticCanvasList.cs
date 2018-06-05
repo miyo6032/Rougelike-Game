@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
 
-//Used for scripts to reference instances of ui canvases in the scene
+/// <summary>
+/// Used by scripts to reference instances of ui canvases in the scene
+/// </summary>
 public class StaticCanvasList : MonoBehaviour {
 
     public static StaticCanvasList instance;

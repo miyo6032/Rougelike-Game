@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
+//NOT IN USE
 //Responsible for containing the skill information, as well as a tooltip
 public class SkillSlot : MonoBehaviour {
 

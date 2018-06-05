@@ -1,8 +1,11 @@
 ﻿using UnityEngine.UI;
 using UnityEngine;
 
-public class PlayerStatUI : MonoBehaviour {
-
+/// <summary>
+/// Displays the statistics of the player
+/// </summary>
+public class PlayerStatUI : MonoBehaviour
+{
     public Text level;
     public Text experience;
     public Text maxHealth;
@@ -10,7 +13,11 @@ public class PlayerStatUI : MonoBehaviour {
     public Text defense;
     public Text attack;
 
-	public void UpdateStatUI(int level, int experience, int maxHealth, int maxFocus, int defence, int minAtack, int maxAttack)
+    /// <summary>
+    /// Updates the UI by passing int all of the player's statistics
+    /// </summary>
+    public void UpdateStatUI(int level, int experience, int maxHealth, int maxFocus, int defence, int minAtack,
+        int maxAttack)
     {
         this.level.text = "Level: " + level;
         this.experience.text = experience + " to next level";
@@ -32,5 +39,4 @@ public class PlayerStatUI : MonoBehaviour {
             StaticCanvasList.instance.panelManagement.SetRightPanel(null);
         }
     }
-
 }

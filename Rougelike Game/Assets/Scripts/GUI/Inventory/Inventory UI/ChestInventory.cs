@@ -1,12 +1,13 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-public class ChestInventory : MonoBehaviour {
-
+/// <summary>
+/// Handles showing items from a chest, and toggling that inventory
+/// </summary>
+public class ChestInventory : MonoBehaviour
+{
     public List<ItemSlot> chestSlots;
-
     public InventoryManager inventoryManager;
-
     private Chest loadedChest;
 
     public void OpenChest(Chest newchest)
@@ -14,11 +15,8 @@ public class ChestInventory : MonoBehaviour {
         if (loadedChest != newchest)
         {
             CloseChest();
-
             loadedChest = newchest;
-
             newchest.SetOpenSprite();
-
             foreach (ItemSave itemSave in newchest.chestItems)
             {
                 inventoryManager.AddItemToSlot(itemSave.item, chestSlots[itemSave.slotPosition]);
@@ -27,7 +25,6 @@ public class ChestInventory : MonoBehaviour {
 
         gameObject.SetActive(true);
         StaticCanvasList.instance.panelManagement.SetRightPanel(gameObject);
-
         if (!inventoryManager.gameObject.activeSelf)
         {
             inventoryManager.Toggle();
@@ -47,7 +44,10 @@ public class ChestInventory : MonoBehaviour {
         }
     }
 
-    //Removes everything from inventor and stores it in an array to pass to the loot bag
+    /// <summary>
+    /// Removes everything from inventory and stores it in an array to pass to the chest
+    /// </summary>
+    /// <returns></returns>
     List<ItemSave> ExtractItemsFromInventory()
     {
         List<ItemSave> items = new List<ItemSave>();
@@ -60,7 +60,7 @@ public class ChestInventory : MonoBehaviour {
                 chestSlots[i].SetItem(null);
             }
         }
+
         return items;
     }
-
 }

@@ -1,10 +1,12 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
-//Automatically colors the element it is attached to, so that makes is really easy to change color schemes
-public class ColorUIElement : MonoBehaviour {
-
-	public enum UIElements
+/// <summary>
+/// Automatically colors the element it is attached to, so that makes is really easy to change color schemes
+/// </summary>
+public class ColorUIElement : MonoBehaviour
+{
+    public enum UIElements
     {
         darkButton,
         lightButton,
@@ -19,10 +21,12 @@ public class ColorUIElement : MonoBehaviour {
         switch (UIElement)
         {
             case UIElements.darkButton:
-                ColorButton(StaticCanvasList.instance.uiColoring.DARK_BUTTON_NORMAL, StaticCanvasList.instance.uiColoring.DARK_BUTTON_PRESSED);
+                ColorButton(StaticCanvasList.instance.uiColoring.DARK_BUTTON_NORMAL,
+                    StaticCanvasList.instance.uiColoring.DARK_BUTTON_PRESSED);
                 break;
             case UIElements.lightButton:
-                ColorButton(StaticCanvasList.instance.uiColoring.LIGHT_BUTTON_NORMAL, StaticCanvasList.instance.uiColoring.LIGHT_BUTTON_PRESSED);
+                ColorButton(StaticCanvasList.instance.uiColoring.LIGHT_BUTTON_NORMAL,
+                    StaticCanvasList.instance.uiColoring.LIGHT_BUTTON_PRESSED);
                 break;
             case UIElements.mainPanel:
                 ColorImage(StaticCanvasList.instance.uiColoring.MAIN_PANEL);
@@ -33,6 +37,11 @@ public class ColorUIElement : MonoBehaviour {
         }
     }
 
+    /// <summary>
+    /// Colors a button and its pressed colors
+    /// </summary>
+    /// <param name="colorNormal"></param>
+    /// <param name="colorPressed"></param>
     void ColorButton(Color colorNormal, Color colorPressed)
     {
         ColorBlock button = GetComponent<Button>().colors;
@@ -46,5 +55,4 @@ public class ColorUIElement : MonoBehaviour {
     {
         GetComponent<Image>().color = color;
     }
-
 }

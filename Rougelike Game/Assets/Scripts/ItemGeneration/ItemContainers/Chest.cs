@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-//Holds the chest items, and the chest opening and closing sprites
+/// <summary>
+/// Holds the chest items, and the chest opening and closing sprites
+/// </summary>
 public class Chest : MonoBehaviour {
 
     public List<ItemSave> chestItems = new List<ItemSave>();
@@ -24,18 +26,6 @@ public class Chest : MonoBehaviour {
     public void SetClosedSprite()
     {
         GetComponent<SpriteRenderer>().sprite = chestClosed;
-    }
-
-    //Called when saving, because the player potentially changed the chest contents
-    public void AddItems(List<Item> itemDrops)
-    {
-        foreach (Item item in itemDrops)
-        {
-            if (chestItems.Count < 24)
-            {
-                chestItems.Add(new ItemSave(item, chestItems.Count));
-            }
-        }
     }
 
 }

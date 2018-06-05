@@ -1,13 +1,17 @@
 ﻿using UnityEngine.EventSystems;
 using UnityEngine;
 
-//The item slot that items will go into
-//Responsbile for handling when the item is dropped on the item slot
+/// <summary>
+/// The item slot in the inventory that items will go into
+/// </summary>
 public class ItemSlot : MonoBehaviour, IPointerClickHandler
 {
-    public ItemInstance item = null;
+    public ItemInstance item;
 
-    //When the player drops an item from clicking
+    /// <summary>
+    /// When the player drops an item from clicking
+    /// </summary>
+    /// <param name="eventData"></param>
     public virtual void OnPointerClick(PointerEventData eventData)
     {
         ItemInstance droppedItem = StaticCanvasList.instance.inventoryManager.attachedItem;
@@ -17,41 +21,50 @@ public class ItemSlot : MonoBehaviour, IPointerClickHandler
         StaticCanvasList.instance.inventoryManager.attachedItem = null;
     }
 
-    //Handles when an item is dropped upon the slot
-    //Does item exchanging, equipping and stuff like that
+    /// <summary>
+    /// Handles when an item is dropped upon the slot
+    /// </summary>
+    /// <param name="droppedItem"></param>
     public virtual void ItemDropIntoEmpty(ItemInstance droppedItem)
     {
-        //If there is an item attached to the mouse pointer
+        // If there is an item attached to the mouse pointer
         if (droppedItem && item == null)
         {
-            //Disconnnect the item from the mouse
+            // Disconnnect the item from the mouse
             droppedItem.attached = false;
-            LinkItemAndSlot(droppedItem, this);
+            LinkItem(droppedItem);
         }
     }
 
-    //When the item is dropped into a slot that is already full
+    /// <summary>
+    /// When the item is dropped into a slot that is already full
+    /// </summary>
+    /// <param name="droppedItem"></param>
     public virtual void ItemDropIntoFull(ItemInstance droppedItem)
     {
-        //If there is an item attached to the mouse pointer
+        // If there is an item attached to the mouse pointer
         if (droppedItem && item != null)
         {
-            //Disconnnect the item from the mouse
+            // Disconnnect the item from the mouse
             droppedItem.attached = false;
             item.PickItemUp();
-            LinkItemAndSlot(droppedItem, this);
+            LinkItem(droppedItem);
         }
     }
 
-    //Link the item to a slot
-    public void LinkItemAndSlot(ItemInstance item, ItemSlot slot)
+    /// <summary>
+    /// Link and item to a slot
+    /// </summary>
+    /// <param name="itemInstance"></param>
+    /// <param name="slot"></param>
+    public void LinkItem(ItemInstance itemInstance)
     {
-        item.slot = slot;
-        item.transform.SetParent(slot.transform);
-        slot.item = item;
-        item.ItemToParentSlot();
-        item.transform.localScale = new Vector3(1, 1, 1);
-        item.transform.localPosition = Vector2.zero;
+        itemInstance.slot = this;
+        itemInstance.transform.SetParent(transform);
+        item = itemInstance;
+        itemInstance.ItemToParentSlot();
+        itemInstance.transform.localScale = new Vector3(1, 1, 1);
+        itemInstance.transform.localPosition = Vector2.zero;
     }
 
     public ItemInstance GetItem()
@@ -59,9 +72,9 @@ public class ItemSlot : MonoBehaviour, IPointerClickHandler
         return item;
     }
 
-    public virtual void SetItem(ItemInstance item)
+    public virtual void SetItem(ItemInstance itemInstance)
     {
-        this.item = item;
+        item = itemInstance;
     }
 
 }

@@ -3,16 +3,18 @@ using System.Collections.Generic;
 using LitJson;
 using System.IO;
 
-//Loads all of the item data from the json file and holds it for other scripts to use
-public class ItemModuleDatabase : MonoBehaviour {
-
-    List<LeveledItemModule> blades = new List<LeveledItemModule>();
-    List<ItemModule> hilts = new List<ItemModule>();
-    List<ItemModule> handles = new List<ItemModule>();
-    List<LeveledItemModule> baseArmor = new List<LeveledItemModule>();
-    List<ItemModule> beltsAndCollars = new List<ItemModule>();
-    List<LeveledItemModule> helmets = new List<LeveledItemModule>();
-    List<ItemModule> helmetAccessories = new List<ItemModule>();
+/// <summary>
+/// Loads all of the item data from the json file and holds it for other scripts to use
+/// </summary>
+public class ItemModuleDatabase : MonoBehaviour
+{
+    private readonly List<LeveledItemModule> blades = new List<LeveledItemModule>();
+    private readonly List<ItemModule> hilts = new List<ItemModule>();
+    private readonly List<ItemModule> handles = new List<ItemModule>();
+    private readonly List<LeveledItemModule> baseArmor = new List<LeveledItemModule>();
+    private readonly List<ItemModule> beltsAndCollars = new List<ItemModule>();
+    private readonly List<LeveledItemModule> helmets = new List<LeveledItemModule>();
+    private readonly List<ItemModule> helmetAccessories = new List<ItemModule>();
 
     public void PopulateItemModuleDatabase()
     {
@@ -29,11 +31,8 @@ public class ItemModuleDatabase : MonoBehaviour {
     {
         for (int i = 0; i < itemData.Count; i++)
         {
-            parts.Add(new ItemModule(
-                itemData[i]["title"].ToString(),
-                itemData[i]["sprite"].ToString(),
-                itemData[i]["color"].ToString()
-            ));
+            parts.Add(new ItemModule(itemData[i]["title"].ToString(), itemData[i]["sprite"].ToString(),
+                itemData[i]["color"].ToString()));
         }
     }
 
@@ -41,41 +40,61 @@ public class ItemModuleDatabase : MonoBehaviour {
     {
         for (int i = 0; i < itemData.Count; i++)
         {
-            parts.Add(new LeveledItemModule(
-                itemData[i]["title"].ToString(),
-                itemData[i]["sprite"].ToString(),
-                itemData[i]["color"].ToString(),
-                (int)itemData[i]["level"]
-            ));
+            parts.Add(new LeveledItemModule(itemData[i]["title"].ToString(), itemData[i]["sprite"].ToString(),
+                itemData[i]["color"].ToString(), (int) itemData[i]["level"]));
         }
     }
 
-    LeveledItemModule FindLeveledItem(int level, List<LeveledItemModule> modules){
+    /// <summary>
+    /// Based on a level, will find an item piece of a similar level
+    /// </summary>
+    /// <param name="level"></param>
+    /// <param name="modules"></param>
+    /// <returns></returns>
+    LeveledItemModule FindLeveledItem(int level, List<LeveledItemModule> modules)
+    {
         List<LeveledItemModule> possibleModules = new List<LeveledItemModule>();
-        foreach(LeveledItemModule module in modules)
+        foreach (LeveledItemModule module in modules)
         {
-            if(module.level >= level - 1 && module.level <= level + 1)
+            if (module.level >= level - 1 && module.level <= level + 1)
             {
                 possibleModules.Add(module);
             }
         }
-        if(possibleModules.Count > 0)
+
+        if (possibleModules.Count > 0)
         {
             return possibleModules[Random.Range(0, possibleModules.Count)];
         }
+
         return null;
     }
 
+    /// <summary>
+    /// Find a chestplated based on the level
+    /// </summary>
+    /// <param name="level"></param>
+    /// <returns></returns>
     public LeveledItemModule FindArmor(int level)
     {
         return FindLeveledItem(level, baseArmor);
     }
 
+    /// <summary>
+    /// Find a helmet based on the level
+    /// </summary>
+    /// <param name="level"></param>
+    /// <returns></returns>
     public LeveledItemModule FindHelmet(int level)
     {
         return FindLeveledItem(level, helmets);
     }
 
+    /// <summary>
+    /// Get a random accessory for a certain type of armor (helmet or chestplate)
+    /// </summary>
+    /// <param name="type"></param>
+    /// <returns></returns>
     public ItemModule GetRandomAccessory(int type)
     {
         if (type == 1)
@@ -88,6 +107,11 @@ public class ItemModuleDatabase : MonoBehaviour {
         }
     }
 
+    /// <summary>
+    /// Get a randomly generate sword - only the blade depends on the level
+    /// </summary>
+    /// <param name="level"></param>
+    /// <returns></returns>
     public ItemModule[] GetSword(int level)
     {
         ItemModule[] items = new ItemModule[3];
@@ -96,5 +120,4 @@ public class ItemModuleDatabase : MonoBehaviour {
         items[2] = handles[Random.Range(0, handles.Count)];
         return items;
     }
-
 }

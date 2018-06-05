@@ -3,7 +3,10 @@ using System.Collections.Generic;
 using LitJson;
 using System.IO;
 
-//Loads all of the Skill data from the json file and holds it for other scripts to use
+//NOT IN USE
+/// <summary>
+/// Loads all of the Skill data from the json file and holds it for other scripts to use
+/// </summary>
 public class SkillDatabase : MonoBehaviour
 {
     public Dictionary<int, Skill> Skills = new Dictionary<int, Skill>();
@@ -48,14 +51,14 @@ public class Skill
 
     public Skill(int id, string title, string description, string sprite)
     {
-        this.Id = id;
-        this.Title = title;
-        this.Description = description;
-        this.Sprite = Resources.Load<Sprite>("Skills/" + sprite);
+        Id = id;
+        Title = title;
+        Description = description;
+        Sprite = Resources.Load<Sprite>("Skills/" + sprite);
     }
 
     public Skill()
     {
-        this.Id = -1;
+        Id = -1;
     }
 }

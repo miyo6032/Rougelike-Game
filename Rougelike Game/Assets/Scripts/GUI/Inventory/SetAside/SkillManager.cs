@@ -1,11 +1,9 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
+//NOT IN USE
 //Handles the input for skills, the active and passive skills.
 public class SkillManager : MonoBehaviour {
-
-    SkillSlot[] skillSlots = new SkillSlot[8];
+    private readonly SkillSlot[] skillSlots = new SkillSlot[8];
 
     KeyCode[] skillKeys = { KeyCode.Q, KeyCode.E, KeyCode.R, KeyCode.F, KeyCode.Keypad1, KeyCode.Keypad2, KeyCode.Keypad3, KeyCode.Keypad4 };
 

@@ -1,12 +1,17 @@
-﻿//Detects when an item is placed in this slot, and updates the hotbar
-public class InventoryHotbarSlot : ItemSlot {
-
+﻿/// <summary>
+/// Detects when an item is placed in this slot, and updates the hotbar
+/// </summary>
+public class InventoryHotbarSlot : ItemSlot
+{
     public HotbarSlot hotbarSlot;
 
-    public override void SetItem(ItemInstance item)
+    /// <summary>
+    /// Used to detect an item change
+    /// </summary>
+    /// <param name="itemInstance"></param>
+    public override void SetItem(ItemInstance itemInstance)
     {
-        base.SetItem(item);
-        hotbarSlot.UpdateItem(item);
+        base.SetItem(itemInstance);
+        hotbarSlot.UpdateItem(itemInstance);
     }
-
 }

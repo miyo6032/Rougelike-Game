@@ -1,7 +1,9 @@
 ﻿using UnityEngine;
 using UnityEngine.EventSystems;
 
-//When the enemy is clicked upon, the player goes and attacks that enemy
+/// <summary>
+/// When the enemy is clicked upon, set the player to move and attack the enemy
+/// </summary>
 public class EnemyClick : MonoBehaviour, IPointerClickHandler
 {
     PlayerMovement playerMovement;

@@ -2,51 +2,57 @@
 using UnityEngine.UI;
 using System.Collections.Generic;
 
-//Keeps track of enemy stats like attack and health - nothing too special
-public class EnemyStats : MonoBehaviour {
-
+/// <summary>
+/// Keeps track of enemy health and other stats - also handles death
+/// </summary>
+public class EnemyStats : MonoBehaviour
+{
     public int minAttack;
     public int maxAttack;
     private int health;
     public int maxHealth;
     public int level;
-
     public LootBag lootBagPrefab;
     public LayerMask bagLayerMask;
     public Vector2Int dropRange = new Vector2Int(0, 3);
-
     public Animator damageCounter;
     Animator animator;
     Text damageText;
     Slider healthSlider;
 
-    void Start()
+    private void Start()
     {
         damageText = HelperScripts.GetComponentFromChildrenExc<Text>(transform);
         healthSlider = HelperScripts.GetComponentFromChildrenExc<Slider>(transform);
         animator = GetComponent<Animator>();
         health = maxHealth;
     }
-
-    //Damage the enemy, generate the damage counter, and update the health ui
+    /// <summary>
+    /// Damage the enemy, generate the damage counter, and update the health ui
+    /// </summary>
+    /// <param name="damage">Amount to damage the enemy</param>
     public void DamageEnemy(int damage)
     {
         health = Mathf.Clamp(health - damage, 0, health);
         damageCounter.SetTrigger("damage");
         animator.SetTrigger("damage");
         damageText.text = "" + damage;
-        healthSlider.value = health / (float)maxHealth * 100;
-        if(health <= 0)
+        healthSlider.value = health / (float) maxHealth * 100;
+        if (health <= 0)
         {
             Death();
         }
     }
 
-    void Death()
+    /// <summary>
+    /// When the enemy dies, drop its items and destroy the enemy
+    /// </summary>
+    private void Death()
     {
         List<ItemSave> itemDrops = StaticCanvasList.instance.itemDropGenerator.GenerateItemDrops(level, dropRange);
-        if(itemDrops.Count > 0)
+        if (itemDrops.Count > 0)
         {
+            //If a bag already exists, just add the items to that bag
             LootBag existingBag = GetBag();
             if (existingBag)
             {
@@ -61,7 +67,10 @@ public class EnemyStats : MonoBehaviour {
         Destroy(gameObject);
     }
 
-    void DropNewBag(List<ItemSave> itemDrops)
+    /// <summary>
+    /// If the enemy dies on an empty space, drop a new loot bag
+    /// </summary>
+    private void DropNewBag(List<ItemSave> itemDrops)
     {
         LootBag bag = Instantiate(lootBagPrefab);
         bag.AddItems(itemDrops);
@@ -69,10 +78,14 @@ public class EnemyStats : MonoBehaviour {
         bag.transform.position = transform.position;
     }
 
-    LootBag GetBag()
+    /// <summary>
+    /// Tries to get an existing bag where the enemy dies
+    /// </summary>
+    /// <returns></returns>
+    private LootBag GetBag()
     {
         Collider2D[] colliders = Physics2D.OverlapPointAll(transform.position, bagLayerMask);
-        foreach(Collider2D col in colliders)
+        foreach (Collider2D col in colliders)
         {
             LootBag bag = col.GetComponent<LootBag>();
             if (bag)
@@ -80,7 +93,7 @@ public class EnemyStats : MonoBehaviour {
                 return bag;
             }
         }
+
         return null;
     }
-
 }

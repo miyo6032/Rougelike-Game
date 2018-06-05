@@ -1,11 +1,13 @@
 ﻿using UnityEngine;
 
-//In charge of rounding the camera movement so there is no pixel weirdness
-public class PixelMovement : MonoBehaviour {
-
+/// <summary>
+/// In charge of rounding the camera movement to maintain crisp pixels
+/// </summary>
+public class PixelMovement : MonoBehaviour
+{
     Vector3 position;
 
-	void Awake()
+    void Awake()
     {
         position = transform.position;
         transform.position = position + new Vector3(-0.1f, -0.1f);
@@ -20,5 +22,4 @@ public class PixelMovement : MonoBehaviour {
     {
         position = pos;
     }
-
 }

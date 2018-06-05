@@ -1,4 +1,7 @@
-﻿public class ItemModule
+﻿/// <summary>
+/// A piece of an item to be constructed in ItemGenerator
+/// </summary>
+public class ItemModule
 {
     public string Title;
     public string Sprite;

@@ -1,54 +1,60 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
-//Holds all item textures
-public class TextureDatabase : MonoBehaviour {
+/// <summary>
+/// Holds all of the item textures for lookup
+/// </summary>
+public class TextureDatabase : MonoBehaviour
+{
+    private readonly Dictionary<string, Sprite> textures = new Dictionary<string, Sprite>();
+    private readonly string[] itemCategories = {"Armor", "Swords", "Helmets"};
 
-    Dictionary<string, Sprite> textures = new Dictionary<string, Sprite>();
-
-    string[] itemCategories = { "Armor", "Swords", "Helmets" };
-
-    //Called by inventoryManager
+    /// <summary>
+    /// Load every texture into the database
+    /// </summary>
     public void LoadAllTextures()
     {
+        // Load all item textures
         Sprite[] sprites = Resources.LoadAll<Sprite>("ItemIcons/Items");
         foreach (Sprite sprite in sprites)
         {
             string path = sprite.ToString();
-            path = path.Substring(0, path.IndexOf(" "));
+            path = path.Substring(0, path.IndexOf(" ", StringComparison.Ordinal));
             textures.Add(path, sprite);
         }
+
         //Load the textures from the item modules
-        Dictionary<string, Sprite> itemModuleTextures = LoadModuleTextures();
-        foreach (KeyValuePair<string, Sprite> texture in itemModuleTextures)
-        {
-            textures.Add(texture.Key, texture.Value);
-        }
+        LoadModuleTextures();
         textures.Add("Invisible", Resources.Load<Sprite>("ItemIcons/Invisible"));
     }
 
-    //Loads textures for item pieces for equipment
-    Dictionary<string, Sprite> LoadModuleTextures()
+    /// <summary>
+    /// Loads textures for item pieces for equipment
+    /// </summary>
+    private void LoadModuleTextures()
     {
-        Dictionary<string, Sprite> textures = new Dictionary<string, Sprite>();
         foreach (string category in itemCategories)
         {
             Sprite[] sprites = Resources.LoadAll<Sprite>("ItemIcons/" + category);
             foreach (Sprite sprite in sprites)
             {
                 string path = sprite.ToString();
-                path = path.Substring(0, path.IndexOf(" "));
+                path = path.Substring(0, path.IndexOf(" ", StringComparison.Ordinal));
                 textures.Add(path, sprite);
             }
         }
-        return textures;
     }
 
+    /// <summary>
+    /// Load a texture based on its resource name
+    /// </summary>
+    /// <param name="texture"></param>
+    /// <returns></returns>
     public Sprite LoadTexture(string texture)
     {
         Sprite sprite;
         textures.TryGetValue(texture, out sprite);
         return sprite;
     }
-
 }

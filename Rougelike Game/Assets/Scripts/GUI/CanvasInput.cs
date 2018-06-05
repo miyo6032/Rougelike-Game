@@ -1,12 +1,16 @@
 ﻿using UnityEngine;
 
-public class CanvasInput : MonoBehaviour {
-
+/// <summary>
+/// Handles the player's input for canvases
+/// </summary>
+public class CanvasInput : MonoBehaviour
+{
     public HotbarSlot[] hotbarSlots;
 
-	void Update () {
+    void Update()
+    {
         CheckInput();
-	}
+    }
 
     void CheckInput()
     {
@@ -35,5 +39,4 @@ public class CanvasInput : MonoBehaviour {
             hotbarSlots[3].UseItem();
         }
     }
-    
 }

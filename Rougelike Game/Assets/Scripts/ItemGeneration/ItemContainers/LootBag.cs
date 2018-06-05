@@ -1,15 +1,20 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-//Detects when the player enters and exits and activates the loot inventory
+/// <summary>
+/// Detects when the player enters and exits and activates the loot inventory
+/// </summary>
 public class LootBag : MonoBehaviour
 {
-
     public List<ItemSave> items = new List<ItemSave>();
 
+    /// <summary>
+    /// Adds the items to the items list
+    /// </summary>
+    /// <param name="itemDrops"></param>
     public void AddItems(List<ItemSave> itemDrops)
     {
-        foreach(ItemSave item in itemDrops)
+        foreach (ItemSave item in itemDrops)
         {
             if (items.Count < 9)
             {
@@ -35,11 +40,10 @@ public class LootBag : MonoBehaviour
         {
             StaticCanvasList.instance.lootInventory.UnloadInventory();
             StaticCanvasList.instance.gameUI.ToggleLootPanel();
-            if(items.Count == 0)
+            if (items.Count == 0)
             {
                 Destroy(gameObject);
             }
         }
     }
-
 }

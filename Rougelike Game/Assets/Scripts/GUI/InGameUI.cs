@@ -1,23 +1,33 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
-public class InGameUI : MonoBehaviour {
-    
-    public Slider healthSlider; //The player's in-game health bar
+/// <summary>
+/// Represents the ui for active game (like health and hot bars)
+/// </summary>
+public class InGameUI : MonoBehaviour
+{
+    public Slider healthSlider; // The player's in-game health bar
     public GameObject pauseUI;
     public GameObject invUI;
     public GameObject menuPopup;
     public GameObject lootPopupPanel;
 
-	void Start () {
-	}
-
-    //Update the player's in game health bar
-    public void UpdateHealth(float healthPercent)
+    void Start()
     {
-        healthSlider.value = healthPercent; 
     }
 
+    /// <summary>
+    /// Update the player's in game health bar
+    /// </summary>
+    /// <param name="healthPercent"></param>
+    public void UpdateHealth(float healthPercent)
+    {
+        healthSlider.value = healthPercent;
+    }
+
+    /// <summary>
+    /// Pauses by setting the timescale to 0
+    /// </summary>
     public void Pause()
     {
         Time.timeScale = 0;
@@ -38,14 +48,7 @@ public class InGameUI : MonoBehaviour {
 
     public void ToggleLootPanel()
     {
-        if (lootPopupPanel.activeSelf)
-        {
-            lootPopupPanel.SetActive(false);
-        }
-        else
-        {
-            lootPopupPanel.SetActive(true);
-        }
+        lootPopupPanel.SetActive(!lootPopupPanel.activeSelf);
     }
 
     public void OpenLootPanel()
@@ -57,5 +60,4 @@ public class InGameUI : MonoBehaviour {
     {
         lootPopupPanel.SetActive(false);
     }
-
 }

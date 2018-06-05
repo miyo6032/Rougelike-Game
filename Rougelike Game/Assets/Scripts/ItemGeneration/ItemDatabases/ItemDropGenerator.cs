@@ -1,9 +1,14 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 
+/// <summary>
+/// Generates items drops
+/// </summary>
 public class ItemDropGenerator : MonoBehaviour {
 
-    //Generate items drops - varies level and choose an amount based on a range
+    /// <summary>
+    /// Generate items drops - varies level and choose an amount based on a range
+    /// </summary>
     public List<ItemSave> GenerateItemDrops(int level, Vector2Int dropRange)
     {
         List<ItemSave> items = new List<ItemSave>();
