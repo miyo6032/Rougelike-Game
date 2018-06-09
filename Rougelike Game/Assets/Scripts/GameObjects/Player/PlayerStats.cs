@@ -1,38 +1,46 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using System.Collections.Generic;
 
 /// <summary>
 /// Keeps track of the player's game status, and holds status functions for updating stats.
 /// </summary>
 public class PlayerStats : MonoBehaviour
 {
-    // The player's in-game health that is updated regularly
-    private int health;
-
     // The player's maximum health that is fixed at the start of every game
     public int maxHealth;
 
     // The player's attack power - is the base damage to an enemy before other caluclations are added in
     public int minAttack;
     public int maxAttack;
-
-    // The player's defense - used in the damage calculation when the player is hit
-    private int defence;
-
-    // Just standard rpg experience, when the player has enough they will level up
-    private int experience;
-
-    // Leveling up will allow the player to choose upgrades from the skill tree and also improve the base stats by a little bit
-    private int level = 10;
-
-    // The player's focus bar - used for special skills
-    private int focus;
+    private int baseAttack;
 
     // The maximum amount of focus a player can store at one time
     public int maxFocus;
 
     // The speed that a player can it - influenced by strength and weapon weight
     public float hitSpeed;
+
+    // The player's in-game health that is updated regularly
+    private int health;
+
+    // The player's defense - used in the damage calculation when the player is hit
+    private int defence;
+    private int baseDefense;
+
+    // Just standard rpg experience, when the player has enough they will level up
+    private int experience;
+    private int maxExperience = 50;
+
+    // Leveling up will allow the player to choose upgrades from the skill tree and also improve the base stats by a little bit
+    private int level = 1;
+
+    // The upgrade points for a player after leveling up
+    public int upgradePoints = 5;
+
+    // The player's focus bar - used for special skills
+    private int focus;
+
     Animator damageCounter;
     Animator animator;
     PlayerAnimation playerAnimation;
@@ -44,14 +52,43 @@ public class PlayerStats : MonoBehaviour
         damageCounter = HelperScripts.GetComponentFromChildrenExc<Animator>(transform);
         damageText = HelperScripts.GetComponentFromChildrenExc<Text>(transform);
         health = maxHealth;
-        UpdateEquipStats();
-        StaticCanvasList.instance.statUI.UpdateStatUI(level, experience, health, focus, defence, minAttack, maxAttack);
+        UpdateStats();
+        StaticCanvasList.instance.statUI.UpdateStatUI(level, experience, maxExperience, health,maxHealth, focus, maxFocus, defence, minAttack, maxAttack);
         playerAnimation = GetComponent<PlayerAnimation>();
+    }
+
+    /// <summary>
+    /// Add xp and handle leveling up
+    /// </summary>
+    /// <param name="xp"></param>
+    public void AddXP(int xp)
+    {
+        experience += xp;
+        if (experience >= maxExperience)
+        {
+            // Upgrades points granted at level 30: 5
+            upgradePoints += Mathf.CeilToInt(level/6f);
+            level++;
+            experience = experience - maxExperience;
+            maxExperience += Mathf.CeilToInt(maxExperience * 0.2f);
+        }
+        UpdateStats();
     }
 
     public int GetLevel()
     {
         return level;
+    }
+
+    public void UseUpgradePoint()
+    {
+        upgradePoints--;
+        UpdateStats();
+    }
+
+    public int GetUpgradePoints()
+    {
+        return upgradePoints;
     }
 
     /// <summary>
@@ -66,6 +103,7 @@ public class PlayerStats : MonoBehaviour
         animator.SetTrigger("damage");
         damageText.text = "" + damage;
         StaticCanvasList.instance.gameUI.UpdateHealth(health / (float) maxHealth * 100);
+        UpdateStats();
     }
 
     /// <summary>
@@ -76,6 +114,7 @@ public class PlayerStats : MonoBehaviour
     {
         health = Mathf.Clamp(health + amount, 0, maxHealth);
         StaticCanvasList.instance.gameUI.UpdateHealth(health / (float) maxHealth * 100);
+        UpdateStats();
     }
 
     /// <summary>
@@ -90,7 +129,7 @@ public class PlayerStats : MonoBehaviour
         if (level >= inst.item.ItemLevel)
         {
             inst.equipped = true;
-            UpdateEquipStats();
+            UpdateStats();
             playerAnimation.ColorAnimator(slot.gameObject.name, inst.item.ItemColor);
             return true;
         }
@@ -106,17 +145,17 @@ public class PlayerStats : MonoBehaviour
     {
         inst.equipped = false;
         inst.slot.GetComponent<EquipSlot>().SlotImageToEmpty();
-        UpdateEquipStats();
+        UpdateStats();
     }
 
     /// <summary>
     /// Update the player's stats by going over all the equipped items and summing their stats
     /// </summary>
-    public void UpdateEquipStats()
+    public void UpdateStats()
     {
-        defence = 0;
-        minAttack = 0;
-        maxAttack = 0;
+        defence = baseDefense;
+        minAttack = baseAttack;
+        maxAttack = baseAttack;
 
         // Sum all of the equipment stats
         foreach (EquipSlot slot in StaticCanvasList.instance.inventoryManager.equipSlots)
@@ -130,7 +169,21 @@ public class PlayerStats : MonoBehaviour
             }
         }
 
-        StaticCanvasList.instance.statUI.UpdateStatUI(level, experience, maxHealth, maxFocus, defence, minAttack,
-            maxAttack);
+        StaticCanvasList.instance.statUI.UpdateStatUI(level, experience, maxExperience, health, maxHealth, focus, maxFocus, defence, minAttack, maxAttack);
+        StaticCanvasList.instance.skillTree.upgradePointsText.text = "Availible Upgrade Points: " + upgradePoints;
+    }
+
+    /// <summary>
+    /// Adds a new upgrade to the player
+    /// </summary>
+    /// <param name="upgrade"></param>
+    public void AddUpgrade(Upgrade upgrade)
+    {
+        this.maxHealth += upgrade.maxHealthMultiplier;
+        this.baseDefense += upgrade.defenseMultiplier;
+        this.baseAttack += upgrade.attackMultiplier;
+        this.maxFocus += upgrade.maxFocusMultiplier;
+        this.hitSpeed += upgrade.hitSpeedMultiplier;
+        UpdateStats();
     }
 }

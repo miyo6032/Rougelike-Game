@@ -2,61 +2,120 @@
 	{
 		"title": "of the Void",
 		"sprite" : "Belts&Collars_0",
-		"color" : ""
+		"color" : "",
+		"stats" : {
+			"minAttack" : 0,
+			"maxAttack": 0,
+			"defense" : 1
+		}
 	},
 
 	{
 		"title": "of the Paladin",
 		"sprite" : "Belts&Collars_1",
-		"color" : ""
+		"color" : "",
+		"stats" : {
+			"minAttack" : 0,
+			"maxAttack": 0,
+			"defense" : 1
+		}
+
 	},
 
 	{
 		"title": "of Ruby",
 		"sprite" : "Belts&Collars_2",
-		"color" : ""
+		"color" : "",
+		"stats" : {
+			"minAttack" : 0,
+			"maxAttack": 0,
+			"defense" : 3
+		}
+
 	},
 
 	{
 		"title": "of the Jungle",
 		"sprite" : "Belts&Collars_3",
-		"color" : ""
+		"color" : "",
+		"stats" : {
+			"minAttack" : 0,
+			"maxAttack": 0,
+			"defense" : 2
+		}
+
 	},
 
 	{
 		"title": "of Fire",
 		"sprite" : "Belts&Collars_4",
-		"color" : ""
+		"color" : "",
+		"stats" : {
+			"minAttack" : 0,
+			"maxAttack": 0,
+			"defense" : 2
+		}
+
 	},
 
 	{
 		"title": "of Emerald",
 		"sprite" : "Belts&Collars_5",
-		"color" : ""
+		"color" : "",
+		"stats" : {
+			"minAttack" : 0,
+			"maxAttack": 0,
+			"defense" : 3
+		}
+
 	},
 
 	{
 		"title": "of Sapphire",
 		"sprite" : "Belts&Collars_6",
-		"color" : ""
+		"color" : "",
+		"stats" : {
+			"minAttack" : 0,
+			"maxAttack": 0,
+			"defense" : 3
+		}
+
 	},
 
 	{
 		"title": "of Magic",
 		"sprite" : "Belts&Collars_7",
-		"color" : ""
+		"color" : "",
+		"stats" : {
+			"minAttack" : 0,
+			"maxAttack": 0,
+			"defense" : 3
+		}
+
 	},
 
 	{
 		"title": "of Honor",
 		"sprite" : "Belts&Collars_8",
-		"color" : ""
+		"color" : "",
+		"stats" : {
+			"minAttack" : 0,
+			"maxAttack": 0,
+			"defense" : 4
+		}
+
 	},
 
 	{
 		"title": "of Reflection",
 		"sprite" : "Belts&Collars_9",
-		"color" : ""
+		"color" : "",
+		"stats" : {
+			"minAttack" : 0,
+			"maxAttack": 0,
+			"defense" : 2
+		}
+
 	}
 
 ]

@@ -10,6 +10,7 @@ public class PlayerAnimation : MonoBehaviour
     public SpriteRenderer rightSword;
     public SpriteRenderer armor;
     public SpriteRenderer helmet;
+    public SpriteRenderer skin;
 
     // Used in animation to face left or right depending on movement
     bool facingRight = true;
@@ -93,10 +94,12 @@ public class PlayerAnimation : MonoBehaviour
     /// </summary>
     void Flip()
     {
+        leftSword.flipX = facingRight;
+        rightSword.flipX = facingRight;
+        armor.flipX = facingRight;
+        helmet.flipX = facingRight;
+        skin.flipX = facingRight;
         facingRight = !facingRight;
-        Vector3 scale = transform.localScale;
-        scale.x *= -1;
-        transform.localScale = scale;
     }
 
     void SetTriggers(string trigger)

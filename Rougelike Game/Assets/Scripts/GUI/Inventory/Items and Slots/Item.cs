@@ -1,8 +1,8 @@
-﻿/// <summary>
+﻿using UnityEngine;/// <summary>
 /// Represents an item's data
 /// </summary>
 [System.Serializable]
-public class Item
+public class Item : ScriptableObject
 {
     public string Title { get; set; }
     public int Value { get; set; }

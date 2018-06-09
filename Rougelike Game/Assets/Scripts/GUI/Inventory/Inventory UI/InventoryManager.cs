@@ -29,6 +29,14 @@ public class InventoryManager : MonoBehaviour
         AddItemToSlot(itemGenerator.GenerateItem(1, 0), equipSlots[1]);
         AddItemToSlot(itemGenerator.GenerateItem(1, 1), equipSlots[2]);
         AddItemToSlot(itemGenerator.GenerateItem(1, 2), equipSlots[3]);
+
+        AddGeneratedItem(1, 0);
+        AddGeneratedItem(1, 0);
+        AddGeneratedItem(2, 0);
+        AddGeneratedItem(2, 0);
+        AddGeneratedItem(3, 0);
+        AddGeneratedItem(3, 0);
+
         AddItem(itemDatabase.GetItemByName("Minor Health Potion"), 3);
         gameObject.SetActive(false);
     }

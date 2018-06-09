@@ -22,6 +22,10 @@ public class CanvasInput : MonoBehaviour
         {
             StaticCanvasList.instance.statUI.Toggle();
         }
+        else if (Input.GetButtonDown("SkillTree"))
+        {
+            StaticCanvasList.instance.skillTree.Toggle();
+        }
         else if ((Input.GetButtonDown("Hotbar1")))
         {
             hotbarSlots[0].UseItem();

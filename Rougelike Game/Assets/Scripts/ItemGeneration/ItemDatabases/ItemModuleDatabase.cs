@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using LitJson;
 using System.IO;
+using System.Linq;
 
 /// <summary>
 /// Loads all of the item data from the json file and holds it for other scripts to use
@@ -31,8 +32,25 @@ public class ItemModuleDatabase : MonoBehaviour
     {
         for (int i = 0; i < itemData.Count; i++)
         {
-            parts.Add(new ItemModule(itemData[i]["title"].ToString(), itemData[i]["sprite"].ToString(),
-                itemData[i]["color"].ToString()));
+            if (itemData[i].Keys.Contains("stats"))
+            {
+                parts.Add(new ItemModule(
+                    itemData[i]["title"].ToString(), 
+                    itemData[i]["sprite"].ToString(),
+                    itemData[i]["color"].ToString(),
+                    (int)itemData[i]["stats"]["minAttack"],
+                    (int)itemData[i]["stats"]["maxAttack"],
+                    (int)itemData[i]["stats"]["defense"]
+                ));
+            }
+            else
+            {
+                parts.Add(new ItemModule(
+                    itemData[i]["title"].ToString(),
+                    itemData[i]["sprite"].ToString(),
+                    itemData[i]["color"].ToString()
+                ));
+            }
         }
     }
 
@@ -40,8 +58,11 @@ public class ItemModuleDatabase : MonoBehaviour
     {
         for (int i = 0; i < itemData.Count; i++)
         {
-            parts.Add(new LeveledItemModule(itemData[i]["title"].ToString(), itemData[i]["sprite"].ToString(),
-                itemData[i]["color"].ToString(), (int) itemData[i]["level"]));
+            parts.Add(new LeveledItemModule(
+                itemData[i]["title"].ToString(), 
+                itemData[i]["sprite"].ToString(),
+                itemData[i]["color"].ToString(), 
+                (int) itemData[i]["level"]));
         }
     }
 
@@ -56,7 +77,7 @@ public class ItemModuleDatabase : MonoBehaviour
         List<LeveledItemModule> possibleModules = new List<LeveledItemModule>();
         foreach (LeveledItemModule module in modules)
         {
-            if (module.level >= level - 1 && module.level <= level + 1)
+            if (module.level == level)
             {
                 possibleModules.Add(module);
             }
@@ -101,10 +122,7 @@ public class ItemModuleDatabase : MonoBehaviour
         {
             return beltsAndCollars[Random.Range(0, beltsAndCollars.Count)];
         }
-        else
-        {
-            return helmetAccessories[Random.Range(0, helmetAccessories.Count)];
-        }
+        return helmetAccessories[Random.Range(0, helmetAccessories.Count)];
     }
 
     /// <summary>

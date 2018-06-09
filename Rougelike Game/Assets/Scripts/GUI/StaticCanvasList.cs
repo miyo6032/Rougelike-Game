@@ -21,6 +21,7 @@ public class StaticCanvasList : MonoBehaviour {
     public TextureDatabase textureDatabase;
     public PanelManagement panelManagement;
     public ItemDropGenerator itemDropGenerator;
+    public SkillTree skillTree;
 
 	void Start () {
 		if(instance == null)
