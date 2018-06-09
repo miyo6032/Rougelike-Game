@@ -1,18 +1,22 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 
 /// <summary>
 /// Keeps track of enemy health and other stats - also handles death
 /// </summary>
 public class EnemyStats : MonoBehaviour
 {
+    [Header("Stats")]
     public int minAttack;
     public int maxAttack;
     public int defense;
     private int health;
     public int maxHealth;
     public int level;
+    public int experienceDrop;
+    [Header("Components")]
     public LootBag lootBagPrefab;
     public LayerMask bagLayerMask;
     public Vector2Int dropRange = new Vector2Int(0, 3);
@@ -20,12 +24,14 @@ public class EnemyStats : MonoBehaviour
     Animator animator;
     Text damageText;
     Slider healthSlider;
+    private PlayerStats playerStats;
 
     private void Start()
     {
         damageText = HelperScripts.GetComponentFromChildrenExc<Text>(transform);
         healthSlider = HelperScripts.GetComponentFromChildrenExc<Slider>(transform);
         animator = GetComponent<Animator>();
+        playerStats = GameObject.Find("Player").GetComponent<PlayerStats>();
         health = maxHealth;
     }
     /// <summary>
@@ -65,7 +71,7 @@ public class EnemyStats : MonoBehaviour
                 DropNewBag(itemDrops);
             }
         }
-
+        playerStats.AddXP(experienceDrop);
         Destroy(gameObject);
     }
 

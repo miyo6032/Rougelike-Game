@@ -12,19 +12,21 @@ public class PlayerStatUI : MonoBehaviour
     public Text maxFocus;
     public Text defense;
     public Text attack;
+    public Slider experienceSlider;
 
     /// <summary>
     /// Updates the UI by passing int all of the player's statistics
     /// </summary>
-    public void UpdateStatUI(int level, int experience, int maxHealth, int maxFocus, int defence, int minAtack,
+    public void UpdateStatUI(int level, int experience, int maxExperience, int health, int maxHealth, int focus, int maxFocus, int defence, int minAtack,
         int maxAttack)
     {
         this.level.text = "Level: " + level;
-        this.experience.text = experience + " to next level";
-        this.maxHealth.text = "Max Health: " + maxHealth;
-        this.maxFocus.text = "Max Focus: " + maxFocus;
-        this.defense.text = "Total Defense: " + defence;
-        this.attack.text = "Total Damage per Hit:\n" + minAtack + " to " + maxAttack;
+        this.experience.text = "XP: " + experience + "/" + maxExperience;
+        this.maxHealth.text = "HP: " + health + "/" + maxHealth;
+        this.maxFocus.text = "Focus " + focus + "/" + maxFocus;
+        this.defense.text = "Defense: " + defence;
+        this.attack.text = "Damage per Hit:\n" + minAtack + " to " + maxAttack;
+        this.experienceSlider.value = (float) experience / maxExperience;
     }
 
     public void Toggle()

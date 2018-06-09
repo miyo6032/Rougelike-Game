@@ -7,9 +7,6 @@ using System.Collections.Generic;
 /// </summary>
 public class PlayerStats : MonoBehaviour
 {
-    // The player's in-game health that is updated regularly
-    private int health;
-
     // The player's maximum health that is fixed at the start of every game
     public int maxHealth;
 
@@ -17,23 +14,31 @@ public class PlayerStats : MonoBehaviour
     public int minAttack;
     public int maxAttack;
 
-    // The player's defense - used in the damage calculation when the player is hit
-    private int defence;
-
-    // Just standard rpg experience, when the player has enough they will level up
-    private int experience;
-
-    // Leveling up will allow the player to choose upgrades from the skill tree and also improve the base stats by a little bit
-    private int level = 10;
-
-    // The player's focus bar - used for special skills
-    private int focus;
-
     // The maximum amount of focus a player can store at one time
     public int maxFocus;
 
     // The speed that a player can it - influenced by strength and weapon weight
     public float hitSpeed;
+
+    // The player's in-game health that is updated regularly
+    private int health;
+
+    // The player's defense - used in the damage calculation when the player is hit
+    private int defence;
+
+    // Just standard rpg experience, when the player has enough they will level up
+    private int experience;
+    private int maxExperience = 50;
+
+    // Leveling up will allow the player to choose upgrades from the skill tree and also improve the base stats by a little bit
+    private int level = 1;
+
+    // The upgrade points for a player after leveling up
+    private int upgradePoints = 0;
+
+    // The player's focus bar - used for special skills
+    private int focus;
+
     Animator damageCounter;
     Animator animator;
     PlayerAnimation playerAnimation;
@@ -46,13 +51,42 @@ public class PlayerStats : MonoBehaviour
         damageText = HelperScripts.GetComponentFromChildrenExc<Text>(transform);
         health = maxHealth;
         UpdateStats();
-        StaticCanvasList.instance.statUI.UpdateStatUI(level, experience, health, focus, defence, minAttack, maxAttack);
+        StaticCanvasList.instance.statUI.UpdateStatUI(level, experience, maxExperience, health,maxHealth, focus, maxFocus, defence, minAttack, maxAttack);
         playerAnimation = GetComponent<PlayerAnimation>();
+    }
+
+    /// <summary>
+    /// Add xp and handle leveling up
+    /// </summary>
+    /// <param name="xp"></param>
+    public void AddXP(int xp)
+    {
+        experience += xp;
+        if (experience >= maxExperience)
+        {
+            // Upgrades points granted at level 30: 5
+            upgradePoints += Mathf.CeilToInt(level/6f);
+            level++;
+            experience = experience - maxExperience;
+            maxExperience += Mathf.CeilToInt(maxExperience * 0.2f);
+        }
+        UpdateStats();
     }
 
     public int GetLevel()
     {
         return level;
+    }
+
+    public void UseUpgradePoint()
+    {
+        upgradePoints--;
+        UpdateStats();
+    }
+
+    public int GetUpgradePoints()
+    {
+        return upgradePoints;
     }
 
     /// <summary>
@@ -131,8 +165,8 @@ public class PlayerStats : MonoBehaviour
             }
         }
 
-        StaticCanvasList.instance.statUI.UpdateStatUI(level, experience, maxHealth, maxFocus, defence, minAttack,
-            maxAttack);
+        StaticCanvasList.instance.statUI.UpdateStatUI(level, experience, maxExperience, health, maxHealth, focus, maxFocus, defence, minAttack, maxAttack);
+        StaticCanvasList.instance.skillTree.upgradePointsText.text = "Availible Upgrade Points: " + upgradePoints;
     }
 
     /// <summary>

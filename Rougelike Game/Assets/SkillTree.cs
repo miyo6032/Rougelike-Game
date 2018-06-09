@@ -15,6 +15,7 @@ public class SkillTree : MonoBehaviour
     public Transform rimTranform;
     public Transform backgroundTransform;
     public Image image;
+    public Text upgradePointsText;
     public int treeRowWidth = 7;
     [Header("Sprites")] public Sprite sideLink;
     public Sprite downLink;
@@ -33,11 +34,17 @@ public class SkillTree : MonoBehaviour
     /// Calculate which upgrades can be unlocked next and update them
     /// </summary>
     /// <param name="instance"></param>
-    public void UpdatePlayerUpgrades(UpgradeInstance instance)
+    public bool ApplyUpgrade(UpgradeInstance instance)
     {
-        playerStats.AddUpgrade(instance.upgrade);
-        rims[instance.id].sprite = unlockedRim;
-        SetNeighborsUnlockable(instance.id);
+        if (playerStats.GetUpgradePoints() > 0)
+        {
+            playerStats.AddUpgrade(instance.upgrade);
+            rims[instance.id].sprite = unlockedRim;
+            SetNeighborsUnlockable(instance.id);
+            playerStats.UseUpgradePoint();
+            return true;
+        }
+        return false;
     }
 
     private void Start()

@@ -36,7 +36,7 @@ public class EnemyMovement : MovingObject
     {
         attackAnimator.speed = attackAnimator.speed / turnDelay;
         animator = GetComponent<Animator>();
-        target = GameObject.Find("Player").GetComponent<PlayerMovement>().transform;
+        target = GameObject.Find("Player").transform;
         playerCol = target.gameObject.GetComponent<BoxCollider2D>();
         enemyCol = GetComponent<BoxCollider2D>();
         stats = GetComponent<EnemyStats>();

@@ -29,11 +29,10 @@ public class UpgradeInstance : MonoBehaviour
     /// </summary>
     public void ApplyUpgrade()
     {
-        if (!isUnlocked && canBeUnlocked)
-        {
+        if (isUnlocked || !canBeUnlocked) return;
+
+        if(StaticCanvasList.instance.skillTree.ApplyUpgrade(this))
             isUnlocked = true;
-            StaticCanvasList.instance.skillTree.UpdatePlayerUpgrades(this);
-        }
     }
 
     public void SetCanBeApplied(bool canBeApplied)
