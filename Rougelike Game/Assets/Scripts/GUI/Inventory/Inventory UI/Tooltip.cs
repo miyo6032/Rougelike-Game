@@ -45,17 +45,18 @@ public class Tooltip : MonoBehaviour
 
     string GetAttackString(Item item)
     {
-        if (item.Attack == 0 && item.MaxAttack == 0)
+        if (item.Attack == 0)
         {
             return "";
         }
 
-        if (item.Attack != item.MaxAttack)
+        if (item.Attack == item.MaxAttack)
         {
-            return "Attack: " + item.Attack + " - " + item.MaxAttack + "\n\n";
+            return item.Attack + " Damage\n\n";
         }
 
-        return "Attack: " + item.Attack + "\n\n";
+        return item.Attack + " - " + item.MaxAttack + " Damage\n\n";
+
     }
 
     string GetDefenseString(Item item)
@@ -65,7 +66,7 @@ public class Tooltip : MonoBehaviour
             return "";
         }
 
-        return "Defense: " + item.Defence + "\n\n";
+        return "+" + item.Defence + " Defense\n\n";
     }
 
     /// <summary>

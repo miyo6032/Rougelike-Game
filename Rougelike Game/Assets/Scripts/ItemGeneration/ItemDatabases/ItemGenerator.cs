@@ -5,6 +5,9 @@
 /// </summary>
 public class ItemGenerator : MonoBehaviour
 {
+
+    public int damageStart = 5;
+
     public Item GenerateItem(int level, int equipmentType)
     {
         //The sword
@@ -24,10 +27,12 @@ public class ItemGenerator : MonoBehaviour
         ItemModule hilt = pieces[1];
         ItemModule handle = pieces[2];
         string title = hilt.Title + " " + blade.Title + " " + handle.Title;
-        int attack = Mathf.RoundToInt(level * Random.Range(0.5f, 1f));
-        int maxAttack = Mathf.RoundToInt(attack + level * Random.Range(0.5f, 1f));
-        int defence = 0;
-        int value = attack + maxAttack + defence;
+        int bonusMinAttack = hilt.MinAttack + blade.MinAttack + handle.MinAttack;
+        int bonusMaxAttack = hilt.MaxAttack + blade.MaxAttack + handle.MaxAttack;
+        int attack = Mathf.RoundToInt(level + damageStart) + bonusMinAttack;
+        int maxAttack = Mathf.RoundToInt(attack + level/2 + damageStart) + bonusMaxAttack;
+        int defence = hilt.Defense + blade.Defense + handle.Defense;
+        int value = attack + maxAttack + defence * 2;
         string description = "";
         string[] sprites = {blade.Sprite, handle.Sprite, hilt.Sprite};
         Item sword = new Item(title, value, attack, maxAttack, defence, description, false, equipmentType, level,
@@ -50,11 +55,12 @@ public class ItemGenerator : MonoBehaviour
 
         string title;
         string[] sprites;
+        ItemModule accessory = new ItemModule("", "", "");
 
         //Handle case when item has accessory or not
         if (Random.Range(0, 2) == 0)
         {
-            ItemModule accessory = StaticCanvasList.instance.itemModuleDatabase.GetRandomAccessory(equipmentType);
+            accessory = StaticCanvasList.instance.itemModuleDatabase.GetRandomAccessory(equipmentType);
             title = armor.Title + " " + accessory.Title;
             sprites = new string[2];
             sprites[0] = armor.Sprite;
@@ -67,9 +73,12 @@ public class ItemGenerator : MonoBehaviour
             sprites[0] = armor.Sprite;
         }
 
-        int attack = 0;
-        int maxAttack = 0;
-        int defence = Mathf.RoundToInt(level * Random.Range(0.5f, 1.5f));
+        int bonusMinAttack = armor.MinAttack + accessory.MinAttack;
+        int bonusMaxAttack = armor.MaxAttack + accessory.MaxAttack;
+        int attack = bonusMinAttack;
+        int maxAttack = bonusMaxAttack;
+        int bonusDefense = armor.Defense + accessory.Defense;
+        int defence = Mathf.RoundToInt(level + damageStart) + bonusDefense;
         int value = attack + maxAttack + Mathf.RoundToInt(defence * 2f);
         string description = "";
         Item item = new Item(title, value, attack, maxAttack, defence, description, false, equipmentType, level,

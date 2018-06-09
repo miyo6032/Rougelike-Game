@@ -2,61 +2,121 @@
 	{
 		"title": "of Darkness",
 		"sprite" : "Accessories_0",
-		"color" : ""
+		"color" : "",
+		"stats" : {
+			"minAttack" : 0,
+			"maxAttack": 0,
+			"defense" : 1
+		}
+
 	},
 
 	{
 		"title": "of the Sun",
 		"sprite" : "Accessories_1",
-		"color" : ""
+		"color" : "",
+		"stats" : {
+			"minAttack" : 0,
+			"maxAttack": 0,
+			"defense" : 1
+		}
+
 	},
 
 	{
 		"title": "of the Jungle",
 		"sprite" : "Accessories_2",
-		"color" : ""
+		"color" : "",
+		"stats" : {
+			"minAttack" : 0,
+			"maxAttack": 0,
+			"defense" : 1
+		}
+
 	},
 
 	{
 		"title": "of Emerald",
 		"sprite" : "Accessories_3",
-		"color" : ""
+		"color" : "",
+		"stats" : {
+			"minAttack" : 0,
+			"maxAttack": 0,
+			"defense" : 3
+		}
+
 	},
 
 	{
 		"title": "of Fire",
 		"sprite" : "Accessories_4",
-		"color" : ""
+		"color" : "",
+		"stats" : {
+			"minAttack" : 0,
+			"maxAttack": 0,
+			"defense" : 3
+		}
+
 	},
 
 	{
 		"title": "of Sapphire",
 		"sprite" : "Accessories_5",
-		"color" : ""
+		"color" : "",
+		"stats" : {
+			"minAttack" : 0,
+			"maxAttack": 0,
+			"defense" : 3
+		}
+
 	},
 
 	{
 		"title": "of Onyx",
 		"sprite" : "Accessories_6",
-		"color" : ""
+		"color" : "",
+		"stats" : {
+			"minAttack" : 0,
+			"maxAttack": 0,
+			"defense" : 2
+		}
+
 	},
 
 	{
 		"title": "of Ice",
 		"sprite" : "Accessories_7",
-		"color" : ""
+		"color" : "",
+		"stats" : {
+			"minAttack" : 0,
+			"maxAttack": 0,
+			"defense" : 2
+		}
+
 	},
 
 	{
 		"title": "of Blood",
 		"sprite" : "Accessories_8",
-		"color" : ""
+		"color" : "",
+		"stats" : {
+			"minAttack" : 0,
+			"maxAttack": 0,
+			"defense" : 1
+		}
+
 	},
 
 	{
 		"title": "of Nature",
 		"sprite" : "Accessories_9",
-		"color" : ""
+		"color" : "",
+		"stats" : {
+			"minAttack" : 0,
+			"maxAttack": 0,
+			"defense" : 1
+		}
+
 	}
 
 

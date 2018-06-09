@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using System.Collections.Generic;
 
 /// <summary>
 /// Keeps track of the player's game status, and holds status functions for updating stats.
@@ -44,7 +45,7 @@ public class PlayerStats : MonoBehaviour
         damageCounter = HelperScripts.GetComponentFromChildrenExc<Animator>(transform);
         damageText = HelperScripts.GetComponentFromChildrenExc<Text>(transform);
         health = maxHealth;
-        UpdateEquipStats();
+        UpdateStats();
         StaticCanvasList.instance.statUI.UpdateStatUI(level, experience, health, focus, defence, minAttack, maxAttack);
         playerAnimation = GetComponent<PlayerAnimation>();
     }
@@ -90,7 +91,7 @@ public class PlayerStats : MonoBehaviour
         if (level >= inst.item.ItemLevel)
         {
             inst.equipped = true;
-            UpdateEquipStats();
+            UpdateStats();
             playerAnimation.ColorAnimator(slot.gameObject.name, inst.item.ItemColor);
             return true;
         }
@@ -106,13 +107,13 @@ public class PlayerStats : MonoBehaviour
     {
         inst.equipped = false;
         inst.slot.GetComponent<EquipSlot>().SlotImageToEmpty();
-        UpdateEquipStats();
+        UpdateStats();
     }
 
     /// <summary>
     /// Update the player's stats by going over all the equipped items and summing their stats
     /// </summary>
-    public void UpdateEquipStats()
+    public void UpdateStats()
     {
         defence = 0;
         minAttack = 0;
@@ -132,5 +133,20 @@ public class PlayerStats : MonoBehaviour
 
         StaticCanvasList.instance.statUI.UpdateStatUI(level, experience, maxHealth, maxFocus, defence, minAttack,
             maxAttack);
+    }
+
+    /// <summary>
+    /// Adds a new upgrade to the player
+    /// </summary>
+    /// <param name="upgrade"></param>
+    public void AddUpgrade(Upgrade upgrade)
+    {
+        this.maxHealth += upgrade.maxHealthMultiplier;
+        this.minAttack += upgrade.attackMultiplier;
+        this.maxAttack += upgrade.attackMultiplier;
+        this.defence += upgrade.defenseMultiplier;
+        this.maxFocus += upgrade.maxFocusMultiplier;
+        this.hitSpeed += upgrade.hitSpeedMultiplier;
+        UpdateStats();
     }
 }

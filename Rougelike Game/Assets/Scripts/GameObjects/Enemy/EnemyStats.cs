@@ -9,6 +9,7 @@ public class EnemyStats : MonoBehaviour
 {
     public int minAttack;
     public int maxAttack;
+    public int defense;
     private int health;
     public int maxHealth;
     public int level;
@@ -33,6 +34,7 @@ public class EnemyStats : MonoBehaviour
     /// <param name="damage">Amount to damage the enemy</param>
     public void DamageEnemy(int damage)
     {
+        damage = Mathf.Clamp(damage - defense, 0, damage);
         health = Mathf.Clamp(health - damage, 0, health);
         damageCounter.SetTrigger("damage");
         animator.SetTrigger("damage");
