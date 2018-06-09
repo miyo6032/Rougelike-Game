@@ -13,6 +13,7 @@ public class PlayerStats : MonoBehaviour
     // The player's attack power - is the base damage to an enemy before other caluclations are added in
     public int minAttack;
     public int maxAttack;
+    private int baseAttack;
 
     // The maximum amount of focus a player can store at one time
     public int maxFocus;
@@ -25,6 +26,7 @@ public class PlayerStats : MonoBehaviour
 
     // The player's defense - used in the damage calculation when the player is hit
     private int defence;
+    private int baseDefense;
 
     // Just standard rpg experience, when the player has enough they will level up
     private int experience;
@@ -34,7 +36,7 @@ public class PlayerStats : MonoBehaviour
     private int level = 1;
 
     // The upgrade points for a player after leveling up
-    private int upgradePoints = 0;
+    public int upgradePoints = 5;
 
     // The player's focus bar - used for special skills
     private int focus;
@@ -101,6 +103,7 @@ public class PlayerStats : MonoBehaviour
         animator.SetTrigger("damage");
         damageText.text = "" + damage;
         StaticCanvasList.instance.gameUI.UpdateHealth(health / (float) maxHealth * 100);
+        UpdateStats();
     }
 
     /// <summary>
@@ -111,6 +114,7 @@ public class PlayerStats : MonoBehaviour
     {
         health = Mathf.Clamp(health + amount, 0, maxHealth);
         StaticCanvasList.instance.gameUI.UpdateHealth(health / (float) maxHealth * 100);
+        UpdateStats();
     }
 
     /// <summary>
@@ -149,9 +153,9 @@ public class PlayerStats : MonoBehaviour
     /// </summary>
     public void UpdateStats()
     {
-        defence = 0;
-        minAttack = 0;
-        maxAttack = 0;
+        defence = baseDefense;
+        minAttack = baseAttack;
+        maxAttack = baseAttack;
 
         // Sum all of the equipment stats
         foreach (EquipSlot slot in StaticCanvasList.instance.inventoryManager.equipSlots)
@@ -176,9 +180,8 @@ public class PlayerStats : MonoBehaviour
     public void AddUpgrade(Upgrade upgrade)
     {
         this.maxHealth += upgrade.maxHealthMultiplier;
-        this.minAttack += upgrade.attackMultiplier;
-        this.maxAttack += upgrade.attackMultiplier;
-        this.defence += upgrade.defenseMultiplier;
+        this.baseDefense += upgrade.defenseMultiplier;
+        this.baseAttack += upgrade.attackMultiplier;
         this.maxFocus += upgrade.maxFocusMultiplier;
         this.hitSpeed += upgrade.hitSpeedMultiplier;
         UpdateStats();

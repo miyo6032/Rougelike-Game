@@ -19,10 +19,8 @@ public class SkillTree : MonoBehaviour
     public int treeRowWidth = 7;
     [Header("Sprites")] public Sprite sideLink;
     public Sprite downLink;
-    public Sprite rim;
     public Sprite unlockedSideLink;
     public Sprite unlockedDownLink;
-    public Sprite unlockedRim;
     public Sprite background;
 
     public void Toggle()
@@ -39,7 +37,7 @@ public class SkillTree : MonoBehaviour
         if (playerStats.GetUpgradePoints() > 0)
         {
             playerStats.AddUpgrade(instance.upgrade);
-            rims[instance.id].sprite = unlockedRim;
+            rims[instance.id].sprite = instance.upgrade.unlockedRimSprite;
             SetNeighborsUnlockable(instance.id);
             playerStats.UseUpgradePoint();
             return true;
@@ -76,7 +74,7 @@ public class SkillTree : MonoBehaviour
                     SetNeighborsUnlockable(i);
                 }
 
-                rimInstance.sprite = rim;
+                rimInstance.sprite = upgrades[i].upgrade.rimSprite;
                 backgroundInstance.sprite = background;
             }
         }

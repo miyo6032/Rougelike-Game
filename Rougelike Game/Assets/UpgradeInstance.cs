@@ -1,10 +1,11 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 /// <summary>
 /// The button that represents a node in the upgrade tree
 /// </summary>
-public class UpgradeInstance : MonoBehaviour
+public class UpgradeInstance : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
     public Upgrade upgrade;
     private Image buttonImage;
@@ -41,5 +42,15 @@ public class UpgradeInstance : MonoBehaviour
         {
             canBeUnlocked = canBeApplied;
         }
+    }
+
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        StaticCanvasList.instance.inventoryTooltip.ShowUpgradeTooltip(this);
+    }
+
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        StaticCanvasList.instance.inventoryTooltip.gameObject.SetActive(false);
     }
 }

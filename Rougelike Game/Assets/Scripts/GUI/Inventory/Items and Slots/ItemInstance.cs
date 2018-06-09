@@ -127,7 +127,7 @@ public class ItemInstance : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        StaticCanvasList.instance.inventoryTooltip.ShowTooltip(item);
+        StaticCanvasList.instance.inventoryTooltip.ShowItemTooltip(item);
     }
 
     public void OnPointerExit(PointerEventData eventData)

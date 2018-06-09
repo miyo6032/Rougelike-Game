@@ -9,11 +9,35 @@ public class Tooltip : MonoBehaviour
     public Text title;
     public Text description;
 
+    public void ShowUpgradeTooltip(UpgradeInstance instance)
+    {
+        transform.position = Input.mousePosition;
+        PositionRelativeToScreen();
+        gameObject.SetActive(true);
+        title.text = instance.upgrade.name;
+        description.text = GetLockedString(instance) + GetStatsString(instance.upgrade);
+    }
+
+    string GetLockedString(UpgradeInstance instance)
+    {
+        return instance.isUnlocked ? "Already Unlocked\n\n" : "";
+    }
+
+    string GetStatsString(Upgrade upgrade)
+    {
+        string str = upgrade.maxHealthMultiplier == 0 ? "" : "+" + upgrade.maxHealthMultiplier + " Max health\n\n";
+        str += upgrade.attackMultiplier == 0 ? "" : "+" + upgrade.attackMultiplier + " Attack\n\n";
+        str += upgrade.defenseMultiplier == 0 ? "" : "+" + upgrade.defenseMultiplier + " Defense\n\n";
+        str += upgrade.hitSpeedMultiplier == 0 ? "" : "+" + upgrade.hitSpeedMultiplier + " Hit Speed\n\n";
+        str += upgrade.maxFocusMultiplier == 0 ? "" : "+" + upgrade.maxFocusMultiplier + " Max Focus\n\n";
+        return str;
+    }
+
     /// <summary>
     /// Shows the tooltip with the item data
     /// </summary>
     /// <param name="item"></param>
-    public void ShowTooltip(Item item)
+    public void ShowItemTooltip(Item item)
     {
         transform.position = Input.mousePosition;
         PositionRelativeToScreen();
@@ -25,22 +49,12 @@ public class Tooltip : MonoBehaviour
 
     string GetLevelString(Item item)
     {
-        if (item.ItemLevel == 0)
-        {
-            return "";
-        }
-
-        return "Required Level: " + item.ItemLevel + "\n\n";
+        return item.ItemLevel == 0 ? "" : "Required Level: " + item.ItemLevel + "\n\n";
     }
 
     string GetValueString(Item item)
     {
-        if (item.Value == 0)
-        {
-            return "";
-        }
-
-        return "Value: " + item.Value + "\n\n";
+        return item.Value == 0 ? "" : "Value: " + item.Value + "\n\n";
     }
 
     string GetAttackString(Item item)
@@ -61,12 +75,7 @@ public class Tooltip : MonoBehaviour
 
     string GetDefenseString(Item item)
     {
-        if (item.Defence == 0)
-        {
-            return "";
-        }
-
-        return "+" + item.Defence + " Defense\n\n";
+        return item.Defence == 0? "" : "+" + item.Defence + " Defense\n\n";
     }
 
     /// <summary>
