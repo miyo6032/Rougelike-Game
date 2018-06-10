@@ -22,7 +22,7 @@ public class LootInventory : MonoBehaviour {
 
         foreach(ItemSave itemSave in bag.items)
         {
-            inventoryManager.AddItemToSlot(itemSave.item, lootSlots[itemSave.slotPosition]);
+            inventoryManager.AddItemToSlot(itemSave.item, lootSlots[itemSave.slotPosition], itemSave.amount);
         }
 
         gameObject.SetActive(true);
@@ -50,7 +50,7 @@ public class LootInventory : MonoBehaviour {
         {
             if(lootSlots[i].GetItem() != null)
             {
-                items.Add(new ItemSave(lootSlots[i].GetItem().item, i));
+                items.Add(new ItemSave(lootSlots[i].GetItem().item, i, lootSlots[i].GetItem().GetAmount()));
                 Destroy(lootSlots[i].GetItem().gameObject);
                 lootSlots[i].SetItem(null);
             }

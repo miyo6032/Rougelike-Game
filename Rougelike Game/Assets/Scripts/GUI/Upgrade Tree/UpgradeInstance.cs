@@ -46,7 +46,8 @@ public class UpgradeInstance : MonoBehaviour, IPointerEnterHandler, IPointerExit
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        StaticCanvasList.instance.inventoryTooltip.ShowUpgradeTooltip(this);
+        if(!isEmpty)
+            StaticCanvasList.instance.inventoryTooltip.ShowUpgradeTooltip(this);
     }
 
     public void OnPointerExit(PointerEventData eventData)

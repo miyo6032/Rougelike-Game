@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+/// <summary>
+/// Manages effects the player has
+/// </summary>
 public class EffectManager : MonoBehaviour
 {
-
     public PlayerStats playerStats;
 
     public Sprite invisible;
@@ -14,22 +16,25 @@ public class EffectManager : MonoBehaviour
 
     public List<TimeAndSprite> ui;
 
+    private EffectTooltipShow[] effectInstances;
+
     private List<ActiveEffect> activeEffects;
 
     public void AddNewEffect(Effect effect)
     {
         if (effect.applyOnce)
         {
-            playerStats.ApplyStats(effect.statsAffected.ToArray());
+            playerStats.ApplyStats(effect.statsAffected);
         }
         activeEffects.Add(new ActiveEffect(effect, effect.duration));
     }
 
     private void Start()
     {
+        effectInstances = GetComponentsInChildren<EffectTooltipShow>();
         activeEffects = new List<ActiveEffect>();
-        StartCoroutine(ApplyEffects());
         AddNewEffect(TEST);
+        StartCoroutine(ApplyEffects());
     }
 
     /// <summary>
@@ -46,14 +51,14 @@ public class EffectManager : MonoBehaviour
                 effect.currentDuration--;
                 if (!effect.effect.applyOnce)
                 {
-                    playerStats.ApplyStats(effect.effect.statsAffected.ToArray());
+                    playerStats.ApplyStats(effect.effect.statsAffected);
                 }
                 if (effect.currentDuration == 0)
                 {
                     toRemove.Add(effect);
                     if (effect.effect.removeAfterDone)
                     {
-                        playerStats.ReverseStats(effect.effect.statsAffected.ToArray());
+                        playerStats.ReverseStats(effect.effect.statsAffected);
                     }
                 }
             }
@@ -77,9 +82,11 @@ public class EffectManager : MonoBehaviour
             {
                 ui[i].time.text = activeEffects[i].currentDuration.ToString();
                 ui[i].image.sprite = activeEffects[i].effect.sprite;
+                effectInstances[i].SetEffect(activeEffects[i].effect);
             }
             else
             {
+                effectInstances[i].SetEffect(null);
                 ui[i].time.text = "";
                 ui[i].image.sprite = invisible;
             }

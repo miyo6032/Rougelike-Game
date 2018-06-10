@@ -209,6 +209,10 @@ public class PlayerStats : MonoBehaviour
         UpdateStats();
     }
 
+    /// <summary>
+    /// Apply a specific stat to the playerStats
+    /// </summary>
+    /// <param name="stat"></param>
     private void ApplyStat(Stat stat)
     {
         switch (stat.stat)
@@ -237,6 +241,10 @@ public class PlayerStats : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Apply a bunch of stats to the playerstat
+    /// </summary>
+    /// <param name="stats"></param>
     public void ApplyStats(Stat[] stats)
     {
         foreach (var stat in stats)
@@ -246,12 +254,17 @@ public class PlayerStats : MonoBehaviour
         UpdateStats();
     }
 
+    /// <summary>
+    /// Undo effects of a stat (basically apply -1 * stat)
+    /// </summary>
+    /// <param name="stats"></param>
     public void ReverseStats(Stat[] stats)
     {
         foreach (var stat in stats)
         {
             stat.effect = -stat.effect;
             ApplyStat(stat);
+            stat.effect = -stat.effect;
         }
         UpdateStats();
     }

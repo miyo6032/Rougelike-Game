@@ -10,6 +10,6 @@ public class Effect : ScriptableObject
     public int duration;
     public bool applyOnce;
     public bool removeAfterDone;
-    public List<Stat> statsAffected;
+    public Stat[] statsAffected;
 
 }

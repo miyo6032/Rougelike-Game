@@ -25,10 +25,10 @@ public class InventoryManager : MonoBehaviour
         textures.LoadAllTextures();
 
         // Automatically equip the four starting items
-        AddItemToSlot(itemGenerator.GenerateItem(1, 0), equipSlots[0]);
-        AddItemToSlot(itemGenerator.GenerateItem(1, 0), equipSlots[1]);
-        AddItemToSlot(itemGenerator.GenerateItem(1, 1), equipSlots[2]);
-        AddItemToSlot(itemGenerator.GenerateItem(1, 2), equipSlots[3]);
+        AddItemToSlot(itemGenerator.GenerateItem(1, 0), equipSlots[0], 1);
+        AddItemToSlot(itemGenerator.GenerateItem(1, 0), equipSlots[1], 1);
+        AddItemToSlot(itemGenerator.GenerateItem(1, 1), equipSlots[2], 1);
+        AddItemToSlot(itemGenerator.GenerateItem(1, 2), equipSlots[3], 1);
 
         AddGeneratedItem(1, 0);
         AddGeneratedItem(1, 0);
@@ -66,7 +66,7 @@ public class InventoryManager : MonoBehaviour
         }
         else
         {
-            AddItemToSlot(item, FindNextOpenSlot(slots));
+            AddItemToSlot(item, FindNextOpenSlot(slots), 1);
         }
     }
 
@@ -88,12 +88,13 @@ public class InventoryManager : MonoBehaviour
     /// </summary>
     /// <param name="item"></param>
     /// <param name="slot"></param>
-    public void AddItemToSlot(Item item, ItemSlot slot)
+    public void AddItemToSlot(Item item, ItemSlot slot, int amount)
     {
         if (slot.GetItem() == null)
         {
             ItemInstance itemObj = Instantiate(itemPrefab);
             itemObj.Initialize(item);
+            itemObj.ChangeAmount(amount - 1);
             slot.ItemDropIntoEmpty(itemObj);
         }
     }

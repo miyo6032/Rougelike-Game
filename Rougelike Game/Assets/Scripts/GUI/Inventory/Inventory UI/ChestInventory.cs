@@ -19,7 +19,7 @@ public class ChestInventory : MonoBehaviour
             newchest.SetOpenSprite();
             foreach (ItemSave itemSave in newchest.chestItems)
             {
-                inventoryManager.AddItemToSlot(itemSave.item, chestSlots[itemSave.slotPosition]);
+                inventoryManager.AddItemToSlot(itemSave.item, chestSlots[itemSave.slotPosition], itemSave.amount);
             }
         }
 
@@ -55,7 +55,7 @@ public class ChestInventory : MonoBehaviour
         {
             if (chestSlots[i].GetItem() != null)
             {
-                items.Add(new ItemSave(chestSlots[i].GetItem().item, i));
+                items.Add(new ItemSave(chestSlots[i].GetItem().item, i, chestSlots[i].GetItem().GetAmount()));
                 Destroy(chestSlots[i].GetItem().gameObject);
                 chestSlots[i].SetItem(null);
             }

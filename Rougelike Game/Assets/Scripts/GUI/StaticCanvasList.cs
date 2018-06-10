@@ -9,7 +9,6 @@ public class StaticCanvasList : MonoBehaviour {
 
     public InventoryManager inventoryManager;
     public InGameUI gameUI;
-    public PauseUI pauseUI;
     public PlayerStatUI statUI;
     public Tooltip inventoryTooltip;
     public UIColoring uiColoring;

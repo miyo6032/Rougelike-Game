@@ -9,26 +9,32 @@ public class Tooltip : MonoBehaviour
     public Text title;
     public Text description;
 
+    public void ShowEffectTooltip(Effect effect)
+    {
+        PositionTooltip();
+        title.text = effect.name;
+        string str = "";
+        description.text = GetStatsString(effect.statsAffected);
+    }
+
+    /// <summary>
+    /// When hovering over an upgrade in the upgrade tree, show its stats
+    /// </summary>
+    /// <param name="instance"></param>
     public void ShowUpgradeTooltip(UpgradeInstance instance)
     {
-        transform.position = Input.mousePosition;
-        PositionRelativeToScreen();
-        gameObject.SetActive(true);
+        PositionTooltip();
         title.text = instance.upgrade.name;
-        description.text = GetLockedString(instance) + GetStatsString(instance.upgrade);
+        string lockedString = instance.isUnlocked ? "Already Unlocked\n\n" : "";
+        description.text = lockedString + GetStatsString(instance.upgrade.statsAffected);
     }
 
-    string GetLockedString(UpgradeInstance instance)
-    {
-        return instance.isUnlocked ? "Already Unlocked\n\n" : "";
-    }
-
-    string GetStatsString(Upgrade upgrade)
+    string GetStatsString(Stat[] stats)
     {
         string str = "";
-        foreach (var stat in upgrade.statsAffected)
+        foreach (var stat in stats)
         {
-            str += GetStatString(stat);
+            str += stat.effect + GetStatString(stat) + "\n\n";
         }
         return str;
     }
@@ -38,19 +44,19 @@ public class Tooltip : MonoBehaviour
         switch (stat.stat)
         {
             case Stats.maxHealth:
-                return "+" + stat.effect + " Max health\n\n";
+                return " Max health";
             case Stats.baseAttack:
-                return "+" + stat.effect + " Attack\n\n";
+                return " Attack";
             case Stats.baseDefense:
-                return "+" + stat.effect + " Defense\n\n";
+                return " Defense";
             case Stats.hitSpeed:
-                return "+" + stat.effect + " Hit Speed\n\n";
+                return " Hit Speed";
             case Stats.maxFocus:
-                return "+" + stat.effect + " Max Focus\n\n";
+                return " Max Focus";
             case Stats.damage:
-                return "+" + stat.effect + " Damage Per Second\n\n";
+                return " Damage Per Second";
             case Stats.healing:
-                return "+" + stat.effect + " HP Per Second\n\n";
+                return " HP Per Second";
             default:
                 return "";
         }
@@ -62,22 +68,21 @@ public class Tooltip : MonoBehaviour
     /// <param name="item"></param>
     public void ShowItemTooltip(Item item)
     {
+        PositionTooltip();
+        title.text = item.Title;
+        string str = item.ItemLevel == 0 ? "" : "Required Level: " + item.ItemLevel + "\n\n";
+        str += item.Value == 0 ? "" : "Value: " + item.Value + "\n\n";
+        str += GetAttackString(item);
+        str += item.Defence == 0 ? "" : "+" + item.Defence + " Defense\n\n";
+        description.text = str;
+
+    }
+
+    void PositionTooltip()
+    {
         transform.position = Input.mousePosition;
         PositionRelativeToScreen();
         gameObject.SetActive(true);
-        title.text = item.Title;
-        description.text = GetLevelString(item) + GetAttackString(item) + GetDefenseString(item) +
-                           GetValueString(item) + item.Description;
-    }
-
-    string GetLevelString(Item item)
-    {
-        return item.ItemLevel == 0 ? "" : "Required Level: " + item.ItemLevel + "\n\n";
-    }
-
-    string GetValueString(Item item)
-    {
-        return item.Value == 0 ? "" : "Value: " + item.Value + "\n\n";
     }
 
     string GetAttackString(Item item)
@@ -94,11 +99,6 @@ public class Tooltip : MonoBehaviour
 
         return item.Attack + " - " + item.MaxAttack + " Damage\n\n";
 
-    }
-
-    string GetDefenseString(Item item)
-    {
-        return item.Defence == 0? "" : "+" + item.Defence + " Defense\n\n";
     }
 
     /// <summary>
