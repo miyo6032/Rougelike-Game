@@ -2,6 +2,24 @@
 using UnityEngine.UI;
 using System.Collections.Generic;
 
+public enum Stats
+{
+    maxHealth,
+    baseAttack,
+    maxFocus,
+    hitSpeed,
+    baseDefense,
+    damage,
+    healing
+}
+
+[System.Serializable]
+public class Stat
+{
+    public Stats stat;
+    public float effect;
+}
+
 /// <summary>
 /// Keeps track of the player's game status, and holds status functions for updating stats.
 /// </summary>
@@ -25,7 +43,7 @@ public class PlayerStats : MonoBehaviour
     private int health;
 
     // The player's defense - used in the damage calculation when the player is hit
-    private int defence;
+    private int totalDefense;
     private int baseDefense;
 
     // Just standard rpg experience, when the player has enough they will level up
@@ -53,7 +71,7 @@ public class PlayerStats : MonoBehaviour
         damageText = HelperScripts.GetComponentFromChildrenExc<Text>(transform);
         health = maxHealth;
         UpdateStats();
-        StaticCanvasList.instance.statUI.UpdateStatUI(level, experience, maxExperience, health,maxHealth, focus, maxFocus, defence, minAttack, maxAttack);
+        StaticCanvasList.instance.statUI.UpdateStatUI(level, experience, maxExperience, health,maxHealth, focus, maxFocus, totalDefense, minAttack, maxAttack);
         playerAnimation = GetComponent<PlayerAnimation>();
     }
 
@@ -97,12 +115,20 @@ public class PlayerStats : MonoBehaviour
     /// <param name="damage"></param>
     public void DamagePlayer(int damage)
     {
-        damage = Mathf.Clamp(damage - defence, 0, damage);
+        damage = Mathf.Clamp(damage - totalDefense, 0, damage);
+        DamagePlayerDirectly(damage);
+    }
+
+    /// <summary>
+    /// Bypasses armor and damages player
+    /// </summary>
+    public void DamagePlayerDirectly(int damage)
+    {
         health = Mathf.Clamp(health - damage, 0, health);
         damageCounter.SetTrigger("damage");
         animator.SetTrigger("damage");
         damageText.text = "" + damage;
-        StaticCanvasList.instance.gameUI.UpdateHealth(health / (float) maxHealth * 100);
+        StaticCanvasList.instance.gameUI.UpdateHealth(health / (float)maxHealth * 100);
         UpdateStats();
     }
 
@@ -153,7 +179,7 @@ public class PlayerStats : MonoBehaviour
     /// </summary>
     public void UpdateStats()
     {
-        defence = baseDefense;
+        totalDefense = baseDefense;
         minAttack = baseAttack;
         maxAttack = baseAttack;
 
@@ -163,13 +189,13 @@ public class PlayerStats : MonoBehaviour
             if (slot.GetItem() != null)
             {
                 Item equippedItem = slot.GetItem().item;
-                defence += equippedItem.Defence;
+                totalDefense += equippedItem.Defence;
                 minAttack += equippedItem.Attack;
                 maxAttack += equippedItem.MaxAttack;
             }
         }
 
-        StaticCanvasList.instance.statUI.UpdateStatUI(level, experience, maxExperience, health, maxHealth, focus, maxFocus, defence, minAttack, maxAttack);
+        StaticCanvasList.instance.statUI.UpdateStatUI(level, experience, maxExperience, health, maxHealth, focus, maxFocus, totalDefense, minAttack, maxAttack);
         StaticCanvasList.instance.skillTree.upgradePointsText.text = "Availible Upgrade Points: " + upgradePoints;
     }
 
@@ -179,11 +205,54 @@ public class PlayerStats : MonoBehaviour
     /// <param name="upgrade"></param>
     public void AddUpgrade(Upgrade upgrade)
     {
-        this.maxHealth += upgrade.maxHealthMultiplier;
-        this.baseDefense += upgrade.defenseMultiplier;
-        this.baseAttack += upgrade.attackMultiplier;
-        this.maxFocus += upgrade.maxFocusMultiplier;
-        this.hitSpeed += upgrade.hitSpeedMultiplier;
+        ApplyStats(upgrade.statsAffected);
+        UpdateStats();
+    }
+
+    private void ApplyStat(Stat stat)
+    {
+        switch (stat.stat)
+        {
+            case Stats.maxHealth:
+                maxHealth += Mathf.RoundToInt(stat.effect);
+                break;
+            case Stats.baseAttack:
+                baseAttack += Mathf.RoundToInt(stat.effect);
+                break;
+            case Stats.baseDefense:
+                baseDefense += Mathf.RoundToInt(stat.effect);
+                break;
+            case Stats.hitSpeed:
+                hitSpeed += stat.effect;
+                break;
+            case Stats.maxFocus:
+                maxFocus += Mathf.RoundToInt(stat.effect);
+                break;
+            case Stats.damage:
+                DamagePlayerDirectly(Mathf.RoundToInt(stat.effect));
+                break;
+            case Stats.healing:
+                Heal(Mathf.RoundToInt(stat.effect));
+                break;
+        }
+    }
+
+    public void ApplyStats(Stat[] stats)
+    {
+        foreach (var stat in stats)
+        {
+            ApplyStat(stat);
+        }
+        UpdateStats();
+    }
+
+    public void ReverseStats(Stat[] stats)
+    {
+        foreach (var stat in stats)
+        {
+            stat.effect = -stat.effect;
+            ApplyStat(stat);
+        }
         UpdateStats();
     }
 }

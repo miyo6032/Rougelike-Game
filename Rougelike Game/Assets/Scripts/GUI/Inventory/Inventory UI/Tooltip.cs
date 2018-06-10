@@ -25,12 +25,35 @@ public class Tooltip : MonoBehaviour
 
     string GetStatsString(Upgrade upgrade)
     {
-        string str = upgrade.maxHealthMultiplier == 0 ? "" : "+" + upgrade.maxHealthMultiplier + " Max health\n\n";
-        str += upgrade.attackMultiplier == 0 ? "" : "+" + upgrade.attackMultiplier + " Attack\n\n";
-        str += upgrade.defenseMultiplier == 0 ? "" : "+" + upgrade.defenseMultiplier + " Defense\n\n";
-        str += upgrade.hitSpeedMultiplier == 0 ? "" : "+" + upgrade.hitSpeedMultiplier + " Hit Speed\n\n";
-        str += upgrade.maxFocusMultiplier == 0 ? "" : "+" + upgrade.maxFocusMultiplier + " Max Focus\n\n";
+        string str = "";
+        foreach (var stat in upgrade.statsAffected)
+        {
+            str += GetStatString(stat);
+        }
         return str;
+    }
+
+    private string GetStatString(Stat stat)
+    {
+        switch (stat.stat)
+        {
+            case Stats.maxHealth:
+                return "+" + stat.effect + " Max health\n\n";
+            case Stats.baseAttack:
+                return "+" + stat.effect + " Attack\n\n";
+            case Stats.baseDefense:
+                return "+" + stat.effect + " Defense\n\n";
+            case Stats.hitSpeed:
+                return "+" + stat.effect + " Hit Speed\n\n";
+            case Stats.maxFocus:
+                return "+" + stat.effect + " Max Focus\n\n";
+            case Stats.damage:
+                return "+" + stat.effect + " Damage Per Second\n\n";
+            case Stats.healing:
+                return "+" + stat.effect + " HP Per Second\n\n";
+            default:
+                return "";
+        }
     }
 
     /// <summary>

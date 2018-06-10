@@ -2,7 +2,7 @@
 /// Represents an item's data
 /// </summary>
 [System.Serializable]
-public class Item : ScriptableObject
+public class Item
 {
     public string Title { get; set; }
     public int Value { get; set; }

@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System.Collections.Generic;
 
 /// <summary>
 /// Holds info for an upgrade in the upgrades tree
@@ -7,11 +8,7 @@
 public class Upgrade : ScriptableObject
 {
     public new string name;
-    public int maxHealthMultiplier = 0;
-    public int attackMultiplier = 0;
-    public int defenseMultiplier = 0;
-    public int maxFocusMultiplier = 0;
-    public int hitSpeedMultiplier = 0;
+    public Stat[] statsAffected;
     public Sprite upgradeSprite;
     public Sprite rimSprite;
     public Sprite unlockedRimSprite;
