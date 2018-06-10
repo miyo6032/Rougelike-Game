@@ -16,9 +16,11 @@ public class ItemSlot : MonoBehaviour, IPointerClickHandler
     {
         ItemInstance droppedItem = StaticCanvasList.instance.inventoryManager.attachedItem;
 
-        ItemDropIntoEmpty(droppedItem);
-
-        StaticCanvasList.instance.inventoryManager.attachedItem = null;
+        if (item == null)
+        {
+            ItemDropIntoEmpty(droppedItem);
+            StaticCanvasList.instance.inventoryManager.attachedItem = null;
+        }
     }
 
     /// <summary>

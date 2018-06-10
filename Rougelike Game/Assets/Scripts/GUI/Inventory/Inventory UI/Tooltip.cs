@@ -9,28 +9,57 @@ public class Tooltip : MonoBehaviour
     public Text title;
     public Text description;
 
+    public void ShowEffectTooltip(Effect effect)
+    {
+        PositionTooltip();
+        title.text = effect.name;
+        string str = "";
+        description.text = GetStatsString(effect.statsAffected);
+    }
+
+    /// <summary>
+    /// When hovering over an upgrade in the upgrade tree, show its stats
+    /// </summary>
+    /// <param name="instance"></param>
     public void ShowUpgradeTooltip(UpgradeInstance instance)
     {
-        transform.position = Input.mousePosition;
-        PositionRelativeToScreen();
-        gameObject.SetActive(true);
+        PositionTooltip();
         title.text = instance.upgrade.name;
-        description.text = GetLockedString(instance) + GetStatsString(instance.upgrade);
+        string lockedString = instance.isUnlocked ? "Already Unlocked\n\n" : "";
+        description.text = lockedString + GetStatsString(instance.upgrade.statsAffected);
     }
 
-    string GetLockedString(UpgradeInstance instance)
+    string GetStatsString(Stat[] stats)
     {
-        return instance.isUnlocked ? "Already Unlocked\n\n" : "";
-    }
-
-    string GetStatsString(Upgrade upgrade)
-    {
-        string str = upgrade.maxHealthMultiplier == 0 ? "" : "+" + upgrade.maxHealthMultiplier + " Max health\n\n";
-        str += upgrade.attackMultiplier == 0 ? "" : "+" + upgrade.attackMultiplier + " Attack\n\n";
-        str += upgrade.defenseMultiplier == 0 ? "" : "+" + upgrade.defenseMultiplier + " Defense\n\n";
-        str += upgrade.hitSpeedMultiplier == 0 ? "" : "+" + upgrade.hitSpeedMultiplier + " Hit Speed\n\n";
-        str += upgrade.maxFocusMultiplier == 0 ? "" : "+" + upgrade.maxFocusMultiplier + " Max Focus\n\n";
+        string str = "";
+        foreach (var stat in stats)
+        {
+            str += stat.effect + GetStatString(stat) + "\n\n";
+        }
         return str;
+    }
+
+    private string GetStatString(Stat stat)
+    {
+        switch (stat.stat)
+        {
+            case Stats.maxHealth:
+                return " Max health";
+            case Stats.baseAttack:
+                return " Attack";
+            case Stats.baseDefense:
+                return " Defense";
+            case Stats.hitSpeed:
+                return " Hit Speed";
+            case Stats.maxFocus:
+                return " Max Focus";
+            case Stats.damage:
+                return " Damage Per Second";
+            case Stats.healing:
+                return " HP Per Second";
+            default:
+                return "";
+        }
     }
 
     /// <summary>
@@ -39,22 +68,21 @@ public class Tooltip : MonoBehaviour
     /// <param name="item"></param>
     public void ShowItemTooltip(Item item)
     {
+        PositionTooltip();
+        title.text = item.Title;
+        string str = item.ItemLevel == 0 ? "" : "Required Level: " + item.ItemLevel + "\n\n";
+        str += item.Value == 0 ? "" : "Value: " + item.Value + "\n\n";
+        str += GetAttackString(item);
+        str += item.Defence == 0 ? "" : "+" + item.Defence + " Defense\n\n";
+        description.text = str;
+
+    }
+
+    void PositionTooltip()
+    {
         transform.position = Input.mousePosition;
         PositionRelativeToScreen();
         gameObject.SetActive(true);
-        title.text = item.Title;
-        description.text = GetLevelString(item) + GetAttackString(item) + GetDefenseString(item) +
-                           GetValueString(item) + item.Description;
-    }
-
-    string GetLevelString(Item item)
-    {
-        return item.ItemLevel == 0 ? "" : "Required Level: " + item.ItemLevel + "\n\n";
-    }
-
-    string GetValueString(Item item)
-    {
-        return item.Value == 0 ? "" : "Value: " + item.Value + "\n\n";
     }
 
     string GetAttackString(Item item)
@@ -71,11 +99,6 @@ public class Tooltip : MonoBehaviour
 
         return item.Attack + " - " + item.MaxAttack + " Damage\n\n";
 
-    }
-
-    string GetDefenseString(Item item)
-    {
-        return item.Defence == 0? "" : "+" + item.Defence + " Defense\n\n";
     }
 
     /// <summary>

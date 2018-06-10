@@ -19,7 +19,7 @@ public class ItemDropGenerator : MonoBehaviour {
         {
             int randomLevel = Mathf.Clamp(level + Random.Range(-1, 2), 1, 30);
 
-            ItemSave item = new ItemSave(StaticCanvasList.instance.itemGenerator.GenerateItem(randomLevel, Random.Range(0, 3)), i);
+            ItemSave item = new ItemSave(StaticCanvasList.instance.itemGenerator.GenerateItem(randomLevel, Random.Range(0, 3)), i, 1);
             items.Add(item);
         }
 
