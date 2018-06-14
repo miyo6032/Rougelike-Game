@@ -45,7 +45,7 @@ public class HotbarSlot : MonoBehaviour, IPointerClickHandler
     }
 
     /// <summary>
-    /// Apply the item's effect if it exists
+    /// Apply the item's value if it exists
     /// </summary>
     public void UseItem()
     {

@@ -2,7 +2,7 @@
 using UnityEngine.UI;
 using System.Collections.Generic;
 
-public enum Stats
+public enum ModifierType
 {
     maxHealth,
     baseAttack,
@@ -14,10 +14,10 @@ public enum Stats
 }
 
 [System.Serializable]
-public class Stat
+public class Modifier
 {
-    public Stats stat;
-    public float effect;
+    public ModifierType ModifierType;
+    public float value;
 }
 
 /// <summary>
@@ -205,38 +205,38 @@ public class PlayerStats : MonoBehaviour
     /// <param name="upgrade"></param>
     public void AddUpgrade(Upgrade upgrade)
     {
-        ApplyStats(upgrade.statsAffected);
+        ApplyStats(upgrade.ModifiersAffected);
         UpdateStats();
     }
 
     /// <summary>
-    /// Apply a specific stat to the playerStats
+    /// Apply a specific ModifierType to the playerStats
     /// </summary>
-    /// <param name="stat"></param>
-    private void ApplyStat(Stat stat)
+    /// <param name="modifier"></param>
+    private void ApplyStat(Modifier modifier)
     {
-        switch (stat.stat)
+        switch (modifier.ModifierType)
         {
-            case Stats.maxHealth:
-                maxHealth += Mathf.RoundToInt(stat.effect);
+            case ModifierType.maxHealth:
+                maxHealth += Mathf.RoundToInt(modifier.value);
                 break;
-            case Stats.baseAttack:
-                baseAttack += Mathf.RoundToInt(stat.effect);
+            case ModifierType.baseAttack:
+                baseAttack += Mathf.RoundToInt(modifier.value);
                 break;
-            case Stats.baseDefense:
-                baseDefense += Mathf.RoundToInt(stat.effect);
+            case ModifierType.baseDefense:
+                baseDefense += Mathf.RoundToInt(modifier.value);
                 break;
-            case Stats.hitSpeed:
-                hitSpeed += stat.effect;
+            case ModifierType.hitSpeed:
+                hitSpeed += modifier.value;
                 break;
-            case Stats.maxFocus:
-                maxFocus += Mathf.RoundToInt(stat.effect);
+            case ModifierType.maxFocus:
+                maxFocus += Mathf.RoundToInt(modifier.value);
                 break;
-            case Stats.damage:
-                DamagePlayerDirectly(Mathf.RoundToInt(stat.effect));
+            case ModifierType.damage:
+                DamagePlayerDirectly(Mathf.RoundToInt(modifier.value));
                 break;
-            case Stats.healing:
-                Heal(Mathf.RoundToInt(stat.effect));
+            case ModifierType.healing:
+                Heal(Mathf.RoundToInt(modifier.value));
                 break;
         }
     }
@@ -244,10 +244,10 @@ public class PlayerStats : MonoBehaviour
     /// <summary>
     /// Apply a bunch of stats to the playerstat
     /// </summary>
-    /// <param name="stats"></param>
-    public void ApplyStats(Stat[] stats)
+    /// <param name="modifiers"></param>
+    public void ApplyStats(Modifier[] modifiers)
     {
-        foreach (var stat in stats)
+        foreach (var stat in modifiers)
         {
             ApplyStat(stat);
         }
@@ -255,16 +255,16 @@ public class PlayerStats : MonoBehaviour
     }
 
     /// <summary>
-    /// Undo effects of a stat (basically apply -1 * stat)
+    /// Undo effects of a ModifierType (basically apply -1 * ModifierType)
     /// </summary>
-    /// <param name="stats"></param>
-    public void ReverseStats(Stat[] stats)
+    /// <param name="modifiers"></param>
+    public void ReverseStats(Modifier[] modifiers)
     {
-        foreach (var stat in stats)
+        foreach (var stat in modifiers)
         {
-            stat.effect = -stat.effect;
+            stat.value = -stat.value;
             ApplyStat(stat);
-            stat.effect = -stat.effect;
+            stat.value = -stat.value;
         }
         UpdateStats();
     }

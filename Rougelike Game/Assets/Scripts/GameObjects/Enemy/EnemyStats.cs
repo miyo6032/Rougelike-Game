@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 /// </summary>
 public class EnemyStats : MonoBehaviour
 {
-    [Header("Stats")]
+    [Header("ModifierType")]
     public int minAttack;
     public int maxAttack;
     public int defense;
