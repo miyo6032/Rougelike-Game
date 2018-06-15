@@ -22,7 +22,7 @@ public class ItemUse : MonoBehaviour
 
     void HealPlayer(float percentage)
     {
-        int healAmount = Mathf.CeilToInt(player.maxHealth * percentage);
+        int healAmount = Mathf.CeilToInt(player.maxHealth.GetValue() * percentage);
         player.Heal(healAmount);
     }
 }

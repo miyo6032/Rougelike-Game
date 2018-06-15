@@ -1,14 +1,13 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
-using System.Collections.Generic;
 
 public enum ModifierType
 {
     maxHealth,
-    baseAttack,
+    attack,
     maxFocus,
     hitSpeed,
-    baseDefense,
+    defense,
     damage,
     healing
 }
@@ -17,34 +16,15 @@ public enum ModifierType
 public class Modifier
 {
     public ModifierType ModifierType;
-    public float value;
+    public int value;
 }
 
 /// <summary>
 /// Keeps track of the player's game status, and holds status functions for updating stats.
 /// </summary>
-public class PlayerStats : MonoBehaviour
+public class PlayerStats : Stats
 {
-    // The player's maximum health that is fixed at the start of every game
-    public int maxHealth;
-
-    // The player's attack power - is the base damage to an enemy before other caluclations are added in
-    public int minAttack;
-    public int maxAttack;
-    private int baseAttack;
-
-    // The maximum amount of focus a player can store at one time
-    public int maxFocus;
-
-    // The speed that a player can it - influenced by strength and weapon weight
-    public float hitSpeed;
-
-    // The player's in-game health that is updated regularly
-    private int health;
-
-    // The player's defense - used in the damage calculation when the player is hit
-    private int totalDefense;
-    private int baseDefense;
+    public Stat hitDelay;
 
     // Just standard rpg experience, when the player has enough they will level up
     private int experience;
@@ -58,6 +38,7 @@ public class PlayerStats : MonoBehaviour
 
     // The player's focus bar - used for special skills
     private int focus;
+    public Stat maxFocus;
 
     Animator damageCounter;
     Animator animator;
@@ -69,9 +50,8 @@ public class PlayerStats : MonoBehaviour
         animator = GetComponent<Animator>();
         damageCounter = HelperScripts.GetComponentFromChildrenExc<Animator>(transform);
         damageText = HelperScripts.GetComponentFromChildrenExc<Text>(transform);
-        health = maxHealth;
+        health = maxHealth.GetIntValue();
         UpdateStats();
-        StaticCanvasList.instance.statUI.UpdateStatUI(level, experience, maxExperience, health,maxHealth, focus, maxFocus, totalDefense, minAttack, maxAttack);
         playerAnimation = GetComponent<PlayerAnimation>();
     }
 
@@ -113,9 +93,9 @@ public class PlayerStats : MonoBehaviour
     /// Damage the player, generate the damage counter, and update the health ui
     /// </summary>
     /// <param name="damage"></param>
-    public void DamagePlayer(int damage)
+    public override void TakeDamage(int damage)
     {
-        damage = Mathf.Clamp(damage - totalDefense, 0, damage);
+        damage = Mathf.Clamp(damage - defense.GetIntValue(), 0, damage);
         DamagePlayerDirectly(damage);
     }
 
@@ -124,22 +104,16 @@ public class PlayerStats : MonoBehaviour
     /// </summary>
     public void DamagePlayerDirectly(int damage)
     {
-        health = Mathf.Clamp(health - damage, 0, health);
+        base.TakeDamage(damage);
         damageCounter.SetTrigger("damage");
         animator.SetTrigger("damage");
         damageText.text = "" + damage;
-        StaticCanvasList.instance.gameUI.UpdateHealth(health / (float)maxHealth * 100);
         UpdateStats();
     }
 
-    /// <summary>
-    /// Heal the player by some amount
-    /// </summary>
-    /// <param name="amount"></param>
-    public void Heal(int amount)
+    public override void Heal(int amount)
     {
-        health = Mathf.Clamp(health + amount, 0, maxHealth);
-        StaticCanvasList.instance.gameUI.UpdateHealth(health / (float) maxHealth * 100);
+        base.Heal(amount);
         UpdateStats();
     }
 
@@ -154,6 +128,9 @@ public class PlayerStats : MonoBehaviour
         // If the item has the correct stats to equip
         if (level >= inst.item.ItemLevel)
         {
+            maxAttack.AddModifier(inst.item.MaxAttack, inst);
+            minAttack.AddModifier(inst.item.Attack, inst);
+            defense.AddModifier(inst.item.Defence, inst);
             inst.equipped = true;
             UpdateStats();
             playerAnimation.ColorAnimator(slot.gameObject.name, inst.item.ItemColor);
@@ -169,6 +146,9 @@ public class PlayerStats : MonoBehaviour
     /// <param name="inst"></param>
     public void UnequipItem(ItemInstance inst)
     {
+        maxAttack.RemoveSource(inst);
+        minAttack.RemoveSource(inst);
+        defense.RemoveSource(inst);
         inst.equipped = false;
         inst.slot.GetComponent<EquipSlot>().SlotImageToEmpty();
         UpdateStats();
@@ -179,23 +159,8 @@ public class PlayerStats : MonoBehaviour
     /// </summary>
     public void UpdateStats()
     {
-        totalDefense = baseDefense;
-        minAttack = baseAttack;
-        maxAttack = baseAttack;
-
-        // Sum all of the equipment stats
-        foreach (EquipSlot slot in StaticCanvasList.instance.inventoryManager.equipSlots)
-        {
-            if (slot.GetItem() != null)
-            {
-                Item equippedItem = slot.GetItem().item;
-                totalDefense += equippedItem.Defence;
-                minAttack += equippedItem.Attack;
-                maxAttack += equippedItem.MaxAttack;
-            }
-        }
-
-        StaticCanvasList.instance.statUI.UpdateStatUI(level, experience, maxExperience, health, maxHealth, focus, maxFocus, totalDefense, minAttack, maxAttack);
+        StaticCanvasList.instance.gameUI.UpdateHealth(health / (float)maxHealth.GetValue());
+        StaticCanvasList.instance.statUI.UpdateStatUI(level, experience, maxExperience, health, maxHealth.GetIntValue(), focus, maxFocus.GetIntValue(), defense.GetIntValue(), minAttack.GetIntValue(), maxAttack.GetIntValue());
         StaticCanvasList.instance.skillTree.upgradePointsText.text = "Availible Upgrade Points: " + upgradePoints;
     }
 
@@ -218,19 +183,21 @@ public class PlayerStats : MonoBehaviour
         switch (modifier.ModifierType)
         {
             case ModifierType.maxHealth:
-                maxHealth += Mathf.RoundToInt(modifier.value);
+                maxHealth.AddModifier(Mathf.RoundToInt(modifier.value));
+                Heal(Mathf.RoundToInt(modifier.value));
                 break;
-            case ModifierType.baseAttack:
-                baseAttack += Mathf.RoundToInt(modifier.value);
+            case ModifierType.attack:
+                minAttack.AddModifier(Mathf.RoundToInt(modifier.value));
+                maxAttack.AddModifier(Mathf.RoundToInt(modifier.value));
                 break;
-            case ModifierType.baseDefense:
-                baseDefense += Mathf.RoundToInt(modifier.value);
+            case ModifierType.defense:
+                defense.AddModifier(Mathf.RoundToInt(modifier.value));
                 break;
             case ModifierType.hitSpeed:
-                hitSpeed += modifier.value;
+                hitDelay.AddModifier(modifier.value);
                 break;
             case ModifierType.maxFocus:
-                maxFocus += Mathf.RoundToInt(modifier.value);
+                maxFocus.AddModifier(Mathf.RoundToInt(modifier.value));
                 break;
             case ModifierType.damage:
                 DamagePlayerDirectly(Mathf.RoundToInt(modifier.value));

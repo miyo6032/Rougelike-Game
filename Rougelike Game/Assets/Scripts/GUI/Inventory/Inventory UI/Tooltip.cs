@@ -45,9 +45,9 @@ public class Tooltip : MonoBehaviour
         {
             case ModifierType.maxHealth:
                 return " Max health";
-            case ModifierType.baseAttack:
+            case ModifierType.attack:
                 return " Attack";
-            case ModifierType.baseDefense:
+            case ModifierType.defense:
                 return " Defense";
             case ModifierType.hitSpeed:
                 return " Hit Speed";

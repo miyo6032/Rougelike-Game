@@ -57,7 +57,11 @@ public class PlayerMovement : MovingObject
     void Update()
     {
         if (moving || hitting || Time.timeScale == 0) return;
+
+        SetMoveSpeed(stats.movementDelay.GetValue());
+
         InputMove();
+
         if (automoving)
         {
             Automove();
@@ -175,10 +179,10 @@ public class PlayerMovement : MovingObject
     {
         if (hitting) return;
         hitting = true;
-        Invoke("HittingFalse", stats.hitSpeed);
+        Invoke("HittingFalse", stats.hitDelay.GetValue());
         animatorHandler.AnimateAttack();
         EnemyStats hitEnemy = component as EnemyStats;
-        hitEnemy.DamageEnemy(Random.Range(stats.minAttack, stats.maxAttack + 1));
+        hitEnemy.TakeDamage(Random.Range(stats.minAttack.GetIntValue(), stats.maxAttack.GetIntValue() + 1));
     }
 
     /// <summary>

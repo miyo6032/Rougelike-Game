@@ -6,9 +6,6 @@ using System.Collections;
 /// </summary>
 public abstract class MovingObject : MonoBehaviour
 {
-    // Move time in seconds
-    public float moveTime = 0.1F;
-
     // Keeps the player from moving extra
     public LayerMask blockingLayer;
     [HideInInspector] public bool moving;
@@ -20,8 +17,11 @@ public abstract class MovingObject : MonoBehaviour
     {
         rb2D = GetComponent<Rigidbody2D>();
         moveManager = GameObject.Find("GameManager").GetComponent<MovementTracker>();
-        // Makes the coroutine more efficient
-        inverseMoveTime = 1F / moveTime;
+    }
+
+    protected void SetMoveSpeed(float moveSpeed)
+    {
+        inverseMoveTime = 1f / moveSpeed;
     }
 
     /// <summary>

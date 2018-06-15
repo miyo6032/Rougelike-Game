@@ -6,8 +6,6 @@ using UnityEngine;
 /// </summary>
 public class EnemyMovement : MovingObject
 {
-    // How many seconds an enemy has to wait until they can move again 
-    public float turnDelay;
     public int enemySight = 3;
 
     // a way to ignore the player's collider without actually disabling the loot bag, because otherwise
@@ -34,14 +32,13 @@ public class EnemyMovement : MovingObject
 
     protected override void Start()
     {
-        attackAnimator.speed = attackAnimator.speed / turnDelay;
+        stats = GetComponent<EnemyStats>();
         animator = GetComponent<Animator>();
         target = GameObject.Find("Player").transform;
         playerCol = target.gameObject.GetComponent<BoxCollider2D>();
         enemyCol = GetComponent<BoxCollider2D>();
-        stats = GetComponent<EnemyStats>();
         base.Start();
-        Invoke("DelayedStart", Random.Range(0f, turnDelay));
+        Invoke("DelayedStart", Random.Range(0f, stats.turnDelay.GetValue()));
     }
 
     void DelayedStart()
@@ -85,8 +82,10 @@ public class EnemyMovement : MovingObject
 
             enemyCol.enabled = true;
             // Wait for however many second for the turn delay
+            SetMoveSpeed(stats.movementDelay.GetValue());
+            attackAnimator.speed = attackAnimator.speed / (stats.turnDelay.GetValue());
             attackAnimator.SetTrigger("Animate Indicator");
-            yield return new WaitForSeconds(turnDelay);
+            yield return new WaitForSeconds(stats.turnDelay.GetValue());
         }
     }
 
@@ -99,6 +98,6 @@ public class EnemyMovement : MovingObject
     {
         PlayerStats hitPlayer = component as PlayerStats;
         animator.SetTrigger("EnemyAttack");
-        hitPlayer.DamagePlayer(Random.Range(stats.minAttack, stats.maxAttack + 1));
+        hitPlayer.TakeDamage(Random.Range(stats.minAttack.GetIntValue(), stats.maxAttack.GetIntValue() + 1));
     }
 }
