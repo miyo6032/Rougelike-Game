@@ -10,6 +10,8 @@ public class InventoryManager : MonoBehaviour
     public List<ItemSlot> equipSlots = new List<ItemSlot>();
     public ItemInstance itemPrefab;
 
+    public Item TEST;
+
     // The item attached to the mouse pointer, if any
     public ItemInstance attachedItem = null;
     ItemGenerator itemGenerator;
@@ -37,7 +39,7 @@ public class InventoryManager : MonoBehaviour
         AddGeneratedItem(3, 0);
         AddGeneratedItem(3, 0);
 
-        AddItem(itemDatabase.GetItemByName("Minor Health Potion"), 3);
+        AddItem(TEST, 3);
         gameObject.SetActive(false);
     }
 

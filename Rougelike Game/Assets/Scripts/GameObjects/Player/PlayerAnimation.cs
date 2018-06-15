@@ -16,18 +16,19 @@ public class PlayerAnimation : MonoBehaviour
     bool facingRight = true;
 
     // Used in animations to tell which way to face for an attack
-    Vector2 attackDirection = Vector2.zero;
+    [HideInInspector]
+    public Vector2Int attackDirection = Vector2Int.zero;
 
     // tell which way to face when moving
-    Vector2 moveDirection = Vector2.zero;
+    Vector2Int moveDirection = Vector2Int.zero;
 
     // which way to face when idle
-    Vector2 idleDirection = Vector2.zero;
+    Vector2Int idleDirection = Vector2Int.zero;
 
     /// <summary>
     /// Called by PlayerMovement when the player was able to move
     /// </summary>
-    public void AnimateMovement(Vector2 dir)
+    public void AnimateMovement(Vector2Int dir)
     {
         moveDirection = dir;
     }
@@ -36,11 +37,11 @@ public class PlayerAnimation : MonoBehaviour
     /// Called by PlayerMovement in case the player needs to attack
     /// </summary>
     /// <param name="dir"></param>
-    public void SetAttackAnimationDirection(Vector2 dir)
+    public void SetAttackAnimationDirection(Vector2Int dir)
     {
         // We aren't moving necessarily, so reset
-        moveDirection = Vector2.zero;
-        idleDirection = Vector2.zero;
+        moveDirection = Vector2Int.zero;
+        idleDirection = Vector2Int.zero;
 
         // If the player is moving side to side
         if (dir.x != 0)
@@ -72,7 +73,7 @@ public class PlayerAnimation : MonoBehaviour
     /// Sets the idle direction to be used when the player is idle
     /// </summary>
     /// <param name="dir"></param>
-    public void SetIdle(Vector2 dir)
+    public void SetIdle(Vector2Int dir)
     {
         idleDirection = dir;
     }

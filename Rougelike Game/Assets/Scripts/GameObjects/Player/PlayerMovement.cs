@@ -54,6 +54,11 @@ public class PlayerMovement : MovingObject
         automoveTarget = null;
     }
 
+    public bool CanUseSkill()
+    {
+        return !hitting && !moving && !(Time.timeScale == 0);
+    }
+
     void Update()
     {
         if (moving || hitting || Time.timeScale == 0) return;
@@ -124,7 +129,7 @@ public class PlayerMovement : MovingObject
             !moveManager.SpotClaimed(Vector2Int.FloorToInt(transform.position) + Vector2Int.FloorToInt(nextMove)))
         {
             // Update the animator to align with the player's input
-            animatorHandler.SetAttackAnimationDirection(nextMove);
+            animatorHandler.SetAttackAnimationDirection(Vector2Int.RoundToInt(nextMove));
             AttemptMove<EnemyStats>(Vector2Int.FloorToInt(nextMove)); // The player moves (or at least tries to)
             altMove = !altMove;
         }

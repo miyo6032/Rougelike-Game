@@ -36,7 +36,7 @@ public class ItemGenerator : MonoBehaviour
         string description = "";
         string[] sprites = {blade.Sprite, handle.Sprite, hilt.Sprite};
         Item sword = new Item(title, value, attack, maxAttack, defence, description, false, equipmentType, level,
-            sprites, blade.Color);
+            sprites, blade.Color, false);
         return sword;
     }
 
@@ -82,7 +82,7 @@ public class ItemGenerator : MonoBehaviour
         int value = attack + maxAttack + Mathf.RoundToInt(defence * 2f);
         string description = "";
         Item item = new Item(title, value, attack, maxAttack, defence, description, false, equipmentType, level,
-            sprites, armor.Color);
+            sprites, armor.Color, false);
         return item;
     }
 }

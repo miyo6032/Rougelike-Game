@@ -1,40 +1,64 @@
 ﻿using UnityEngine;
 
-//NOT IN USE
+public enum Skills
+{
+    CriticalHit
+}
+
 //Handles the input for skills, the active and passive skills.
-public class SkillManager : MonoBehaviour {
-    private readonly SkillSlot[] skillSlots = new SkillSlot[8];
-
-    KeyCode[] skillKeys = { KeyCode.Q, KeyCode.E, KeyCode.R, KeyCode.F, KeyCode.Keypad1, KeyCode.Keypad2, KeyCode.Keypad3, KeyCode.Keypad4 };
-
-    SkillDatabase database;
+public class SkillManager : MonoBehaviour
+{
+    public PlayerStats playerStats;
+    private PlayerMovement playerMovement;
+    private PlayerAnimation playerAnimator;
 
     void Start()
     {
-        database = GetComponent<SkillDatabase>();
-        database.ConstructSkillDatabase();
+        playerMovement = playerStats.GetComponent<PlayerMovement>();
+        playerAnimator = playerStats.GetComponent<PlayerAnimation>();
     }
 
-    void Update()
+    //Figures out what to do for a skill passed in, and execute the skill
+    public void DoTheSkill(Skills type)
     {
-        foreach (SkillSlot skill in skillSlots)
+        if (playerMovement.CanUseSkill())
         {
-            if (Input.GetKeyDown(KeyCode.Q) && skill.skill != null)
+            switch (type)
             {
-                DoTheSkill(skill);
-                //the player shall not activate more than one skill at once
-                break;
+                case Skills.CriticalHit:
+                    CriticalHit();
+                    break;
             }
         }
     }
 
-    //Figures out what to do for a skill passed in, and execute the skill
-    void DoTheSkill(SkillSlot s)
+    void CriticalHit()
     {
-        if(s.skill.Title == "Critical Hit")
+        EnemyStats enemy = FindEnemy(playerAnimator.attackDirection);
+        if (enemy != null)
         {
-
+            playerAnimator.AnimateAttack();
+            enemy.TakeDamage(Random.Range(playerStats.minAttack.GetIntValue(), playerStats.maxAttack.GetIntValue() + 1));
         }
+    }
+
+    protected EnemyStats FindEnemy(Vector2Int dir)
+    {
+        Vector2 start = transform.position;
+        Vector2 end = start + dir;
+
+        // Do the detection to see if there is anyting in the way
+        Physics2D.queriesHitTriggers = false;
+        RaycastHit2D hit = Physics2D.Linecast(start, end, playerMovement.blockingLayer);
+        Physics2D.queriesHitTriggers = true;
+
+        // If the way is clear, go ahead and move
+        if (hit.transform != null)
+        {
+            return hit.transform.GetComponent<EnemyStats>();
+        }
+
+        return null;
     }
 
 }
