@@ -24,7 +24,7 @@ public class EffectManager : MonoBehaviour
     {
         if (effect.applyOnce)
         {
-            playerStats.ApplyStats(effect.statsAffected);
+            playerStats.ApplyStats(effect.ModifiersAffected);
         }
         activeEffects.Add(new ActiveEffect(effect, effect.duration));
     }
@@ -51,14 +51,14 @@ public class EffectManager : MonoBehaviour
                 effect.currentDuration--;
                 if (!effect.effect.applyOnce)
                 {
-                    playerStats.ApplyStats(effect.effect.statsAffected);
+                    playerStats.ApplyStats(effect.effect.ModifiersAffected);
                 }
                 if (effect.currentDuration == 0)
                 {
                     toRemove.Add(effect);
                     if (effect.effect.removeAfterDone)
                     {
-                        playerStats.ReverseStats(effect.effect.statsAffected);
+                        playerStats.ReverseStats(effect.effect.ModifiersAffected);
                     }
                 }
             }

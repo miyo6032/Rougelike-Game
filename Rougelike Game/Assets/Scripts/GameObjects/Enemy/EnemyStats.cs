@@ -6,14 +6,9 @@ using System.Runtime.InteropServices;
 /// <summary>
 /// Keeps track of enemy health and other stats - also handles death
 /// </summary>
-public class EnemyStats : MonoBehaviour
+public class EnemyStats : Stats
 {
-    [Header("Stats")]
-    public int minAttack;
-    public int maxAttack;
-    public int defense;
-    private int health;
-    public int maxHealth;
+    public Stat turnDelay;
     public int level;
     public int experienceDrop;
     [Header("Components")]
@@ -32,20 +27,21 @@ public class EnemyStats : MonoBehaviour
         healthSlider = HelperScripts.GetComponentFromChildrenExc<Slider>(transform);
         animator = GetComponent<Animator>();
         playerStats = GameObject.Find("Player").GetComponent<PlayerStats>();
-        health = maxHealth;
+        health = maxHealth.GetIntValue();
     }
+
     /// <summary>
     /// Damage the enemy, generate the damage counter, and update the health ui
     /// </summary>
     /// <param name="damage">Amount to damage the enemy</param>
-    public void DamageEnemy(int damage)
+    public override void TakeDamage(int damage)
     {
-        damage = Mathf.Clamp(damage - defense, 0, damage);
-        health = Mathf.Clamp(health - damage, 0, health);
+        damage = Mathf.Clamp(damage - defense.GetIntValue(), 0, damage);
+        base.TakeDamage(damage);
         damageCounter.SetTrigger("damage");
         animator.SetTrigger("damage");
         damageText.text = "" + damage;
-        healthSlider.value = health / (float) maxHealth * 100;
+        healthSlider.value = health / (float) maxHealth.GetValue() * 100;
         if (health <= 0)
         {
             Death();

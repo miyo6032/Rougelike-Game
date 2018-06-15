@@ -8,7 +8,7 @@ using System.Collections.Generic;
 public class Upgrade : ScriptableObject
 {
     public new string name;
-    public Stat[] statsAffected;
+    public Modifier[] ModifiersAffected;
     public Sprite upgradeSprite;
     public Sprite rimSprite;
     public Sprite unlockedRimSprite;

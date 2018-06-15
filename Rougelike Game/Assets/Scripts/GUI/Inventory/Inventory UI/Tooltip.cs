@@ -14,7 +14,7 @@ public class Tooltip : MonoBehaviour
         PositionTooltip();
         title.text = effect.name;
         string str = "";
-        description.text = GetStatsString(effect.statsAffected);
+        description.text = GetStatsString(effect.ModifiersAffected);
     }
 
     /// <summary>
@@ -26,36 +26,36 @@ public class Tooltip : MonoBehaviour
         PositionTooltip();
         title.text = instance.upgrade.name;
         string lockedString = instance.isUnlocked ? "Already Unlocked\n\n" : "";
-        description.text = lockedString + GetStatsString(instance.upgrade.statsAffected);
+        description.text = lockedString + GetStatsString(instance.upgrade.ModifiersAffected);
     }
 
-    string GetStatsString(Stat[] stats)
+    string GetStatsString(Modifier[] modifiers)
     {
         string str = "";
-        foreach (var stat in stats)
+        foreach (var stat in modifiers)
         {
-            str += stat.effect + GetStatString(stat) + "\n\n";
+            str += stat.value + GetStatString(stat) + "\n\n";
         }
         return str;
     }
 
-    private string GetStatString(Stat stat)
+    private string GetStatString(Modifier modifier)
     {
-        switch (stat.stat)
+        switch (modifier.ModifierType)
         {
-            case Stats.maxHealth:
+            case ModifierType.maxHealth:
                 return " Max health";
-            case Stats.baseAttack:
+            case ModifierType.attack:
                 return " Attack";
-            case Stats.baseDefense:
+            case ModifierType.defense:
                 return " Defense";
-            case Stats.hitSpeed:
+            case ModifierType.hitSpeed:
                 return " Hit Speed";
-            case Stats.maxFocus:
+            case ModifierType.maxFocus:
                 return " Max Focus";
-            case Stats.damage:
+            case ModifierType.damage:
                 return " Damage Per Second";
-            case Stats.healing:
+            case ModifierType.healing:
                 return " HP Per Second";
             default:
                 return "";

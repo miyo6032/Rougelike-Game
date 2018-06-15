@@ -8,7 +8,7 @@ public class ItemUse : MonoBehaviour
     public PlayerStats player;
 
     /// <summary>
-    /// Look the items based on its title and apply an existing effect
+    /// Look the items based on its title and apply an existing value
     /// </summary>
     /// <param name="itemInstance"></param>
     public void ApplyItemEffect(ItemInstance itemInstance)
@@ -22,7 +22,7 @@ public class ItemUse : MonoBehaviour
 
     void HealPlayer(float percentage)
     {
-        int healAmount = Mathf.CeilToInt(player.maxHealth * percentage);
+        int healAmount = Mathf.CeilToInt(player.maxHealth.GetValue() * percentage);
         player.Heal(healAmount);
     }
 }
