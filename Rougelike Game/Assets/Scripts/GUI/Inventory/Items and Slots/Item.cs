@@ -18,6 +18,7 @@ public class Item : ScriptableObject
     public int ItemLevel = 1;
     public string ItemColor;
     public Modifier[] ModifiersAffected;
+    public int focusConsumption;
 
     public Item(string title, int value, int attack, int maxAttack, int defence, string description, bool stackable, int equippedSlot, int itemLevel, string[] sprites, string itemColor, bool consumable)
         : this (title, value, description, stackable, itemLevel, sprites, consumable)
@@ -29,6 +30,7 @@ public class Item : ScriptableObject
         EquippedSlot = equippedSlot;
         ItemColor = itemColor;
         ModifiersAffected = new Modifier[0];
+        focusConsumption = 0;
     }
 
     public Item(string title, int value, string description, bool stackable, int itemLevel, string[] sprites, bool consumable)
@@ -46,6 +48,7 @@ public class Item : ScriptableObject
         ItemColor = "";
         ModifiersAffected = new Modifier[0];
         Consumable = consumable;
+        focusConsumption = 0;
     }
 
     public Item() { }

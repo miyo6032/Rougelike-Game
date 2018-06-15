@@ -34,31 +34,29 @@ public class SkillManager : MonoBehaviour
 
     void CriticalHit()
     {
-        EnemyStats enemy = FindEnemy(playerAnimator.attackDirection);
+        EnemyStats enemy = FindEnemy(playerMovement.facingdirection + (Vector2)playerMovement.transform.position);
         if (enemy != null)
         {
+            playerAnimator.SetAttackAnimationDirection(playerMovement.facingdirection);
             playerAnimator.AnimateAttack();
-            enemy.TakeDamage(Random.Range(playerStats.minAttack.GetIntValue(), playerStats.maxAttack.GetIntValue() + 1));
+            enemy.TakeDamage(Random.Range(playerStats.minAttack.GetIntValue() * 2, playerStats.maxAttack.GetIntValue() * 2 + 1));
+            playerStats.ChangeFocus(-10);
         }
     }
 
-    protected EnemyStats FindEnemy(Vector2Int dir)
+    protected EnemyStats FindEnemy(Vector2 pos)
     {
-        Vector2 start = transform.position;
-        Vector2 end = start + dir;
+        Collider2D[] colliders = Physics2D.OverlapPointAll(pos, playerMovement.blockingLayer);
 
-        // Do the detection to see if there is anyting in the way
-        Physics2D.queriesHitTriggers = false;
-        RaycastHit2D hit = Physics2D.Linecast(start, end, playerMovement.blockingLayer);
-        Physics2D.queriesHitTriggers = true;
-
-        // If the way is clear, go ahead and move
-        if (hit.transform != null)
+        foreach (Collider2D col in colliders)
         {
-            return hit.transform.GetComponent<EnemyStats>();
+            EnemyStats enemy = col.GetComponent<EnemyStats>();
+            if (enemy)
+            {
+                return enemy;
+            }
         }
 
         return null;
     }
-
 }

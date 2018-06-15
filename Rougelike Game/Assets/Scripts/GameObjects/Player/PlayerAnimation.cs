@@ -16,8 +16,7 @@ public class PlayerAnimation : MonoBehaviour
     bool facingRight = true;
 
     // Used in animations to tell which way to face for an attack
-    [HideInInspector]
-    public Vector2Int attackDirection = Vector2Int.zero;
+    Vector2Int attackDirection = Vector2Int.zero;
 
     // tell which way to face when moving
     Vector2Int moveDirection = Vector2Int.zero;

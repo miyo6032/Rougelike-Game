@@ -13,6 +13,7 @@ public class PlayerMovement : MovingObject
     PlayerStats stats;
     PlayerAnimation animatorHandler;
     bool hitting;
+    [HideInInspector] public Vector2Int facingdirection;
 
     // Variables that handle automatic movement when the player clicks a position
     bool automoving;
@@ -93,6 +94,7 @@ public class PlayerMovement : MovingObject
             if (!moveManager.SpotClaimed(Vector2Int.FloorToInt((Vector2) transform.position + input)))
             {
                 StopAutomove();
+                facingdirection = input;
                 AttemptMove<EnemyStats>(input); // The player moves (or at least tries to)
             }
         }
@@ -129,6 +131,7 @@ public class PlayerMovement : MovingObject
             !moveManager.SpotClaimed(Vector2Int.FloorToInt(transform.position) + Vector2Int.FloorToInt(nextMove)))
         {
             // Update the animator to align with the player's input
+            facingdirection = Vector2Int.RoundToInt(nextMove);
             animatorHandler.SetAttackAnimationDirection(Vector2Int.RoundToInt(nextMove));
             AttemptMove<EnemyStats>(Vector2Int.FloorToInt(nextMove)); // The player moves (or at least tries to)
             altMove = !altMove;

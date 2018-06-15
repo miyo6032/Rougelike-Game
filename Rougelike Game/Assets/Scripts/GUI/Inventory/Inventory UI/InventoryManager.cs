@@ -32,14 +32,7 @@ public class InventoryManager : MonoBehaviour
         AddItemToSlot(itemGenerator.GenerateItem(1, 1), equipSlots[2], 1);
         AddItemToSlot(itemGenerator.GenerateItem(1, 2), equipSlots[3], 1);
 
-        AddGeneratedItem(1, 0);
-        AddGeneratedItem(1, 0);
-        AddGeneratedItem(2, 0);
-        AddGeneratedItem(2, 0);
-        AddGeneratedItem(3, 0);
-        AddGeneratedItem(3, 0);
-
-        AddItem(TEST, 3);
+        AddItem(TEST, 1);
         gameObject.SetActive(false);
     }
 
