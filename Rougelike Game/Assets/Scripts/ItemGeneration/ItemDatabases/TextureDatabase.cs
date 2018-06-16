@@ -8,31 +8,12 @@ using UnityEngine;
 public class TextureDatabase : MonoBehaviour
 {
     private readonly Dictionary<string, Sprite> textures = new Dictionary<string, Sprite>();
-    private readonly string[] itemCategories = {"Armor", "Swords", "Helmets"};
+    private readonly string[] itemCategories = {"Armor", "Swords", "Helmets", "Items", "Skills"};
 
     /// <summary>
     /// Load every texture into the database
     /// </summary>
     public void LoadAllTextures()
-    {
-        // Load all item textures
-        Sprite[] sprites = Resources.LoadAll<Sprite>("ItemIcons/Items");
-        foreach (Sprite sprite in sprites)
-        {
-            string path = sprite.ToString();
-            path = path.Substring(0, path.IndexOf(" ", StringComparison.Ordinal));
-            textures.Add(path, sprite);
-        }
-
-        //Load the textures from the item modules
-        LoadModuleTextures();
-        textures.Add("Invisible", Resources.Load<Sprite>("ItemIcons/Invisible"));
-    }
-
-    /// <summary>
-    /// Loads textures for item pieces for equipment
-    /// </summary>
-    private void LoadModuleTextures()
     {
         foreach (string category in itemCategories)
         {
@@ -44,6 +25,8 @@ public class TextureDatabase : MonoBehaviour
                 textures.Add(path, sprite);
             }
         }
+
+        textures.Add("Invisible", Resources.Load<Sprite>("ItemIcons/Invisible"));
     }
 
     /// <summary>

@@ -1,6 +1,9 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Represents a stat that can be altered by modifiers
+/// </summary>
 [System.Serializable]
 public class Stat
 {
@@ -14,6 +17,10 @@ public class Stat
         return Mathf.RoundToInt(GetValue());
     }
 
+    /// <summary>
+    /// Calculate the final value from the base value with modifiers
+    /// </summary>
+    /// <returns></returns>
     public float GetValue()
     {
         float finalValue = baseValue;
@@ -34,6 +41,10 @@ public class Stat
         modifiers.Add(new StatModifier(modifier, source));
     }
 
+    /// <summary>
+    /// Remove modifiers that came from a source - a source can be anything
+    /// </summary>
+    /// <param name="source"></param>
     public void RemoveSource(object source)
     {
         List<StatModifier> toRemove = new List<StatModifier>();
@@ -50,6 +61,9 @@ public class Stat
 
 }
 
+/// <summary>
+/// Holds a modifier's value and what object it came from
+/// </summary>
 [System.Serializable]
 struct StatModifier
 {

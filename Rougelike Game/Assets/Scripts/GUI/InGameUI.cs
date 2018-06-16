@@ -7,6 +7,7 @@ using UnityEngine.UI;
 public class InGameUI : MonoBehaviour
 {
     public Slider healthSlider; // The player's in-game health bar
+    public Slider focusSlider;
     public GameObject pauseUI;
     public GameObject invUI;
     public GameObject menuPopup;
@@ -23,6 +24,11 @@ public class InGameUI : MonoBehaviour
     public void UpdateHealth(float healthPercent)
     {
         healthSlider.value = healthPercent;
+    }
+
+    public void UpdateFocus(float focusPercent)
+    {
+        focusSlider.value = focusPercent;
     }
 
     /// <summary>

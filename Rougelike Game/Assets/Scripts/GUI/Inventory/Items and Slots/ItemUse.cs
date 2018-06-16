@@ -6,6 +6,7 @@
 public class ItemUse : MonoBehaviour
 {
     public PlayerStats player;
+    public SkillManager skillManager;
 
     /// <summary>
     /// Look the items based on its title and apply an existing value
@@ -13,16 +14,15 @@ public class ItemUse : MonoBehaviour
     /// <param name="itemInstance"></param>
     public void ApplyItemEffect(ItemInstance itemInstance)
     {
-        if (itemInstance.item.Title == "Minor Health Potion")
+        player.ApplyStats(itemInstance.item.ModifiersAffected);
+        if (itemInstance.item.Consumable)
         {
-            HealPlayer(0.2f);
             itemInstance.ChangeAmount(-1);
         }
-    }
 
-    void HealPlayer(float percentage)
-    {
-        int healAmount = Mathf.CeilToInt(player.maxHealth.GetValue() * percentage);
-        player.Heal(healAmount);
+        if (itemInstance.item.Title == "Critical Hit")
+        {
+            skillManager.DoTheSkill(Skills.CriticalHit, itemInstance.item.focusConsumption);
+        }
     }
 }

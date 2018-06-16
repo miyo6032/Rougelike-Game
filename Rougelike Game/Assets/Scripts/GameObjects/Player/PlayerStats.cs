@@ -16,7 +16,7 @@ public enum ModifierType
 public class Modifier
 {
     public ModifierType ModifierType;
-    public int value;
+    public float value;
 }
 
 /// <summary>
@@ -37,7 +37,7 @@ public class PlayerStats : Stats
     public int upgradePoints = 5;
 
     // The player's focus bar - used for special skills
-    private int focus;
+    public float focus;
     public Stat maxFocus;
 
     Animator damageCounter;
@@ -51,6 +51,7 @@ public class PlayerStats : Stats
         damageCounter = HelperScripts.GetComponentFromChildrenExc<Animator>(transform);
         damageText = HelperScripts.GetComponentFromChildrenExc<Text>(transform);
         health = maxHealth.GetIntValue();
+        focus = maxFocus.GetIntValue();
         UpdateStats();
         playerAnimation = GetComponent<PlayerAnimation>();
     }
@@ -70,6 +71,12 @@ public class PlayerStats : Stats
             experience = experience - maxExperience;
             maxExperience += Mathf.CeilToInt(maxExperience * 0.2f);
         }
+        UpdateStats();
+    }
+
+    public void ChangeFocus(int amount)
+    {
+        focus = Mathf.Clamp(focus + amount, 0, maxFocus.GetValue());
         UpdateStats();
     }
 
@@ -159,8 +166,9 @@ public class PlayerStats : Stats
     /// </summary>
     public void UpdateStats()
     {
-        StaticCanvasList.instance.gameUI.UpdateHealth(health / (float)maxHealth.GetValue());
-        StaticCanvasList.instance.statUI.UpdateStatUI(level, experience, maxExperience, health, maxHealth.GetIntValue(), focus, maxFocus.GetIntValue(), defense.GetIntValue(), minAttack.GetIntValue(), maxAttack.GetIntValue());
+        StaticCanvasList.instance.gameUI.UpdateHealth(health / maxHealth.GetValue());
+        StaticCanvasList.instance.gameUI.UpdateFocus(focus / maxFocus.GetValue());
+        StaticCanvasList.instance.statUI.UpdateStatUI(level, experience, maxExperience, health, maxHealth.GetIntValue(), Mathf.RoundToInt(focus), maxFocus.GetIntValue(), defense.GetIntValue(), minAttack.GetIntValue(), maxAttack.GetIntValue());
         StaticCanvasList.instance.skillTree.upgradePointsText.text = "Availible Upgrade Points: " + upgradePoints;
     }
 
