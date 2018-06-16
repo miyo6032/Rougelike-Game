@@ -1,5 +1,8 @@
 ﻿using UnityEngine;
 
+/// <summary>
+/// The base stats class for the player and enemy Stats
+/// </summary>
 public class Stats : MonoBehaviour
 {
     [Header("Stats")]

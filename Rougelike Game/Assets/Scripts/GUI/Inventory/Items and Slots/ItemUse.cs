@@ -22,7 +22,7 @@ public class ItemUse : MonoBehaviour
 
         if (itemInstance.item.Title == "Critical Hit")
         {
-            skillManager.DoTheSkill(Skills.CriticalHit);
+            skillManager.DoTheSkill(Skills.CriticalHit, itemInstance.item.focusConsumption);
         }
     }
 }

@@ -37,7 +37,7 @@ public class PlayerStats : Stats
     public int upgradePoints = 5;
 
     // The player's focus bar - used for special skills
-    private float focus;
+    public float focus;
     public Stat maxFocus;
 
     Animator damageCounter;

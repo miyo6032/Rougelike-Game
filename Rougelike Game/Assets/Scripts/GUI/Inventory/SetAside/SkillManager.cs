@@ -18,21 +18,29 @@ public class SkillManager : MonoBehaviour
         playerAnimator = playerStats.GetComponent<PlayerAnimation>();
     }
 
-    //Figures out what to do for a skill passed in, and execute the skill
-    public void DoTheSkill(Skills type)
+    /// <summary>
+    /// Based on the skill type, do that skill, and subtract focus
+    /// </summary>
+    /// <param name="type"></param>
+    /// <param name="focus"></param>
+    public void DoTheSkill(Skills type, int focus)
     {
-        if (playerMovement.CanUseSkill())
+        if (playerMovement.CanUseSkill() && playerStats.focus >= focus)
         {
             switch (type)
             {
                 case Skills.CriticalHit:
-                    CriticalHit();
+                    CriticalHit(focus);
                     break;
             }
         }
     }
 
-    void CriticalHit()
+    /// <summary>
+    /// Executes the critical hit skill
+    /// </summary>
+    /// <param name="focus"></param>
+    void CriticalHit(int focus)
     {
         EnemyStats enemy = FindEnemy(playerMovement.facingdirection + (Vector2)playerMovement.transform.position);
         if (enemy != null)
@@ -40,7 +48,7 @@ public class SkillManager : MonoBehaviour
             playerAnimator.SetAttackAnimationDirection(playerMovement.facingdirection);
             playerAnimator.AnimateAttack();
             enemy.TakeDamage(Random.Range(playerStats.minAttack.GetIntValue() * 2, playerStats.maxAttack.GetIntValue() * 2 + 1));
-            playerStats.ChangeFocus(-10);
+            playerStats.ChangeFocus(-focus);
         }
     }
 

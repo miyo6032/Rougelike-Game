@@ -29,6 +29,11 @@ public class Tooltip : MonoBehaviour
         description.text = lockedString + GetStatsString(instance.upgrade.ModifiersAffected);
     }
 
+    /// <summary>
+    /// Iterates through all of the modifiers and puts them all into a string
+    /// </summary>
+    /// <param name="modifiers"></param>
+    /// <returns></returns>
     string GetStatsString(Modifier[] modifiers)
     {
         string str = "";
@@ -39,6 +44,11 @@ public class Tooltip : MonoBehaviour
         return str;
     }
 
+    /// <summary>
+    /// Map a stat to its string name
+    /// </summary>
+    /// <param name="modifier"></param>
+    /// <returns></returns>
     private string GetStatString(Modifier modifier)
     {
         switch (modifier.ModifierType)
@@ -71,13 +81,17 @@ public class Tooltip : MonoBehaviour
         PositionTooltip();
         title.text = item.Title;
         string str = item.ItemLevel == 0 ? "" : "Required Level: " + item.ItemLevel + "\n\n";
-        str += item.Value == 0 ? "" : "Value: " + item.Value + "\n\n";
         str += GetAttackString(item);
         str += item.Defence == 0 ? "" : "+" + item.Defence + " Defense\n\n";
+        str += item.focusConsumption == 0 ? "" : "Required focus: " + item.focusConsumption + "\n\n";
+        str += item.Value == 0 ? "" : "Value: " + item.Value + "\n\n";
+        str += item.Description;
         description.text = str;
-
     }
 
+    /// <summary>
+    /// Position the tooltip in relation to the mouse screen position
+    /// </summary>
     void PositionTooltip()
     {
         transform.position = Input.mousePosition;
@@ -85,6 +99,11 @@ public class Tooltip : MonoBehaviour
         gameObject.SetActive(true);
     }
 
+    /// <summary>
+    /// Do some processing to return an attack string that describes the item's attack
+    /// </summary>
+    /// <param name="item"></param>
+    /// <returns></returns>
     string GetAttackString(Item item)
     {
         if (item.Attack == 0)

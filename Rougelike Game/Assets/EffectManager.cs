@@ -20,6 +20,10 @@ public class EffectManager : MonoBehaviour
 
     private List<ActiveEffect> activeEffects;
 
+    /// <summary>
+    /// Adds a new effect to the list, and will become active next iteration in ApplyEffects()
+    /// </summary>
+    /// <param name="effect"></param>
     public void AddNewEffect(Effect effect)
     {
         if (effect.applyOnce)
@@ -74,6 +78,9 @@ public class EffectManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Show the effects in the in game ui
+    /// </summary>
     private void UpdateUI()
     {
         for (int i = 0; i < ui.Count; i++)

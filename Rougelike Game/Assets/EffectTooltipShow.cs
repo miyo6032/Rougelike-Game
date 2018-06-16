@@ -1,10 +1,11 @@
-﻿using System.Diagnostics;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.EventSystems;
 
+/// <summary>
+/// Show the effect stats when hovered over in the in game ui
+/// </summary>
 public class EffectTooltipShow : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
-
     private Effect effect;
 
     public void SetEffect(Effect effect)
@@ -24,5 +25,4 @@ public class EffectTooltipShow : MonoBehaviour, IPointerEnterHandler, IPointerEx
     {
         StaticCanvasList.instance.inventoryTooltip.gameObject.SetActive(false);
     }
-
 }
