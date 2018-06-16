@@ -1,18 +1,9 @@
 ﻿using UnityEngine;
-using UnityEngine.Tilemaps;
 
 //NOT IN USE
 // Procedurally generates the tilemap using cellular automata and a lot of tweaking variables
-public class MapGenerator : MonoBehaviour{
-
-    public Tilemap floor;
-    public Tilemap walls;
-    public Tile floorTile;
-    public Tile wallTile; // The tile that will be the wall texture
-    public Tile freeStandingWallTile; // A freestanding wall tile
-    public Tile bufferTile; // The tile surrounding the edge of the wall
-    public Tile voidTile; // The tile that will be a empty void tile
-
+public class MapGenerator : TerrainGenerator
+{
     public int initialHeight; // The inital dimensions - the dimensions will grow with more cycles
     public int initialWidth; 
 
@@ -29,10 +20,10 @@ public class MapGenerator : MonoBehaviour{
 
     public int cycles; // Number of evolutionary cycles to do
 
-    int[,] map; // The integer map that stores the cell data
+    Tiles[,] map; // The integer map that stores the cell data
 
     // Called to generate the entire map from start to finish
-    public void GenerateMap()
+    public override void Generate()
     {
         InitMap();
         for(int i = 0; i < cycles; i++)
@@ -45,7 +36,7 @@ public class MapGenerator : MonoBehaviour{
     // Initialize, scattering living cells randomly in the map based on wallChance
     void InitMap()
     {
-        map = new int[initialHeight, initialWidth];
+        map = new Tiles[initialHeight, initialWidth];
         height = initialHeight;
         width = initialWidth;
         for(int y = 0; y < height; y++)
@@ -54,11 +45,11 @@ public class MapGenerator : MonoBehaviour{
             {
                 if(Random.Range(0f, 1f) < wallChance)
                 {
-                    map[y, x] = 0;// Cell does not exist
+                    map[y, x] = Tiles.wallTile;// Cell does not exist
                 }
                 else
                 {
-                    map[y, x] = 1;// Cell does exist
+                    map[y, x] = Tiles.floorTile;// Cell does exist
                 }
             }
         }
@@ -71,7 +62,7 @@ public class MapGenerator : MonoBehaviour{
         height = height + detectRange * 2;
         width = width + detectRange * 2;
 
-        int[,] newMap = new int[height, width];
+        Tiles[,] newMap = new Tiles[height, width];
 
         // Offset a little bit because the array is a little bigger
         for (int y = -detectRange; y < height - detectRange; y++)
@@ -87,7 +78,7 @@ public class MapGenerator : MonoBehaviour{
                         // Bounds of the original 2d array
                         if ((x + xx > 0 && x + xx < width - detectRange * 2 && y + yy > 0 && y + yy < height - detectRange * 2))
                         {
-                            if(map[y + yy, x + xx] == 1)
+                            if(map[y + yy, x + xx] == Tiles.floorTile)
                             {
                                 neighborCount++;
                             }
@@ -97,12 +88,12 @@ public class MapGenerator : MonoBehaviour{
                 // The neighbor count is great enough that a new cell will appear
                 if(neighborCount >= birthLimit)
                 {
-                    newMap[y + detectRange, x + detectRange] = 1;
+                    newMap[y + detectRange, x + detectRange] = Tiles.floorTile;
                 }
                 // The neighbor count is small enough that the cell will die
                 else if(neighborCount < deathLimit)
                 {
-                    newMap[y + detectRange, x + detectRange] = 0;
+                    newMap[y + detectRange, x + detectRange] = Tiles.wallTile;
                 }
                 // The neighbor count does not change anything. If the celldata already exists, use that data
                 // Otherwise, the cell will initialize to 0.
@@ -114,7 +105,7 @@ public class MapGenerator : MonoBehaviour{
                     }
                     else
                     {
-                        newMap[y + detectRange, x + detectRange] = 0;
+                        newMap[y + detectRange, x + detectRange] = Tiles.wallTile;
                     }
                 }
             }
@@ -131,7 +122,7 @@ public class MapGenerator : MonoBehaviour{
         {
             for (int x = 0; x < height; x++)
             {
-                if (map[y, x] == 1)// 1 means a floor tile
+                if (map[y, x] == Tiles.floorTile)// 1 means a floor tile
                 {
                     // Offset to keep the tilemap at the expected position
                     floor.SetTile(new Vector3Int(x - cycles * detectRange, y - cycles * detectRange, 0), floorTile);
@@ -139,10 +130,10 @@ public class MapGenerator : MonoBehaviour{
                 else
                 {
                     //If there is a floor (no wall) below
-                    if (y > 0 && map[y - 1, x] == 1)
+                    if (y > 0 && map[y - 1, x] == Tiles.floorTile)
                     {
                         //If there is no floor above
-                        if(y < height && map[y + 1, x] == 1)
+                        if(y < height && map[y + 1, x] == Tiles.floorTile)
                         {
                             walls.SetTile(new Vector3Int(x - cycles * detectRange, y - cycles * detectRange, 0), freeStandingWallTile);
                         }

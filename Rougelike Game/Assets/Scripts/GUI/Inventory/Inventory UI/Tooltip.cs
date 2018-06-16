@@ -13,7 +13,6 @@ public class Tooltip : MonoBehaviour
     {
         PositionTooltip();
         title.text = effect.name;
-        string str = "";
         description.text = GetStatsString(effect.ModifiersAffected);
     }
 
