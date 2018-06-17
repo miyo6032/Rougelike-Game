@@ -1,19 +1,16 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 using TriangleNet.Geometry;
 using System.Collections.Generic;
-using System.ComponentModel;
-using Random = UnityEngine.Random;
 
 public class TEST : MonoBehaviour {
 
-    private TriangleNet.Mesh mesh;
+    public TriangleNet.Mesh mesh;
 
     private Dictionary<Vertex, List<Edge>> connectedVertices;
 
-    Dictionary<Vertex, List<Edge>> mst;
+    private Dictionary<Vertex, List<Edge>> mst;
 
-    public void Generate(List<Vertex> vertices)
+    public Dictionary<Vertex, List<Edge>> Generate(List<Vertex> vertices)
     {
         Polygon polygon = new Polygon();
         foreach (var vertex in vertices)
@@ -30,28 +27,8 @@ public class TEST : MonoBehaviour {
         RemoveMst();
         RemoveLongEdges(Mathf.RoundToInt(connectedVertices.Count / 3f));
         AddRandomEdgesToMst(Mathf.RoundToInt(connectedVertices.Count / 3f));
-    }
 
-    public void OnDrawGizmos()
-    {
-        if (mst == null)
-        {
-            // We're probably in the editor
-            return;
-        }
-
-        Gizmos.color = Color.red;
-        foreach (var edges in mst.Values)
-        {
-            foreach (var edge in edges)
-            {
-                Vertex v0 = mesh.vertices[edge.P0];
-                Vertex v1 = mesh.vertices[edge.P1];
-                Vector3 p0 = new Vector3((float)v0.x, (float)v0.y);
-                Vector3 p1 = new Vector3((float)v1.x, (float)v1.y);
-                Gizmos.DrawLine(p0, p1);
-            }
-        }
+        return mst;
     }
 
     void AddRandomEdgesToMst(int num)

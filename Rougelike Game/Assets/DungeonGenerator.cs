@@ -11,6 +11,8 @@ public class DungeonGenerator : TerrainGenerator
     public Vector2Int RoomWidthBounds;
     private Tiles[,] map;
     public TEST mst;
+    private List<Room> rooms;
+    private Dictionary<Vertex, List<Edge>> links;
 
     public override void Generate()
     {
@@ -34,10 +36,15 @@ public class DungeonGenerator : TerrainGenerator
 
     void GenerateDungeon()
     {
-        List<Room> rooms = GenerateRooms();
+        rooms = GenerateRooms();
         List<Vertex> vertices = new List<Vertex>();
         rooms.ForEach((room) => vertices.Add(new Vertex(room.GetCenter().x, room.GetCenter().y)));
-        mst.Generate(vertices);
+        links = mst.Generate(vertices);
+
+        foreach (var edges in links.Values)
+        {
+            
+        }
 
         foreach (var room in rooms)
         {
@@ -149,32 +156,4 @@ public class DungeonGenerator : TerrainGenerator
             }
         }
     }
-
-    class Room
-    {
-        public Vector2Int upperRightCorner;
-        public Vector2Int lowerLeftCorner;
-
-        public Room(Vector2Int lowerLeftCorner, Vector2Int upperRightCorner)
-        {
-            this.upperRightCorner = upperRightCorner;
-            this.lowerLeftCorner = lowerLeftCorner;
-        }
-
-        public Vector2Int GetCenter()
-        {
-            return lowerLeftCorner + Vector2Int.CeilToInt(new Vector2(GetWidth() / 2f, GetHeight() / 2f));
-        }
-
-        public int GetHeight()
-        {
-            return Mathf.Abs(upperRightCorner.y - lowerLeftCorner.y);
-        }
-
-        public int GetWidth()
-        {
-            return Mathf.Abs(upperRightCorner.x - lowerLeftCorner.x);
-        }
-    }
-
 }
