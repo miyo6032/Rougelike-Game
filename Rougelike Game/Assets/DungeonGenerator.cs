@@ -1,7 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
-using TriangleNet.Geometry;
+using System.Linq;
 
+/// <summary>
+/// Generate a dungeon floor
+/// </summary>
 public class DungeonGenerator : TerrainGenerator
 {
     public int Height;
@@ -10,18 +13,19 @@ public class DungeonGenerator : TerrainGenerator
     public Vector2Int RoomHeightBounds;
     public Vector2Int RoomWidthBounds;
     private Tiles[,] map;
-    public TEST mst;
-    private List<Room> rooms;
-    private Dictionary<Vertex, List<Edge>> links;
+    private Dictionary<Vector2Int, List<Vector2Int>> links;
+    private List<Edge> edges;
 
     public override void Generate()
     {
         InitMap();
-        GenerateDungeon();;
+        GenerateDungeon(); ;
         MapToTilemap();
     }
 
-    // Initialize, scattering living cells randomly in the map based on wallChance
+    /// <summary>
+    /// Clear the map
+    /// </summary>
     void InitMap()
     {
         map = new Tiles[Width, Height];
@@ -34,57 +38,120 @@ public class DungeonGenerator : TerrainGenerator
         }
     }
 
+    /// <summary>
+    /// Generates the dungeon and writes it to the map 2d array
+    /// </summary>
     void GenerateDungeon()
     {
-        rooms = GenerateRooms();
-        List<Vertex> vertices = new List<Vertex>();
-        rooms.ForEach((room) => vertices.Add(new Vertex(room.GetCenter().x, room.GetCenter().y)));
-        links = mst.Generate(vertices);
+        Triangulator triangulator = new Triangulator();
+        RoomGenerator roomGenerator = new RoomGenerator();
 
-        foreach (var edges in links.Values)
+        Dictionary<Vector2Int, Room> rooms = roomGenerator.GenerateRooms(InitialRoomDensity, Width, Height, RoomHeightBounds, RoomWidthBounds);
+        links = triangulator.GetLinks(rooms.Keys.ToList());
+        edges = LinksIntoHallways(rooms);
+
+        // Adds hubs
+        foreach (var room in rooms.Values)
         {
-            
+            WriteRoomToMap(room);
         }
 
-        foreach (var room in rooms)
+        foreach (var edge in edges)
         {
-            for (int y = 0; y < room.GetHeight(); y++)
+            WriteEdgeToMap(edge);
+        }
+    }
+
+    /// <summary>
+    /// Translates the edge into positions on the map array
+    /// </summary>
+    /// <param name="edge"></param>
+    private void WriteEdgeToMap(Edge edge)
+    {
+        Vector2 step = edge.v1 - edge.v0;
+        step.Normalize();
+        Vector2Int start = edge.v0;
+        while (start != edge.v1)
+        {
+            map[start.x, start.y] = Tiles.floorTile;
+            start += Vector2Int.FloorToInt(step);
+        }
+    }
+    
+    /// <summary>
+    /// Translates a room into positions on the map array
+    /// </summary>
+    /// <param name="room"></param>
+    private void WriteRoomToMap(Room room)
+    {
+        for (int y = 0; y < room.GetHeight() + 1; y++)
+        {
+            for (int x = 0; x < room.GetWidth() + 1; x++)
             {
-                for (int x = 0; x < room.GetWidth(); x++)
+                map[room.lowerLeftCorner.x + x, room.lowerLeftCorner.y + y] = Tiles.floorTile;
+            }
+        }
+    }
+
+    /// <summary>
+    /// Turn linked vertices into hallways depending on the rooms
+    /// </summary>
+    List<Edge> LinksIntoHallways(Dictionary<Vector2Int, Room> rooms)
+    {
+        List<Edge> edges = new List<Edge>();
+        RemoveDuplicates();
+        foreach (var kV in links)
+        {
+            foreach (var vector in kV.Value)
+            {
+                if (RoomsAreAligned(rooms[kV.Key], rooms[vector]))
                 {
-                    map[room.lowerLeftCorner.x + x, room.lowerLeftCorner.y + y] = Tiles.floorTile;
+                    Edge edge = GetLinkingEdge(rooms[kV.Key], rooms[vector]) ??
+                                GetLinkingEdge(rooms[vector], rooms[kV.Key]);
+                    edges.Add(edge);
+                }
+                else
+                {
+                    Edge xEdge = new Edge(kV.Key, new Vector2Int(vector.x, kV.Key.y));
+                    Edge yEdge = new Edge(new Vector2Int(vector.x, kV.Key.y), vector);
+                    edges.Add(yEdge);
+                    edges.Add(xEdge);
                 }
             }
         }
+
+        return edges;
     }
 
-    List<Room> GenerateRooms()
+    /// <summary>
+    /// If the rooms can be connected by a straight hallway, without any turns
+    /// </summary>
+    /// <param name="room1"></param>
+    /// <param name="room2"></param>
+    /// <returns></returns>
+    bool RoomsAreAligned(Room room1, Room room2)
     {
-        List<Room> rooms = new List<Room>();
-        for (int i = 0; i < InitialRoomDensity; i++)
+        if (room1.lowerLeftCorner.x > room2.upperRightCorner.x)
         {
-            int roomHeight = Random.Range(RoomHeightBounds.x, RoomHeightBounds.y);
-            int roomWidth = Random.Range(RoomWidthBounds.x, RoomWidthBounds.y);
-            Vector2Int lowerLeftCorner = new Vector2Int(Random.Range(0, Width), Random.Range(0, Height));
-            Vector2Int upperRightCorner = lowerLeftCorner + new Vector2Int(roomWidth, roomHeight);
-
-            Room room = new Room(lowerLeftCorner, upperRightCorner);
-            if (CanPlaceRoom(room, rooms))
+            if (room1.lowerLeftCorner.y > room2.upperRightCorner.y)
             {
-                rooms.Add(room);
+                return false;
+            }
+
+            if (room1.upperRightCorner.y < room2.lowerLeftCorner.y)
+            {
+                return false;
             }
         }
 
-        return rooms;
-    }
-
-    bool CanPlaceRoom(Room room, List<Room> rooms)
-    {
-        if (!RoomInBounds(room)) return false;
-
-        foreach (var r in rooms)
+        if (room2.lowerLeftCorner.x > room1.upperRightCorner.x)
         {
-            if (RoomsOverlap(room, r))
+            if (room1.lowerLeftCorner.y > room2.upperRightCorner.y)
+            {
+                return false;
+            }
+
+            if (room1.upperRightCorner.y < room2.lowerLeftCorner.y)
             {
                 return false;
             }
@@ -93,34 +160,46 @@ public class DungeonGenerator : TerrainGenerator
         return true;
     }
 
-    bool RoomInBounds(Room room)
+    /// <summary>
+    /// Removes duplicate links, which cause more hallways than necessary
+    /// </summary>
+    void RemoveDuplicates()
     {
-        if (room.lowerLeftCorner.x + room.GetWidth() >= Width)
+        foreach (var kV in links)
         {
-            return false;
+            foreach (var vector in kV.Value)
+            {
+                if (links[vector].Contains(kV.Key))
+                {
+                    links[vector].Remove(kV.Key);
+                }
+            }
         }
-
-        if (room.lowerLeftCorner.y + room.GetHeight() >= Height)
-        {
-            return false;
-        }
-
-        return true;
     }
 
-    bool RoomsOverlap(Room room1, Room room2)
+    /// <summary>
+    /// If two rooms are aligned, get the direct path instead of a bent path
+    /// </summary>
+    /// <param name="room1"></param>
+    /// <param name="room2"></param>
+    /// <returns></returns>
+    Edge GetLinkingEdge(Room room1, Room room2)
     {
-        if (room1.lowerLeftCorner.y > room2.upperRightCorner.y || room2.lowerLeftCorner.y > room1.upperRightCorner.y)
+        if (room1.lowerLeftCorner.y <= room2.lowerLeftCorner.y && room2.lowerLeftCorner.y <= room1.upperRightCorner.y)
         {
-            return false;
+            Vector2Int start = room2.lowerLeftCorner;
+            Vector2Int end = new Vector2Int(room1.GetCenter().x, start.y);
+            return new Edge(start, end);
         }
 
-        if (room1.lowerLeftCorner.x > room2.upperRightCorner.x || room2.lowerLeftCorner.x > room1.upperRightCorner.x)
+        if (room1.lowerLeftCorner.x <= room2.lowerLeftCorner.x && room2.lowerLeftCorner.x <= room1.upperRightCorner.x)
         {
-            return false;
+            Vector2Int start = room2.lowerLeftCorner;
+            Vector2Int end = new Vector2Int(room2.lowerLeftCorner.x, room1.GetCenter().y);
+            return new Edge(start, end);
         }
 
-        return true;
+        return null;
     }
 
     // Converts our integer 2d array into the tilemap!
@@ -128,32 +207,70 @@ public class DungeonGenerator : TerrainGenerator
     {
         floor.ClearAllTiles();
         walls.ClearAllTiles();
+        AddFloorsAndWalls();
+    }
+
+    /// <summary>
+    /// Translate the 2d map array into actual tiles on the tilemap
+    /// </summary>
+    public void AddFloorsAndWalls()
+    {
         for (int y = 0; y < Height; y++)
         {
             for (int x = 0; x < Width; x++)
             {
-                if (map[x, y] == Tiles.floorTile)// 1 means a floor tile
+                if (map[x, y] == Tiles.floorTile)
                 {
                     // Offset to keep the tilemap at the expected position
                     floor.SetTile(new Vector3Int(x, y, 0), floorTile);
                 }
-                //If there is a floor (no wall) below
-                else if (map[x, y] == Tiles.wallTile)
+
+                // Fill in anything else with walls
+                else
                 {
-                    if (y > 0 && map[x, y - 1] == Tiles.floorTile)
+                    map[x, y] = Tiles.freeStandingWallTile;
+                    floor.SetTile(new Vector3Int(x, y, 0), freeStandingWallTile);
+
+                    if (y > 0 && map[x, y - 1] != Tiles.floorTile)
                     {
-                        walls.SetTile(new Vector3Int(x, y, 0), freeStandingWallTile);
-                    }
-                    else
-                    {
-                        walls.SetTile(new Vector3Int(x, y, 0), wallTile);
+                        map[x, y] = Tiles.wallTile;
+                        floor.SetTile(new Vector3Int(x, y, 0), wallTile);
                     }
                 }
-                else if(map[x, y] == Tiles.voidTile)
+
+                //Remove filler walls
+                bool containsFloor = false;
+                for (int i = -1; i < 2; i++)
                 {
-                    walls.SetTile(new Vector3Int(x, y, 0), voidTile);
+                    for (int j = -1; j < 2; j++)
+                    {
+                        if (x + i > 0 && x + i < Width - 1 && y + j > 0 && y + j < Height - 1)
+                        {
+                            if (map[x + i, y + j] == Tiles.floorTile)
+                            {
+                                containsFloor = true;
+                            }
+                        }
+                    }
+                }
+                if (!containsFloor)
+                {
+                    map[x, y] = Tiles.voidTile;
+                    floor.SetTile(new Vector3Int(x, y, 0), voidTile);
                 }
             }
+        }
+    }
+
+    class Edge
+    {
+        public Vector2Int v0;
+        public Vector2Int v1;
+
+        public Edge(Vector2Int v0, Vector2Int v1)
+        {
+            this.v0 = v0;
+            this.v1 = v1;
         }
     }
 }

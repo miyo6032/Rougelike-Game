@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Tilemaps;
 
 public enum Tiles
@@ -11,6 +9,9 @@ public enum Tiles
     freeStandingWallTile,
 }
 
+/// <summary>
+/// Base class for terrain in editor generators
+/// </summary>
 public class TerrainGenerator : MonoBehaviour
 {
     public Tilemap floor;

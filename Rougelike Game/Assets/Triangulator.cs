@@ -13,6 +13,11 @@ public class Triangulator {
 
     private Dictionary<Vertex, List<Vertex>> mst;
 
+    /// <summary>
+    /// Get hallway connections from a list of vectors by triangulating and finding a mst
+    /// </summary>
+    /// <param name="vectors"></param>
+    /// <returns></returns>
     public Dictionary<Vector2Int, List<Vector2Int>> GetLinks(List<Vector2Int> vectors)
     {
         // Convert to vertices for triangulation
@@ -51,6 +56,10 @@ public class Triangulator {
         return links;
     }
 
+    /// <summary>
+    /// Add in some edges back to make the dungeon more connected
+    /// </summary>
+    /// <param name="num"></param>
     void AddRandomEdgesToMst(int num)
     {
         for (int i = 0; i < num; i++)
@@ -70,6 +79,10 @@ public class Triangulator {
         }
     }
 
+    /// <summary>
+    /// Remove long edges from the connections so we don't choose really long connections accidentally
+    /// </summary>
+    /// <param name="num"></param>
     void RemoveLongEdges(int num)
     {
         for (int i = 0; i < num; i++)
@@ -81,7 +94,7 @@ public class Triangulator {
                 foreach (var vertex in kV.Value)
                 {
                     VertexPair edge = new VertexPair(kV.Key, vertex);
-                    float distance = Distance(edge);
+                    float distance = EdgeLength(edge);
                     if (distance > longestLength)
                     {
                         longestLength = distance;
@@ -95,6 +108,9 @@ public class Triangulator {
         }
     }
 
+    /// <summary>
+    /// Remove the mst from the connection to avoid re-choosing the edge
+    /// </summary>
     void RemoveMstFromGraph()
     {
         foreach (var kV in mst)
@@ -106,6 +122,10 @@ public class Triangulator {
         }
     }
 
+    /// <summary>
+    /// Find the mst of the triangulated vertices
+    /// </summary>
+    /// <returns></returns>
     Dictionary<Vertex, List<Vertex>> JarnikPrimsMst()
     {
         Dictionary<Vertex, Vertex> parents = new Dictionary<Vertex, Vertex>(); // Keeps track of the parents for every vertex
@@ -145,6 +165,11 @@ public class Triangulator {
         return mst;
     }
 
+    /// <summary>
+    /// Gets the next safe edge for the mst
+    /// </summary>
+    /// <param name="parents"></param>
+    /// <returns></returns>
     VertexPair GetNextSafeEdge(Dictionary<Vertex, Vertex> parents)
     {
         List<VertexPair> safeEdges = new List<VertexPair>();
@@ -167,7 +192,7 @@ public class Triangulator {
         float smallestDistance = float.PositiveInfinity;
         foreach (var edge in safeEdges)
         {
-            float distance = Distance(edge);
+            float distance = EdgeLength(edge);
             if (distance < smallestDistance)
             {
                 closestSafeEdge = edge;
@@ -178,7 +203,12 @@ public class Triangulator {
         return closestSafeEdge;
     }
 
-    float Distance(VertexPair edge)
+    /// <summary>
+    /// Calculate length of an edge
+    /// </summary>
+    /// <param name="edge"></param>
+    /// <returns></returns>
+    float EdgeLength(VertexPair edge)
     {
         Vector2 vec1 = new Vector2((float)edge.v0.X, (float)edge.v0.Y);
         Vector2 vec2 = new Vector2((float)edge.v1.X, (float)edge.v1.Y);
