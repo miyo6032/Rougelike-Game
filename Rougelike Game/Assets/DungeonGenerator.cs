@@ -10,6 +10,8 @@ public class DungeonGenerator : TerrainGenerator
     public int Height;
     public int Width;
     public int InitialRoomDensity;
+    public float RoomConnectedness;
+    public int HallwaySize;
     public Vector2Int RoomHeightBounds;
     public Vector2Int RoomWidthBounds;
     private Tiles[,] map;
@@ -47,7 +49,7 @@ public class DungeonGenerator : TerrainGenerator
         RoomGenerator roomGenerator = new RoomGenerator();
 
         Dictionary<Vector2Int, Room> rooms = roomGenerator.GenerateRooms(InitialRoomDensity, Width, Height, RoomHeightBounds, RoomWidthBounds);
-        links = triangulator.GetLinks(rooms.Keys.ToList());
+        links = triangulator.GetLinks(rooms.Keys.ToList(), RoomConnectedness);
         edges = LinksIntoHallways(rooms);
 
         // Adds hubs
@@ -68,13 +70,28 @@ public class DungeonGenerator : TerrainGenerator
     /// <param name="edge"></param>
     private void WriteEdgeToMap(Edge edge)
     {
+        if (HallwaySize == 0) return;
         Vector2 step = edge.v1 - edge.v0;
         step.Normalize();
         Vector2Int start = edge.v0;
+        int infCounter = 0;
         while (start != edge.v1)
         {
-            map[start.x, start.y] = Tiles.floorTile;
+            for (int i = 0; i < HallwaySize; i++)
+            {
+                for (int j = 0; j < HallwaySize; j++)
+                {
+                    int x = Mathf.Clamp(start.x + i - Mathf.FloorToInt(HallwaySize / 2f), 0, Width - 1);
+                    int y = Mathf.Clamp(start.y + j - Mathf.FloorToInt(HallwaySize / 2f), 0, Height - 1);
+                    map[x, y] = Tiles.floorTile;
+                }
+            }
             start += Vector2Int.FloorToInt(step);
+            infCounter++;
+            if (infCounter > Height * Width)
+            {
+                return;
+            }
         }
     }
     
@@ -222,19 +239,19 @@ public class DungeonGenerator : TerrainGenerator
                 if (map[x, y] == Tiles.floorTile)
                 {
                     // Offset to keep the tilemap at the expected position
-                    floor.SetTile(new Vector3Int(x, y, 0), floorTile);
+                    floor.SetTile(new Vector3Int(x, y, 0), floorTile.GetTile());
                 }
 
                 // Fill in anything else with walls
                 else
                 {
                     map[x, y] = Tiles.freeStandingWallTile;
-                    floor.SetTile(new Vector3Int(x, y, 0), freeStandingWallTile);
+                    floor.SetTile(new Vector3Int(x, y, 0), freeStandingWallTile.GetTile());
 
-                    if (y > 0 && map[x, y - 1] != Tiles.floorTile)
+                    if (y > 0 && (map[x, y - 1] == Tiles.freeStandingWallTile || map[x, y - 1] == Tiles.wallTile))
                     {
                         map[x, y] = Tiles.wallTile;
-                        floor.SetTile(new Vector3Int(x, y, 0), wallTile);
+                        floor.SetTile(new Vector3Int(x, y, 0), wallTile.GetTile());
                     }
                 }
 
@@ -256,7 +273,7 @@ public class DungeonGenerator : TerrainGenerator
                 if (!containsFloor)
                 {
                     map[x, y] = Tiles.voidTile;
-                    floor.SetTile(new Vector3Int(x, y, 0), voidTile);
+                    floor.SetTile(new Vector3Int(x, y, 0), voidTile.GetTile());
                 }
             }
         }

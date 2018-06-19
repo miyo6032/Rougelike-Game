@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using TriangleNet.Geometry;
 using System.Collections.Generic;
+using UnityEngine.Assertions.Comparers;
 
 /// <summary>
 /// Does delaunay triangulation to determine hallway connections between rooms
@@ -18,7 +19,7 @@ public class Triangulator {
     /// </summary>
     /// <param name="vectors"></param>
     /// <returns></returns>
-    public Dictionary<Vector2Int, List<Vector2Int>> GetLinks(List<Vector2Int> vectors)
+    public Dictionary<Vector2Int, List<Vector2Int>> GetLinks(List<Vector2Int> vectors, float connectedness)
     {
         // Convert to vertices for triangulation
         List<Vertex> vertices = new List<Vertex>();
@@ -38,8 +39,8 @@ public class Triangulator {
 
         // Prime mst to be more like dungeon hallways
         RemoveMstFromGraph();
-        RemoveLongEdges(Mathf.RoundToInt(connectedVertices.Count / 3f));
-        AddRandomEdgesToMst(Mathf.RoundToInt(connectedVertices.Count / 3f));
+        RemoveLongShortEdges(Mathf.RoundToInt(connectedVertices.Count / 3f));
+        AddRandomEdgesToMst(Mathf.RoundToInt(connectedVertices.Count * connectedness));
 
         // Convert back to vectors
         Dictionary<Vector2Int, List<Vector2Int>> links = new Dictionary<Vector2Int, List<Vector2Int>>();
@@ -80,15 +81,18 @@ public class Triangulator {
     }
 
     /// <summary>
-    /// Remove long edges from the connections so we don't choose really long connections accidentally
+    /// Remove long and short edges from the connections so we don't choose really long or stubby connections accidentally
     /// </summary>
     /// <param name="num"></param>
-    void RemoveLongEdges(int num)
+    void RemoveLongShortEdges(int num)
     {
+        num = Mathf.RoundToInt(num / 2f);
         for (int i = 0; i < num; i++)
         {
             float longestLength = 0;
             VertexPair longestEdge = null;
+            float shortestLength = float.PositiveInfinity;
+            VertexPair shortestEdge = null;
             foreach (var kV in connectedVertices)
             {
                 foreach (var vertex in kV.Value)
@@ -100,11 +104,18 @@ public class Triangulator {
                         longestLength = distance;
                         longestEdge = edge;
                     }
+                    if (distance < shortestLength)
+                    {
+                        shortestLength = distance;
+                        shortestEdge = edge;
+                    }
                 }
             }
 
             connectedVertices[longestEdge.v1].Remove(longestEdge.v0);
             connectedVertices[longestEdge.v0].Remove(longestEdge.v1);
+            connectedVertices[shortestEdge.v1].Remove(shortestEdge.v0);
+            connectedVertices[shortestEdge.v0].Remove(shortestEdge.v1);
         }
     }
 
