@@ -1,14 +1,18 @@
 ﻿using UnityEngine;
 using TriangleNet.Geometry;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine.Assertions.Comparers;
 
 /// <summary>
 /// Does delaunay triangulation to determine hallway connections between rooms
 /// </summary>
-public class Triangulator {
+public class Triangulator
+{
+    
+    public VertexPair dungeonExits;
 
-    public TriangleNet.Mesh mesh;
+    private TriangleNet.Mesh mesh;
 
     private Dictionary<Vertex, List<Vertex>> connectedVertices;
 
@@ -36,6 +40,8 @@ public class Triangulator {
 
         // Generate the mst from the adjacenty list
         mst = JarnikPrimsMst();
+
+        dungeonExits = FindStartAndEnd();
 
         // Prime mst to be more like dungeon hallways
         RemoveMstFromGraph();
@@ -131,6 +137,44 @@ public class Triangulator {
                 connectedVertices[kV.Key].Remove(vertex);
             }
         }
+    }
+
+    /// <summary>
+    /// Finds the starting and ending point of the dungeon
+    /// </summary>
+    /// <returns></returns>
+    VertexPair FindStartAndEnd()
+    {
+        Dictionary<Vertex, bool> visited = new Dictionary<Vertex, bool>();
+
+        foreach (var vertex in mst.Keys)
+        {
+            visited.Add(vertex, false);
+        }
+
+        // Get a random vertex and choose that to be the starting value
+        Vertex start = mst.Keys.ToList()[Random.Range(0, mst.Keys.Count)];
+        visited[start] = true;
+
+        Queue<Vertex> queue = new Queue<Vertex>();
+        queue.Enqueue(start);
+
+        Vertex end = start;
+        while (queue.Count > 0)
+        {
+            Vertex v = queue.Dequeue();
+            foreach (var adj in mst[v])
+            {
+                if (!visited[adj])
+                {
+                    visited[adj] = true;
+                    queue.Enqueue(adj);
+                    end = adj;
+                }
+            }
+        }
+
+        return new VertexPair(start, end);
     }
 
     /// <summary>
@@ -249,17 +293,16 @@ public class Triangulator {
 
         return connectedVertices;
     }
+}
 
-    class VertexPair
+public class VertexPair
+{
+    public Vertex v0;
+    public Vertex v1;
+
+    public VertexPair(Vertex v0, Vertex v1)
     {
-        public Vertex v0;
-        public Vertex v1;
-
-        public VertexPair(Vertex v0, Vertex v1)
-        {
-            this.v0 = v0;
-            this.v1 = v1;
-        }
+        this.v0 = v0;
+        this.v1 = v1;
     }
-
 }

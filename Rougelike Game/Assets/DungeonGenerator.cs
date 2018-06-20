@@ -1,12 +1,17 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
+using UnityEngine.Tilemaps;
 
 /// <summary>
 /// Generate a dungeon floor
 /// </summary>
 public class DungeonGenerator : TerrainGenerator
 {
+    public GameObject upStairs;
+    public GameObject downStairs;
+    public GameObject door;
     public int Height;
     public int Width;
     public int InitialRoomDensity;
@@ -17,6 +22,8 @@ public class DungeonGenerator : TerrainGenerator
     private Tiles[,] map;
     private Dictionary<Vector2Int, List<Vector2Int>> links;
     private List<Edge> edges;
+    private Transform mapGameObjects;
+    private VertexPair dungeonExits;
 
     public override void Generate()
     {
@@ -51,6 +58,7 @@ public class DungeonGenerator : TerrainGenerator
         Dictionary<Vector2Int, Room> rooms = roomGenerator.GenerateRooms(InitialRoomDensity, Width, Height, RoomHeightBounds, RoomWidthBounds);
         links = triangulator.GetLinks(rooms.Keys.ToList(), RoomConnectedness);
         edges = LinksIntoHallways(rooms);
+        dungeonExits = triangulator.dungeonExits;
 
         // Adds hubs
         foreach (var room in rooms.Values)
@@ -222,9 +230,20 @@ public class DungeonGenerator : TerrainGenerator
     // Converts our integer 2d array into the tilemap!
     void MapToTilemap()
     {
+        ClearGameObjects();
         floor.ClearAllTiles();
         walls.ClearAllTiles();
         AddFloorsAndWalls();
+        PlaceDoors();
+        Instantiate(downStairs, new Vector3((float)dungeonExits.v0.x, (float)dungeonExits.v0.y), Quaternion.identity, mapGameObjects);
+        Instantiate(upStairs, new Vector3((float)dungeonExits.v1.x, (float)dungeonExits.v1.y), Quaternion.identity, mapGameObjects);
+    }
+
+    public void ClearGameObjects()
+    {
+        if (mapGameObjects != null) DestroyImmediate(mapGameObjects.gameObject);
+        mapGameObjects = new GameObject("MapGameObjects").GetComponent<Transform>();
+        mapGameObjects.transform.SetParent(transform);
     }
 
     /// <summary>
@@ -248,7 +267,7 @@ public class DungeonGenerator : TerrainGenerator
                     map[x, y] = Tiles.freeStandingWallTile;
                     floor.SetTile(new Vector3Int(x, y, 0), freeStandingWallTile.GetTile());
 
-                    if (y > 0 && (map[x, y - 1] == Tiles.freeStandingWallTile || map[x, y - 1] == Tiles.wallTile))
+                    if (y > 0 && (IsWallTile(map[x, y - 1])))
                     {
                         map[x, y] = Tiles.wallTile;
                         floor.SetTile(new Vector3Int(x, y, 0), wallTile.GetTile());
@@ -277,6 +296,44 @@ public class DungeonGenerator : TerrainGenerator
                 }
             }
         }
+    }
+
+    public void PlaceDoors()
+    {
+        for (int y = 1; y < Height - 1; y++)
+        {
+            for (int x = 1; x < Width - 1; x++)
+            {
+                if (map[x, y] == Tiles.floorTile)
+                {
+                    Vector2Int[] up = { Vector2Int.up, Vector2Int.left, Vector2Int.right };
+                    Vector2Int[] down = { Vector2Int.down, Vector2Int.right, Vector2Int.left };
+                    Vector2Int[] left = { Vector2Int.left, Vector2Int.down, Vector2Int.up };
+                    Vector2Int[] right = { Vector2Int.right, Vector2Int.up, Vector2Int.down };
+                    Vector2Int[][] directions = { up, down, left, right };
+
+                    foreach (var direction in directions)
+                    {
+                        if (map[x + direction[0].x, y + direction[0].y] == Tiles.floorTile &&
+                            map[x + direction[0].x * 2, y + direction[0].y * 2] == Tiles.floorTile &&
+                            (map[x + direction[0].x + direction[1].x, y + direction[0].y + direction[1].y] ==
+                             Tiles.floorTile ||
+                             map[x + direction[0].x + direction[2].x, y + direction[0].y + direction[2].y] ==
+                             Tiles.floorTile) &&
+                            IsWallTile(map[x + direction[1].x, y + direction[1].y]) &&
+                            IsWallTile(map[x + direction[2].x, y + direction[2].y]))
+                        {
+                            Instantiate(door, new Vector3(x, y), Quaternion.identity, mapGameObjects);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    public bool IsWallTile(Tiles tile)
+    {
+        return tile == Tiles.wallTile || tile == Tiles.freeStandingWallTile;
     }
 
     class Edge
