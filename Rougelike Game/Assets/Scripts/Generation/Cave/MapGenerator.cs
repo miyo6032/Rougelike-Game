@@ -30,7 +30,7 @@ public class MapGenerator : TerrainGenerator
         {
             Cycle();
         }
-        IntToTile();
+        //IntToTile();
     }
 
     // Initialize, scattering living cells randomly in the map based on wallChance
@@ -113,41 +113,41 @@ public class MapGenerator : TerrainGenerator
         map = newMap;
     }
 
-    // Converts our integer 2d array into the tilemap!
-    void IntToTile()
-    {
-        floor.ClearAllTiles();
-        walls.ClearAllTiles();
-        for (int y = 0; y < height; y++)
-        {
-            for (int x = 0; x < height; x++)
-            {
-                if (map[y, x] == Tiles.floorTile)// 1 means a floor tile
-                {
-                    // Offset to keep the tilemap at the expected position
-                    floor.SetTile(new Vector3Int(x - cycles * detectRange, y - cycles * detectRange, 0), floorTile.GetTile());
-                }
-                else
-                {
-                    //If there is a floor (no wall) below
-                    if (y > 0 && map[y - 1, x] == Tiles.floorTile)
-                    {
-                        //If there is no floor above
-                        if(y < height && map[y + 1, x] == Tiles.floorTile)
-                        {
-                            walls.SetTile(new Vector3Int(x - cycles * detectRange, y - cycles * detectRange, 0), freeStandingWallTile.GetTile());
-                        }
-                        else
-                        {
-                            walls.SetTile(new Vector3Int(x - cycles * detectRange, y - cycles * detectRange, 0), wallTile.GetTile());
-                        }
-                    }
-                    else
-                    {
-                        walls.SetTile(new Vector3Int(x - cycles * detectRange, y - cycles * detectRange, 0), voidTile.GetTile());
-                    }
-                }
-            }
-        }
-    }
+    //// Converts our integer 2d array into the tilemap!
+    //void IntToTile()
+    //{
+    //    floor.ClearAllTiles();
+    //    walls.ClearAllTiles();
+    //    for (int y = 0; y < height; y++)
+    //    {
+    //        for (int x = 0; x < height; x++)
+    //        {
+    //            if (map[y, x] == Tiles.floorTile)// 1 means a floor tile
+    //            {
+    //                // Offset to keep the tilemap at the expected position
+    //                floor.SetTile(new Vector3Int(x - cycles * detectRange, y - cycles * detectRange, 0), floorTile.GetTile());
+    //            }
+    //            else
+    //            {
+    //                //If there is a floor (no wall) below
+    //                if (y > 0 && map[y - 1, x] == Tiles.floorTile)
+    //                {
+    //                    //If there is no floor above
+    //                    if(y < height && map[y + 1, x] == Tiles.floorTile)
+    //                    {
+    //                        walls.SetTile(new Vector3Int(x - cycles * detectRange, y - cycles * detectRange, 0), freeStandingWallTile.GetTile());
+    //                    }
+    //                    else
+    //                    {
+    //                        walls.SetTile(new Vector3Int(x - cycles * detectRange, y - cycles * detectRange, 0), wallTile.GetTile());
+    //                    }
+    //                }
+    //                else
+    //                {
+    //                    walls.SetTile(new Vector3Int(x - cycles * detectRange, y - cycles * detectRange, 0), voidTile.GetTile());
+    //                }
+    //            }
+    //        }
+    //    }
+    //}
 }

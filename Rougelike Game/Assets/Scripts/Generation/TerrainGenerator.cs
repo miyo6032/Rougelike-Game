@@ -44,14 +44,9 @@ public class TerrainGenerator : MonoBehaviour
 {
     public Tilemap floor;
     public Tilemap walls;
-    public TileType floorTile;
-    public TileType wallTile; // The tile that will be the wall texture
-    public TileType freeStandingWallTile; // A freestanding wall tile
-    public TileType voidTile; // The tile that will be a empty void tile
 
     // Called to generate the entire map from start to finish
     public virtual void Generate()
     {
-
     }
 }

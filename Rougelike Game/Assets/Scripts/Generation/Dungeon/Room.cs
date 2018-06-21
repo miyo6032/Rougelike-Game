@@ -1,5 +1,8 @@
 ﻿using UnityEngine;
 
+/// <summary>
+/// Holds room data to make dungeon generation more managable
+/// </summary>
 public class Room
 {
     public Vector2Int upperRightCorner;
