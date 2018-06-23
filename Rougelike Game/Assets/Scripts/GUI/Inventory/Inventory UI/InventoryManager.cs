@@ -21,9 +21,7 @@ public class InventoryManager : MonoBehaviour
         //Setup all of the databases
         StaticCanvasList.instance.itemModuleDatabase.PopulateItemModuleDatabase();
         TextureDatabase textures = StaticCanvasList.instance.textureDatabase;
-        ItemDatabase itemDatabase = StaticCanvasList.instance.itemDatabase;
         itemGenerator = StaticCanvasList.instance.itemGenerator;
-        itemDatabase.ConstructItemDatabase();
         textures.LoadAllTextures();
 
         // Automatically equip the four starting items
