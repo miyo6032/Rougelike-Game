@@ -3,25 +3,44 @@ using System.Collections.Generic;
 using System.Linq;
 
 /// <summary>
-/// Generates a dungeon floor customized by the Dungeon scriptable object
+/// Generates a DungeonLevel floor customized by the DungeonLevel scriptable object
 /// </summary>
-public class DungeonGenerator : TerrainGenerator
+public class DungeonLevelGenerator : TerrainGenerator
 {
-    public Dungeon dungeon;
-    [Header("References")] public SpriteRenderer upStairs;
-    public SpriteRenderer downStairs;
-    public SpriteRenderer door;
+    public DungeonLevel DungeonLevel;
+    [Header("References")]
+    public EnemyStats enemyPrefab;
+    public DungeonUpstairs upStairs;
+    public DungeonDownstairs downStairs;
+    public DungeonDoor door;
     private Tiles[,] map;
     private Dictionary<Vector2Int, List<Vector2Int>> links;
     private List<Edge> hallways;
     private Transform mapGameObjects;
-    private VertexPair dungeonExits;
+    public VertexPair dungeonExits { get; private set; }
+    private bool generateDownStairs;
 
     public override void Generate()
     {
+        generateDownStairs = true;
         InitMap();
         GenerateDungeon();
         MapToTilemap();
+    }
+
+    public void GenerateBottom()
+    {
+        generateDownStairs = false;
+        InitMap();
+        GenerateDungeon();
+        MapToTilemap();
+    }
+
+    public void ClearDungeon()
+    {
+        floor.ClearAllTiles();
+        walls.ClearAllTiles();
+        ClearGameObjects();
     }
 
     /// <summary>
@@ -29,10 +48,11 @@ public class DungeonGenerator : TerrainGenerator
     /// </summary>
     private void InitMap()
     {
-        map = new Tiles[dungeon.Width, dungeon.Height];
-        for (int y = 0; y < dungeon.Height; y++)
+        ClearDungeon();
+        map = new Tiles[DungeonLevel.Width, DungeonLevel.Height];
+        for (int y = 0; y < DungeonLevel.Height; y++)
         {
-            for (int x = 0; x < dungeon.Width; x++)
+            for (int x = 0; x < DungeonLevel.Width; x++)
             {
                 map[x, y] = Tiles.voidTile;
             }
@@ -40,15 +60,15 @@ public class DungeonGenerator : TerrainGenerator
     }
 
     /// <summary>
-    /// Generates the dungeon and writes it to the map 2d array
+    /// Generates the DungeonLevel and writes it to the map 2d array
     /// </summary>
     private void GenerateDungeon()
     {
         DungeonMst dungeonMst = new DungeonMst();
         RoomGenerator roomGenerator = new RoomGenerator();
-        Dictionary<Vector2Int, Room> rooms = roomGenerator.GenerateRooms(dungeon.InitialRoomDensity, dungeon.Width,
-            dungeon.Height, dungeon.RoomHeightBounds, dungeon.RoomWidthBounds);
-        links = dungeonMst.GetDungeonMap(rooms.Keys.ToList(), dungeon.RoomConnectedness);
+        Dictionary<Vector2Int, Room> rooms = roomGenerator.GenerateRooms(DungeonLevel.InitialRoomDensity, DungeonLevel.Width,
+            DungeonLevel.Height, DungeonLevel.RoomHeightBounds, DungeonLevel.RoomWidthBounds);
+        links = dungeonMst.GetDungeonMap(rooms.Keys.ToList(), DungeonLevel.RoomConnectedness);
         LinksIntoHallways(rooms);
         dungeonExits = dungeonMst.dungeonExits;
 
@@ -56,6 +76,7 @@ public class DungeonGenerator : TerrainGenerator
         foreach (var room in rooms.Values)
         {
             WriteRoomToMap(room);
+            SpawnEnemies(room);
         }
 
         foreach (var edge in hallways)
@@ -70,27 +91,27 @@ public class DungeonGenerator : TerrainGenerator
     /// <param name="edge"></param>
     private void WriteEdgeToMap(Edge edge)
     {
-        if (dungeon.HallwaySize == 0) return;
+        if (DungeonLevel.HallwaySize == 0) return;
         Vector2 step = edge.v1 - edge.v0;
         step.Normalize();
         Vector2Int start = edge.v0;
         int infCounter = 0;
         while (start != edge.v1)
         {
-            for (int i = 0; i < dungeon.HallwaySize; i++)
+            for (int i = 0; i < DungeonLevel.HallwaySize; i++)
             {
-                for (int j = 0; j < dungeon.HallwaySize; j++)
+                for (int j = 0; j < DungeonLevel.HallwaySize; j++)
                 {
-                    int x = Mathf.Clamp(start.x + i - Mathf.FloorToInt(dungeon.HallwaySize / 2f), 0, dungeon.Width - 1);
-                    int y = Mathf.Clamp(start.y + j - Mathf.FloorToInt(dungeon.HallwaySize / 2f), 0,
-                        dungeon.Height - 1);
+                    int x = Mathf.Clamp(start.x + i - Mathf.FloorToInt(DungeonLevel.HallwaySize / 2f), 0, DungeonLevel.Width - 1);
+                    int y = Mathf.Clamp(start.y + j - Mathf.FloorToInt(DungeonLevel.HallwaySize / 2f), 0,
+                        DungeonLevel.Height - 1);
                     map[x, y] = Tiles.floorTile;
                 }
             }
 
             start += Vector2Int.FloorToInt(step);
             infCounter++;
-            if (infCounter > dungeon.Height * dungeon.Width)
+            if (infCounter > DungeonLevel.Height * DungeonLevel.Width)
             {
                 return;
             }
@@ -109,6 +130,19 @@ public class DungeonGenerator : TerrainGenerator
             {
                 map[room.lowerLeftCorner.x + x, room.lowerLeftCorner.y + y] = Tiles.floorTile;
             }
+        }
+    }
+
+    private void SpawnEnemies(Room room)
+    {
+        int numEnemies = Random.Range(DungeonLevel.enemiesPerRoom.x, DungeonLevel.enemiesPerRoom.y);
+
+        for (int i = 0; i < numEnemies; i++)
+        {
+            Vector3 enemyPosition = new Vector3(room.lowerLeftCorner.x + Random.Range(1, room.GetWidth()), room.lowerLeftCorner.y + Random.Range(1, room.GetHeight()));
+            EnemyStats enemy = Instantiate(enemyPrefab, enemyPosition, Quaternion.identity);
+            enemy.enemy = DungeonLevel.Enemies.GetEnemy();
+            enemy.transform.SetParent(mapGameObjects);
         }
     }
 
@@ -222,9 +256,6 @@ public class DungeonGenerator : TerrainGenerator
     // Converts our integer 2d array into the tilemap!
     private void MapToTilemap()
     {
-        ClearGameObjects();
-        floor.ClearAllTiles();
-        walls.ClearAllTiles();
         AddFloorsAndWalls();
         PlaceDoors();
         PlaceExits();
@@ -233,10 +264,10 @@ public class DungeonGenerator : TerrainGenerator
     /// <summary>
     /// Clear any generated game objects, like doors
     /// </summary>
-    public void ClearGameObjects()
+    private void ClearGameObjects()
     {
         GameObject prevGameObject = GameObject.Find("MapGameObjects");
-        if (prevGameObject) DestroyImmediate(prevGameObject);
+        if (prevGameObject) Destroy(prevGameObject);
         mapGameObjects = new GameObject("MapGameObjects").GetComponent<Transform>();
         mapGameObjects.transform.SetParent(transform);
     }
@@ -246,25 +277,25 @@ public class DungeonGenerator : TerrainGenerator
     /// </summary>
     public void AddFloorsAndWalls()
     {
-        for (int y = 0; y < dungeon.Height; y++)
+        for (int y = 0; y < DungeonLevel.Height; y++)
         {
-            for (int x = 0; x < dungeon.Width; x++)
+            for (int x = 0; x < DungeonLevel.Width; x++)
             {
                 if (map[x, y] == Tiles.floorTile)
                 {
                     // Offset to keep the tilemap at the expected position
-                    floor.SetTile(new Vector3Int(x, y, 0), dungeon.floorTile.GetTile());
+                    floor.SetTile(new Vector3Int(x, y, 0), DungeonLevel.floorTile.GetTile());
                 }
 
                 // Fill in anything else with walls
                 else
                 {
                     map[x, y] = Tiles.freeStandingWallTile;
-                    floor.SetTile(new Vector3Int(x, y, 0), dungeon.freeStandingWallTile.GetTile());
+                    walls.SetTile(new Vector3Int(x, y, 0), DungeonLevel.freeStandingWallTile.GetTile());
                     if (y > 0 && (IsWallTile(map[x, y - 1])))
                     {
                         map[x, y] = Tiles.wallTile;
-                        floor.SetTile(new Vector3Int(x, y, 0), dungeon.wallTile.GetTile());
+                        walls.SetTile(new Vector3Int(x, y, 0), DungeonLevel.wallTile.GetTile());
                     }
                 }
 
@@ -274,7 +305,7 @@ public class DungeonGenerator : TerrainGenerator
                 {
                     for (int j = -1; j < 2; j++)
                     {
-                        if (x + i > 0 && x + i < dungeon.Width - 1 && y + j > 0 && y + j < dungeon.Height - 1)
+                        if (x + i > 0 && x + i < DungeonLevel.Width - 1 && y + j > 0 && y + j < DungeonLevel.Height - 1)
                         {
                             if (map[x + i, y + j] == Tiles.floorTile)
                             {
@@ -287,7 +318,7 @@ public class DungeonGenerator : TerrainGenerator
                 if (!containsFloor)
                 {
                     map[x, y] = Tiles.voidTile;
-                    floor.SetTile(new Vector3Int(x, y, 0), dungeon.voidTile.GetTile());
+                    walls.SetTile(new Vector3Int(x, y, 0), DungeonLevel.voidTile.GetTile());
                 }
             }
         }
@@ -298,9 +329,9 @@ public class DungeonGenerator : TerrainGenerator
     /// </summary>
     public void PlaceDoors()
     {
-        for (int y = 1; y < dungeon.Height - 1; y++)
+        for (int y = 1; y < DungeonLevel.Height - 1; y++)
         {
-            for (int x = 1; x < dungeon.Width - 1; x++)
+            for (int x = 1; x < DungeonLevel.Width - 1; x++)
             {
                 if (map[x, y] == Tiles.floorTile)
                 {
@@ -319,9 +350,9 @@ public class DungeonGenerator : TerrainGenerator
                              Tiles.floorTile) && IsWallTile(map[x + direction[1].x, y + direction[1].y]) &&
                             IsWallTile(map[x + direction[2].x, y + direction[2].y]))
                         {
-                            SpriteRenderer instance = Instantiate(door, new Vector3(x, y), Quaternion.identity,
+                            DungeonDoor instance = Instantiate(door, new Vector3(x, y), Quaternion.identity,
                                 mapGameObjects);
-                            instance.sprite = dungeon.door;
+                            instance.spriteRenderer.sprite = DungeonLevel.door;
                         }
                     }
                 }
@@ -331,12 +362,14 @@ public class DungeonGenerator : TerrainGenerator
 
     public void PlaceExits()
     {
-        SpriteRenderer instance = Instantiate(upStairs,
-            new Vector3((float) dungeonExits.v0.x, (float) dungeonExits.v0.y), Quaternion.identity, mapGameObjects);
-        instance.sprite = dungeon.upStairs;
-        instance = Instantiate(downStairs, new Vector3((float) dungeonExits.v1.x, (float) dungeonExits.v1.y),
-            Quaternion.identity, mapGameObjects);
-        instance.sprite = dungeon.downStairs;
+        DungeonUpstairs upstairs = Instantiate(upStairs, new Vector3((float) dungeonExits.v0.x, (float) dungeonExits.v0.y), Quaternion.identity, mapGameObjects);
+        upstairs.GetComponent<SpriteRenderer>().sprite = DungeonLevel.upStairs;
+        if (generateDownStairs)
+        {
+            DungeonDownstairs downstairs = Instantiate(downStairs, new Vector3((float) dungeonExits.v1.x, (float) dungeonExits.v1.y),
+                Quaternion.identity, mapGameObjects);
+            downstairs.GetComponent<SpriteRenderer>().sprite = DungeonLevel.downStairs;
+        }
     }
 
     public bool IsWallTile(Tiles tile)

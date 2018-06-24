@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 
 /// <summary>
-/// Holds room data to make dungeon generation more managable
+/// Holds room data to make DungeonLevel generation more managable
 /// </summary>
 public class Room
 {

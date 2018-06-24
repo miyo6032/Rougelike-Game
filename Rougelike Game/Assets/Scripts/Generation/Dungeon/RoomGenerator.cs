@@ -3,7 +3,7 @@ using System.Linq;
 using UnityEngine;
 
 /// <summary>
-/// Generates simple rooms for Dungeon Generator and makes sure they don't overlap
+/// Generates simple rooms for DungeonLevel Generator and makes sure they don't overlap
 /// </summary>
 public class RoomGenerator
 {

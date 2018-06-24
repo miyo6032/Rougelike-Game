@@ -4,7 +4,7 @@ using UnityEngine;
 /// <summary>
 /// Detects when the player enters and exits and activates the loot inventory
 /// </summary>
-public class LootBag : MonoBehaviour
+public class LootBag : PlayerEnterDetector
 {
     public List<ItemSave> items = new List<ItemSave>();
 
@@ -23,27 +23,18 @@ public class LootBag : MonoBehaviour
         }
     }
 
-    //When the player walks on top of the bag
-    void OnTriggerEnter2D(Collider2D other)
-    {
-        if (other.gameObject.tag == "Player")
-        {
-            StaticCanvasList.instance.lootInventory.LoadInventory(this);
-            StaticCanvasList.instance.gameUI.ToggleLootPanel();
-        }
+    public override void PlayerEnter() {
+        StaticCanvasList.instance.lootInventory.LoadInventory(this);
+        StaticCanvasList.instance.gameUI.ToggleLootPanel();
     }
 
-    //When the player walks off the bag
-    void OnTriggerExit2D(Collider2D other)
+    public override void PlayerExit()
     {
-        if (other.gameObject.tag == "Player")
+        StaticCanvasList.instance.lootInventory.UnloadInventory();
+        StaticCanvasList.instance.gameUI.ToggleLootPanel();
+        if (items.Count == 0)
         {
-            StaticCanvasList.instance.lootInventory.UnloadInventory();
-            StaticCanvasList.instance.gameUI.ToggleLootPanel();
-            if (items.Count == 0)
-            {
-                Destroy(gameObject);
-            }
+            Destroy(gameObject);
         }
     }
 }
