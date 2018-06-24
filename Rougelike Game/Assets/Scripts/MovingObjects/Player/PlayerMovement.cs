@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
+using Random = UnityEngine.Random;
 
 /// <summary>
 /// Handles the player movement and when the player can't move
@@ -8,8 +10,7 @@ public class PlayerMovement : MovingObject
     //Automove calculation range
     public int range = 10;
     public LayerMask pathfindingLayer;
-    public LayerMask enemyLayer;
-    public LayerMask chestLayer;
+    public LayerMask enemyTargetPathfindingLayer;
     PlayerStats stats;
     PlayerAnimation animatorHandler;
     bool hitting;
@@ -55,6 +56,18 @@ public class PlayerMovement : MovingObject
         automoveTarget = null;
     }
 
+    public override void EmergencyStop()
+    {
+        base.EmergencyStop();
+        StopAutomove();
+    }
+
+    public void TeleportPlayer(Vector3 pos)
+    {
+        EmergencyStop();
+        transform.position = pos;
+    }
+
     public bool CanUseSkill()
     {
         return !hitting && !moving && !(Time.timeScale == 0);
@@ -63,6 +76,8 @@ public class PlayerMovement : MovingObject
     void Update()
     {
         if (moving || hitting || Time.timeScale == 0) return;
+
+        transform.position = (Vector2)Vector2Int.RoundToInt(transform.position);
 
         SetMoveSpeed(stats.movementDelay.GetValue());
 
@@ -91,7 +106,7 @@ public class PlayerMovement : MovingObject
         if (input.x != 0 || input.y != 0)
         {
             // check to make sure the spot is not claimed - and keeps enemies and players from moving into the same spot.
-            if (!moveManager.SpotClaimed(Vector2Int.FloorToInt((Vector2) transform.position + input)))
+            if (!moveManager.SpotClaimed(Vector2Int.RoundToInt((Vector2) transform.position + input)))
             {
                 StopAutomove();
                 facingdirection = input;
@@ -109,31 +124,31 @@ public class PlayerMovement : MovingObject
         if (automoveTarget != null)
         {
             // Automovement to an enemy target
-            automovePosition = Vector2Int.FloorToInt(automoveTarget.position);
-            nextMove = HelperScripts.GetNextMove(Vector2Int.FloorToInt(transform.position),
-                Vector2Int.FloorToInt(automovePosition), pathfindingLayer + chestLayer, range, altMove);
+            automovePosition = Vector2Int.RoundToInt(automoveTarget.position);
+            nextMove = HelperScripts.GetNextMove(Vector2Int.RoundToInt(transform.position),
+                Vector2Int.RoundToInt(automovePosition), enemyTargetPathfindingLayer, range, altMove);
         }
         else
         {
             // Automovement to a position
-            nextMove = HelperScripts.GetNextMove(Vector2Int.FloorToInt(transform.position),
-                Vector2Int.FloorToInt(automovePosition), pathfindingLayer + enemyLayer, range, altMove);
+            nextMove = HelperScripts.GetNextMove(Vector2Int.RoundToInt(transform.position),
+                Vector2Int.RoundToInt(automovePosition), pathfindingLayer, range, altMove);
         }
 
         // We are done with automoving (we reached the target position)
-        if (Vector2Int.FloorToInt(automovePosition) == Vector2Int.FloorToInt(transform.position))
+        if (Vector2Int.RoundToInt(automovePosition) == Vector2Int.RoundToInt(transform.position))
         {
             StopAutomove();
             return;
         }
 
         if (nextMove.x != Vector2.positiveInfinity.x &&
-            !moveManager.SpotClaimed(Vector2Int.FloorToInt(transform.position) + Vector2Int.FloorToInt(nextMove)))
+            !moveManager.SpotClaimed(Vector2Int.RoundToInt(transform.position) + Vector2Int.RoundToInt(nextMove)))
         {
             // Update the animator to align with the player's input
             facingdirection = Vector2Int.RoundToInt(nextMove);
             animatorHandler.SetAttackAnimationDirection(Vector2Int.RoundToInt(nextMove));
-            AttemptMove<EnemyStats>(Vector2Int.FloorToInt(nextMove)); // The player moves (or at least tries to)
+            AttemptMove<EnemyStats>(Vector2Int.RoundToInt(nextMove)); // The player moves (or at least tries to)
             altMove = !altMove;
         }
     }

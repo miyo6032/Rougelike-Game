@@ -1,13 +1,18 @@
 ﻿using UnityEngine;
+using UnityEngine.EventSystems;
 
-public class DungeonDoor : PlayerEnterDetector
+public class DungeonDoor : PlayerEnterDetector, IPointerClickHandler
 {
-    public Sprite openSprite;
     public SpriteRenderer spriteRenderer;
 
     //When the player walks on top of the bag
     public override void PlayerEnter()
     {
-        spriteRenderer.sprite = openSprite;
+        Destroy(gameObject);
+    }
+
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        PlayerEnter();
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using UnityEngine;
+using UnityEngine.Advertisements;
 
 /// <summary>
 /// Handles enemy movement, timing, and attack
@@ -8,12 +9,10 @@ public class EnemyMovement : MovingObject
 {
     public int enemySight = 3;
 
-    // a way to ignore the player's collider without actually disabling the loot bag, because otherwise
-    public LayerMask playerLayer;
-
     // the loot bag detects everytime the collider is turned off and on
     // We want enemy pathfinding to disreguard enemies in the way of doorways and stuff like that,
-    public LayerMask pathfindingLayer;
+    public LayerMask firstpassPathfindingLayer;
+    public LayerMask secondPassPathfindingLayer;
 
     // So we only use the environment layer to do the pathfinding
     public Animator attackAnimator;
@@ -38,6 +37,10 @@ public class EnemyMovement : MovingObject
         playerCol = target.gameObject.GetComponent<BoxCollider2D>();
         enemyCol = GetComponent<BoxCollider2D>();
         base.Start();
+    }
+
+    public void StartMoving()
+    {
         Invoke("DelayedStart", Random.Range(0f, stats.turnDelay.GetValue()));
     }
 
@@ -55,17 +58,20 @@ public class EnemyMovement : MovingObject
         // While the enemy is not dead
         while (this)
         {
+            transform.position = (Vector2)Vector2Int.RoundToInt(transform.position);
+
             // Disable Box colliders for future linecasts
             enemyCol.enabled = false;
-            Vector2 nextMove = HelperScripts.GetNextMove(Vector2Int.FloorToInt(transform.position),
-                Vector2Int.FloorToInt(target.transform.position), blockingLayer + pathfindingLayer - playerLayer,
+            Vector2 nextMove = HelperScripts.GetNextMove(Vector2Int.RoundToInt(transform.position),
+                Vector2Int.RoundToInt(target.transform.position), firstpassPathfindingLayer,
                 enemySight, altMove);
+
             // If there is a blockage, it might be because an enemy is in the way, so then we look for a path
             // with the enemy's layer disabled
             if (nextMove.x == Vector2.positiveInfinity.x)
             {
-                nextMove = HelperScripts.GetNextMove(Vector2Int.FloorToInt(transform.position),
-                    Vector2Int.FloorToInt(target.transform.position), pathfindingLayer, enemySight, altMove);
+                nextMove = HelperScripts.GetNextMove(Vector2Int.RoundToInt(transform.position),
+                    Vector2Int.RoundToInt(target.transform.position), secondPassPathfindingLayer, enemySight, altMove);
             }
 
             // Make sure that nextMove actually found a path
@@ -73,9 +79,9 @@ public class EnemyMovement : MovingObject
             {
                 // As long at the spot is not claimed already something else, we can try to move into the position
                 if (!moveManager.SpotClaimed(
-                    Vector2Int.FloorToInt(transform.position) + Vector2Int.FloorToInt(nextMove)))
+                    Vector2Int.RoundToInt(transform.position) + Vector2Int.RoundToInt(nextMove)))
                 {
-                    AttemptMove<PlayerStats>(Vector2Int.FloorToInt(nextMove));
+                    AttemptMove<PlayerStats>(Vector2Int.RoundToInt(nextMove));
                     altMove = !altMove;
                 }
             }

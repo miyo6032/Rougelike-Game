@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System.Collections.Generic;
 
 /// <summary>
 /// Holds room data to make DungeonLevel generation more managable
@@ -7,6 +8,8 @@ public class Room
 {
     public Vector2Int upperRightCorner;
     public Vector2Int lowerLeftCorner;
+
+    List<Vector3> takenspots = new List<Vector3>();
 
     public Room(Vector2Int lowerLeftCorner, Vector2Int upperRightCorner)
     {

@@ -52,7 +52,7 @@ public abstract class MovingObject : MonoBehaviour
         return false;
     }
 
-    public void EmergencyStop()
+    public virtual void EmergencyStop()
     {
         moving = false;
     }
@@ -86,6 +86,7 @@ public abstract class MovingObject : MonoBehaviour
         }
 
         moveManager.RemoveClaim(Vector2Int.FloorToInt(end));
+
         moving = false;
     }
 

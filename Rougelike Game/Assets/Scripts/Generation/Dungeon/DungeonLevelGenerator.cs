@@ -76,7 +76,10 @@ public class DungeonLevelGenerator : TerrainGenerator
         foreach (var room in rooms.Values)
         {
             WriteRoomToMap(room);
-            SpawnEnemies(room);
+            if (room.GetCenter() != Vector2Int.RoundToInt(dungeonExits.ToVector2()[0]) && room.GetCenter() != Vector2Int.RoundToInt(dungeonExits.ToVector2()[1]))
+            {
+                SpawnEnemies(room);
+            }
         }
 
         foreach (var edge in hallways)
@@ -136,13 +139,20 @@ public class DungeonLevelGenerator : TerrainGenerator
     private void SpawnEnemies(Room room)
     {
         int numEnemies = Random.Range(DungeonLevel.enemiesPerRoom.x, DungeonLevel.enemiesPerRoom.y);
+        List<Vector3> takenspots = new List<Vector3>();
 
         for (int i = 0; i < numEnemies; i++)
         {
-            Vector3 enemyPosition = new Vector3(room.lowerLeftCorner.x + Random.Range(1, room.GetWidth()), room.lowerLeftCorner.y + Random.Range(1, room.GetHeight()));
+            Vector3 enemyPosition;
+            do
+            {
+                enemyPosition = new Vector3(room.lowerLeftCorner.x + Random.Range(1, room.GetWidth()), room.lowerLeftCorner.y + Random.Range(1, room.GetHeight()));
+            } while (takenspots.Contains(enemyPosition));
+
+            enemyPrefab.enemy = DungeonLevel.Enemies.GetEnemy();
             EnemyStats enemy = Instantiate(enemyPrefab, enemyPosition, Quaternion.identity);
-            enemy.enemy = DungeonLevel.Enemies.GetEnemy();
             enemy.transform.SetParent(mapGameObjects);
+            takenspots.Add(enemyPosition);
         }
     }
 
@@ -362,11 +372,11 @@ public class DungeonLevelGenerator : TerrainGenerator
 
     public void PlaceExits()
     {
-        DungeonUpstairs upstairs = Instantiate(upStairs, new Vector3((float) dungeonExits.v0.x, (float) dungeonExits.v0.y), Quaternion.identity, mapGameObjects);
+        DungeonUpstairs upstairs = Instantiate(upStairs, dungeonExits.ToVector2()[0], Quaternion.identity, mapGameObjects);
         upstairs.GetComponent<SpriteRenderer>().sprite = DungeonLevel.upStairs;
         if (generateDownStairs)
         {
-            DungeonDownstairs downstairs = Instantiate(downStairs, new Vector3((float) dungeonExits.v1.x, (float) dungeonExits.v1.y),
+            DungeonDownstairs downstairs = Instantiate(downStairs, dungeonExits.ToVector2()[1],
                 Quaternion.identity, mapGameObjects);
             downstairs.GetComponent<SpriteRenderer>().sprite = DungeonLevel.downStairs;
         }

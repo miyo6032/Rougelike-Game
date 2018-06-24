@@ -29,6 +29,7 @@ public class EnemyStats : Stats
         playerStats = GameObject.Find("Player").GetComponent<PlayerStats>();
         InitializeStats();
         InitializeAnimations();
+        GetComponent<EnemyMovement>().StartMoving();
     }
 
     public void InitializeStats()
