@@ -10,12 +10,14 @@ public class DungeonLevelGenerator : TerrainGenerator
     public DungeonLevel DungeonLevel;
     [Header("References")]
     public EnemyStats enemyPrefab;
+    public Chest chestPrefab;
     public DungeonUpstairs upStairs;
     public DungeonDownstairs downStairs;
     public DungeonDoor door;
     private Tiles[,] map;
     private Dictionary<Vector2Int, List<Vector2Int>> links;
     private List<Edge> hallways;
+    private Dictionary<Vector2Int, Room> rooms;
     private Transform mapGameObjects;
     public VertexPair dungeonExits { get; private set; }
     private bool generateDownStairs;
@@ -66,20 +68,19 @@ public class DungeonLevelGenerator : TerrainGenerator
     {
         DungeonMst dungeonMst = new DungeonMst();
         RoomGenerator roomGenerator = new RoomGenerator();
-        Dictionary<Vector2Int, Room> rooms = roomGenerator.GenerateRooms(DungeonLevel.InitialRoomDensity, DungeonLevel.Width,
-            DungeonLevel.Height, DungeonLevel.RoomHeightBounds, DungeonLevel.RoomWidthBounds);
+        rooms = roomGenerator.GenerateRooms(DungeonLevel.InitialRoomDensity, DungeonLevel.Width, DungeonLevel.Height, DungeonLevel.RoomHeightBounds, DungeonLevel.RoomWidthBounds);
         links = dungeonMst.GetDungeonMap(rooms.Keys.ToList(), DungeonLevel.RoomConnectedness);
-        LinksIntoHallways(rooms);
+        LinksIntoHallways();
         dungeonExits = dungeonMst.dungeonExits;
+
+        PlaceExits();
+        PlaceChests();
 
         // Adds hubs
         foreach (var room in rooms.Values)
         {
             WriteRoomToMap(room);
-            if (room.GetCenter() != Vector2Int.RoundToInt(dungeonExits.ToVector2()[0]) && room.GetCenter() != Vector2Int.RoundToInt(dungeonExits.ToVector2()[1]))
-            {
-                SpawnEnemies(room);
-            }
+            SpawnEnemies(room);
         }
 
         foreach (var edge in hallways)
@@ -138,28 +139,45 @@ public class DungeonLevelGenerator : TerrainGenerator
 
     private void SpawnEnemies(Room room)
     {
-        int numEnemies = Random.Range(DungeonLevel.enemiesPerRoom.x, DungeonLevel.enemiesPerRoom.y);
-        List<Vector3> takenspots = new List<Vector3>();
+        int numEnemies = HelperScripts.RandomVec(DungeonLevel.enemiesPerRoom);
 
         for (int i = 0; i < numEnemies; i++)
         {
             Vector3 enemyPosition;
-            do
-            {
+            do{
                 enemyPosition = new Vector3(room.lowerLeftCorner.x + Random.Range(1, room.GetWidth()), room.lowerLeftCorner.y + Random.Range(1, room.GetHeight()));
-            } while (takenspots.Contains(enemyPosition));
+            } while (room.SpotTaken(Vector2Int.RoundToInt(enemyPosition)));
 
             enemyPrefab.enemy = DungeonLevel.Enemies.GetEnemy();
             EnemyStats enemy = Instantiate(enemyPrefab, enemyPosition, Quaternion.identity);
             enemy.transform.SetParent(mapGameObjects);
-            takenspots.Add(enemyPosition);
+            room.ClaimRoomSpot(Vector2Int.RoundToInt(enemyPosition));
+        }
+    }
+
+    private void PlaceChests()
+    {
+        int numChests = HelperScripts.RandomVec(DungeonLevel.chestsPerLevel);
+        for (int i = 0; i < numChests; i++)
+        {
+            Debug.Log("chest!");
+            Room room;
+            do
+            {
+                room = rooms.Values.ToList()[Random.Range(0, rooms.Count)];
+            } while (room.SpotTaken(room.GetCenter()));
+
+            chestPrefab.lootLevel = DungeonLevel.chestLevel;
+            Chest chest = Instantiate(chestPrefab, (Vector2)room.GetCenter(), Quaternion.identity);
+            chest.transform.SetParent(mapGameObjects);
+            room.ClaimRoomSpot(room.GetCenter());
         }
     }
 
     /// <summary>
     /// Turn linked vertices into hallways depending on the rooms
     /// </summary>
-    private void LinksIntoHallways(Dictionary<Vector2Int, Room> rooms)
+    private void LinksIntoHallways()
     {
         hallways = new List<Edge>();
         RemoveDuplicates();
@@ -268,7 +286,6 @@ public class DungeonLevelGenerator : TerrainGenerator
     {
         AddFloorsAndWalls();
         PlaceDoors();
-        PlaceExits();
     }
 
     /// <summary>
@@ -374,11 +391,17 @@ public class DungeonLevelGenerator : TerrainGenerator
     {
         DungeonUpstairs upstairs = Instantiate(upStairs, dungeonExits.ToVector2()[0], Quaternion.identity, mapGameObjects);
         upstairs.GetComponent<SpriteRenderer>().sprite = DungeonLevel.upStairs;
+        Vector2Int claimedSpot = Vector2Int.FloorToInt(dungeonExits.ToVector2()[0]);
+        rooms[claimedSpot].ClaimRoomSpot(claimedSpot);
+        rooms[claimedSpot].ClaimRoomSpot(claimedSpot + new Vector2Int(-1, 0));
         if (generateDownStairs)
         {
             DungeonDownstairs downstairs = Instantiate(downStairs, dungeonExits.ToVector2()[1],
                 Quaternion.identity, mapGameObjects);
             downstairs.GetComponent<SpriteRenderer>().sprite = DungeonLevel.downStairs;
+            claimedSpot = Vector2Int.FloorToInt(dungeonExits.ToVector2()[1]);
+            rooms[claimedSpot].ClaimRoomSpot(claimedSpot);
+            rooms[claimedSpot].ClaimRoomSpot(claimedSpot + new Vector2Int(1, 0));
         }
     }
 

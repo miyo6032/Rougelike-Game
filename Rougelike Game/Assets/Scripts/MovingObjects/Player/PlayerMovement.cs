@@ -70,12 +70,12 @@ public class PlayerMovement : MovingObject
 
     public bool CanUseSkill()
     {
-        return !hitting && !moving && !(Time.timeScale == 0);
+        return !moving && !(Time.timeScale == 0);
     }
 
     void Update()
     {
-        if (moving || hitting || Time.timeScale == 0) return;
+        if (moving || Time.timeScale == 0) return;
 
         transform.position = (Vector2)Vector2Int.RoundToInt(transform.position);
 
@@ -110,7 +110,7 @@ public class PlayerMovement : MovingObject
             {
                 StopAutomove();
                 facingdirection = input;
-                AttemptMove<EnemyStats>(input); // The player moves (or at least tries to)
+                AttemptMove<DungeonLevelGenerator>(input); // The player moves (or at least tries to)
             }
         }
     }

@@ -24,6 +24,8 @@ public class DungeonLevel : ScriptableObject
     public Vector2Int RoomWidthBounds;
     public EnemyType Enemies;
     public Vector2Int enemiesPerRoom;
+    public Vector2Int chestsPerLevel;
+    public int chestLevel;
 }
 
 [System.Serializable]

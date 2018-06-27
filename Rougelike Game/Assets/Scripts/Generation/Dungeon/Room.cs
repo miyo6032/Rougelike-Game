@@ -9,7 +9,7 @@ public class Room
     public Vector2Int upperRightCorner;
     public Vector2Int lowerLeftCorner;
 
-    List<Vector3> takenspots = new List<Vector3>();
+    List<Vector2Int> takenspots = new List<Vector2Int>();
 
     public Room(Vector2Int lowerLeftCorner, Vector2Int upperRightCorner)
     {
@@ -30,5 +30,15 @@ public class Room
     public int GetWidth()
     {
         return Mathf.Abs(upperRightCorner.x - lowerLeftCorner.x);
+    }
+
+    public bool SpotTaken(Vector2Int vector2Int)
+    {
+        return takenspots.Contains(vector2Int);
+    }
+
+    public void ClaimRoomSpot(Vector2Int vector2Int)
+    {
+        takenspots.Add(vector2Int);
     }
 }
