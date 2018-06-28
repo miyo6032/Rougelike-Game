@@ -1,6 +1,4 @@
-﻿using System;
-using UnityEngine;
-using Random = UnityEngine.Random;
+﻿using UnityEngine;
 
 /// <summary>
 /// Handles the player movement and when the player can't move
@@ -11,16 +9,17 @@ public class PlayerMovement : MovingObject
     public int range = 10;
     public LayerMask pathfindingLayer;
     public LayerMask enemyTargetPathfindingLayer;
-    PlayerStats stats;
-    PlayerAnimation animatorHandler;
-    bool hitting;
-    [HideInInspector] public Vector2Int facingdirection;
+    private PlayerStats stats;
+    private PlayerAnimation animatorHandler;
+    private bool hitting;
+    [HideInInspector]
+    public Vector2Int facingdirection;
 
     // Variables that handle automatic movement when the player clicks a position
-    bool automoving;
-    bool altMove;
-    Vector2 automovePosition;
-    Transform automoveTarget;
+    private bool automoving;
+    private bool altMove;
+    private Vector2 automovePosition;
+    private Transform automoveTarget;
 
     protected override void Start()
     {
@@ -39,23 +38,15 @@ public class PlayerMovement : MovingObject
         automoving = true;
     }
 
-    /// <summary>
-    /// Automove to an empty location if a route exists
-    /// </summary>
-    /// <param name="target"></param>
-    public void StartAutomove(Vector2 target)
-    {
-        automoveTarget = null;
-        automovePosition = target;
-        automoving = true;
-    }
-
     public void StopAutomove()
     {
         automoving = false;
         automoveTarget = null;
     }
 
+    /// <summary>
+    /// Stop - even if in the middle of the smooth movement coroutine
+    /// </summary>
     public override void EmergencyStop()
     {
         base.EmergencyStop();

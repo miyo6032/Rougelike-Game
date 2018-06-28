@@ -1,6 +1,8 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
+using EZCameraShake;
 
 /// <summary>
 /// Keeps track of enemy health and other stats - also handles death
@@ -63,14 +65,47 @@ public class EnemyStats : Stats
     {
         damage = Mathf.Clamp(damage - defense.GetIntValue(), 0, damage);
         base.TakeDamage(damage);
-        damageCounter.SetTrigger("damage");
-        animator.SetTrigger("damage");
-        damageText.text = "" + damage;
-        healthSlider.value = health / (float) maxHealth.GetValue() * 100;
+
+        ApplyDamageEffects(damage);
+
         if (health <= 0)
         {
             Death();
         }
+    }
+
+    /// <summary>
+    /// Applies damage effects to indicate to the player that damage is happening!
+    /// </summary>
+    /// <param name="damage"></param>
+    public void ApplyDamageEffects(int damage)
+    {
+        SpawnDamageParticles();
+        if (damage >= maxHealth.GetValue() / 2f)
+        {
+            CameraShaker.Instance.ShakeOnce(1f, 1f, 0.0f, 0.2f);
+            SoundManager.Instance.PlayRandomizedPitch(SoundDatabase.Instance.PlayerHighAttack);
+        }
+        else
+        {
+            SoundManager.Instance.PlayRandomizedPitch(SoundDatabase.Instance.PlayerAttack);
+        }
+        damageCounter.SetTrigger("damage");
+        animator.SetTrigger("damage");
+        damageText.text = "" + damage;
+        healthSlider.value = health / maxHealth.GetValue() * 100;
+    }
+
+    /// <summary>
+    /// Spawn damage particles - which are basically just colored pixels
+    /// </summary>
+    public void SpawnDamageParticles()
+    {
+        ParticleSystem.EmitParams emitParams = new ParticleSystem.EmitParams();
+        emitParams.position = transform.position;
+        emitParams.applyShapeToPosition = true;
+        emitParams.startColor = enemy.damagedColor;
+        ParticleManager.instance.Emit(emitParams, 4);
     }
 
     /// <summary>

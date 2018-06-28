@@ -1,7 +1,10 @@
 ﻿using UnityEngine;
 
-public class PlayerEnterDetector : MonoBehaviour {
-
+/// <summary>
+/// Detects when the player enters over the game object. Used for: loot bags, and entrances/exits
+/// </summary>
+public class PlayerEnterDetector : MonoBehaviour
+{
     //When the player walks on top of the bag
     void OnTriggerEnter2D(Collider2D other)
     {
@@ -20,13 +23,17 @@ public class PlayerEnterDetector : MonoBehaviour {
         }
     }
 
+    /// <summary>
+    /// Called when the player enters this game object's collider
+    /// </summary>
     public virtual void PlayerEnter()
     {
-
     }
 
+    /// <summary>
+    /// Called when the player exits this game object's collider
+    /// </summary>
     public virtual void PlayerExit()
     {
-
     }
 }

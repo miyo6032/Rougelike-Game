@@ -3,6 +3,7 @@ using UnityEngine.EventSystems;
 
 /// <summary>
 /// An object that follows the mouse and does things like automoving when clicked
+/// CURRENTY NOT IN USE
 /// </summary>
 public class MouseClicker : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 {
@@ -14,11 +15,11 @@ public class MouseClicker : MonoBehaviour, IPointerDownHandler, IPointerUpHandle
         // Snap to nearest block
         Vector2 convertedPosition = MousePositionToWorldPosition(Input.mousePosition);
         transform.position = new Vector2(Mathf.Round(convertedPosition.x), Mathf.Round(convertedPosition.y));
-        if (pointerIsDown)
-        {
-            playerMovement.StartAutomove(new Vector2(Mathf.Round(transform.position.x),
-                Mathf.Round(transform.position.y)));
-        }
+        //if (pointerIsDown)
+        //{
+        //    playerMovement.StartAutomove(new Vector2(Mathf.Round(transform.position.x),
+        //        Mathf.Round(transform.position.y)));
+        //}
     }
 
     /// <summary>

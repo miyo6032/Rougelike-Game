@@ -14,4 +14,5 @@ public class Enemy : ScriptableObject
     public Vector2Int dropRange;
     public AnimationClip attack;
     public AnimationClip idle;
+    public Color damagedColor;
 }

@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using EZCameraShake;
+using UnityEngine;
 using UnityEngine.UI;
 
 public enum ModifierType
@@ -40,10 +41,11 @@ public class PlayerStats : Stats
     public float focus;
     public Stat maxFocus;
 
-    Animator damageCounter;
-    Animator animator;
-    PlayerAnimation playerAnimation;
-    Text damageText;
+    private Animator damageCounter;
+    private Animator animator;
+    private PlayerAnimation playerAnimation;
+    private Text damageText;
+    private SoundManager soundManager;
 
     void Start()
     {
@@ -54,6 +56,7 @@ public class PlayerStats : Stats
         focus = maxFocus.GetIntValue();
         UpdateStats();
         playerAnimation = GetComponent<PlayerAnimation>();
+        soundManager = GetComponent<SoundManager>();
     }
 
     /// <summary>
@@ -104,6 +107,24 @@ public class PlayerStats : Stats
     {
         damage = Mathf.Clamp(damage - defense.GetIntValue(), 0, damage);
         DamagePlayerDirectly(damage);
+        ApplyDamageEffects(damage);
+    }
+
+    /// <summary>
+    /// Applies damage effect like camera shake and sound
+    /// </summary>
+    /// <param name="damage"></param>
+    void ApplyDamageEffects(int damage)
+    {
+        if (damage >= maxHealth.GetValue() / 6f)
+        {
+            CameraShaker.Instance.ShakeOnce(1f, 1f, 0.0f, 0.3f);
+            soundManager.PlayRandomizedPitch(SoundDatabase.Instance.PlayerHighAttack);
+        }
+        else
+        {
+            soundManager.PlayRandomizedPitch(SoundDatabase.Instance.PlayerAttack);
+        }
     }
 
     /// <summary>

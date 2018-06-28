@@ -1,6 +1,5 @@
 ﻿using System.Collections;
 using UnityEngine;
-using UnityEngine.Advertisements;
 
 /// <summary>
 /// Handles enemy movement, timing, and attack
@@ -89,7 +88,7 @@ public class EnemyMovement : MovingObject
             enemyCol.enabled = true;
             // Wait for however many second for the turn delay
             SetMoveSpeed(stats.movementDelay.GetValue());
-            attackAnimator.speed = attackAnimator.speed / (stats.turnDelay.GetValue());
+            attackAnimator.speed = 1 / (stats.turnDelay.GetValue());
             attackAnimator.SetTrigger("Animate Indicator");
             yield return new WaitForSeconds(stats.turnDelay.GetValue());
         }

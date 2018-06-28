@@ -36,6 +36,9 @@ public class DungeonGenerator : MonoBehaviour
         Downstairs();
     }
 
+    /// <summary>
+    /// Send the player downstairs
+    /// </summary>
     public void Downstairs()
     {
         CurrentLevel++;
@@ -47,10 +50,13 @@ public class DungeonGenerator : MonoBehaviour
         {
             GenerateLevel(CurrentLevel);
         }
-
+        // Teleport the player just to the left of the stairs
         player.TeleportPlayer(DungeonLevelGenerator.dungeonExits.ToVector2()[0] + new Vector2(-1, 0));
     }
 
+    /// <summary>
+    /// Send the player upstairs
+    /// </summary>
     public void Upstairs()
     {
         CurrentLevel--;
@@ -62,14 +68,15 @@ public class DungeonGenerator : MonoBehaviour
         else
         {
             GenerateLevel(CurrentLevel);
+            // Teleport the player just right of the stairs
             player.TeleportPlayer(DungeonLevelGenerator.dungeonExits.ToVector2()[1] + new Vector2(1, 0));
         }
     }
 
     private void Exit()
     {
-        player.EmergencyStop();
-        player.transform.position = new Vector3(Mathf.FloorToInt(DungeonEntrance.position.x), Mathf.FloorToInt(DungeonEntrance.position.y)) + new Vector3(1, 0, 0);
+        // Teleport the player just to the left of the exit
+        player.TeleportPlayer(new Vector3(Mathf.FloorToInt(DungeonEntrance.position.x), Mathf.FloorToInt(DungeonEntrance.position.y)) + new Vector3(1, 0, 0));
         DungeonLevelGenerator.ClearDungeon();
         DungeonLevels = null;
     }
@@ -79,5 +86,4 @@ public class DungeonGenerator : MonoBehaviour
         DungeonLevelGenerator.DungeonLevel = DungeonLevels[level];
         DungeonLevelGenerator.Generate();
     }
-
 }
