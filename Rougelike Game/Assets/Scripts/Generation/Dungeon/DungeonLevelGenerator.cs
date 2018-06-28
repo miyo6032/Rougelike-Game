@@ -160,7 +160,6 @@ public class DungeonLevelGenerator : TerrainGenerator
         int numChests = HelperScripts.RandomVec(DungeonLevel.chestsPerLevel);
         for (int i = 0; i < numChests; i++)
         {
-            Debug.Log("chest!");
             Room room;
             do
             {

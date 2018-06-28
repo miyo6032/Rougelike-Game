@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.EventSystems;
 
 /// <summary>
@@ -8,7 +7,7 @@ using UnityEngine.EventSystems;
 /// </summary>
 public class MouseClicker : MonoBehaviour, IPointerClickHandler
 {
-    public PlayerMovement playerMovement;
+    private PlayerMovement playerMovement;
 
     void Start()
     {
