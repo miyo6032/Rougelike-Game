@@ -10,7 +10,7 @@ public class PlayerEnterDetector : MonoBehaviour
     {
         if (other.gameObject.tag == "Player")
         {
-            PlayerEnter();
+            PlayerEnter(other);
         }
     }
 
@@ -19,21 +19,17 @@ public class PlayerEnterDetector : MonoBehaviour
     {
         if (other.gameObject.tag == "Player")
         {
-            PlayerExit();
+            PlayerExit(other);
         }
     }
 
     /// <summary>
     /// Called when the player enters this game object's collider
     /// </summary>
-    public virtual void PlayerEnter()
-    {
-    }
+    public virtual void PlayerEnter(Collider2D player) { }
 
     /// <summary>
     /// Called when the player exits this game object's collider
     /// </summary>
-    public virtual void PlayerExit()
-    {
-    }
+    public virtual void PlayerExit(Collider2D player) { }
 }

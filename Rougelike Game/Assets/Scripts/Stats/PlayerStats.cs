@@ -41,17 +41,14 @@ public class PlayerStats : Stats
     public float focus;
     public Stat maxFocus;
 
-    private Animator damageCounter;
+    public DamageCounter damageCounterPrefab;
     private Animator animator;
     private PlayerAnimation playerAnimation;
-    private Text damageText;
     private SoundManager soundManager;
 
     void Start()
     {
         animator = GetComponent<Animator>();
-        damageCounter = HelperScripts.GetComponentFromChildrenExc<Animator>(transform);
-        damageText = HelperScripts.GetComponentFromChildrenExc<Text>(transform);
         health = maxHealth.GetIntValue();
         focus = maxFocus.GetIntValue();
         UpdateStats();
@@ -133,9 +130,9 @@ public class PlayerStats : Stats
     public void DamagePlayerDirectly(int damage)
     {
         base.TakeDamage(damage);
-        damageCounter.SetTrigger("damage");
+        DamageCounter instance = Instantiate(damageCounterPrefab, transform);
+        instance.SetText(damage.ToString());
         animator.SetTrigger("damage");
-        damageText.text = "" + damage;
         UpdateStats();
     }
 

@@ -13,22 +13,19 @@ public class EnemyStats : Stats
     [HideInInspector]
     public Stat turnDelay;
     [Header("Components")]
+    public Experience experiencePrefab;
     public LootBag lootBagPrefab;
     public LayerMask bagLayerMask;
-    public Animator damageCounter;
+    public DamageCounter damageCounterPrefab;
     private Vector2Int dropRange;
     private Animator animator;
-    private Text damageText;
     private Slider healthSlider;
-    private PlayerStats playerStats;
     private int experienceDrop;
     private int level;
 
     private void Start()
     {
-        damageText = HelperScripts.GetComponentFromChildrenExc<Text>(transform);
         healthSlider = HelperScripts.GetComponentFromChildrenExc<Slider>(transform);
-        playerStats = GameObject.Find("Player").GetComponent<PlayerStats>();
         InitializeStats();
         InitializeAnimations();
         GetComponent<EnemyMovement>().StartMoving();
@@ -83,16 +80,17 @@ public class EnemyStats : Stats
         SpawnDamageParticles();
         if (damage >= maxHealth.GetValue() / 2f)
         {
-            CameraShaker.Instance.ShakeOnce(1f, 1f, 0.0f, 0.2f);
+            CameraShaker.Instance.ShakeOnce(1f, 1f, 0.0f, 0.3f);
             SoundManager.Instance.PlayRandomizedPitch(SoundDatabase.Instance.PlayerHighAttack);
         }
         else
         {
             SoundManager.Instance.PlayRandomizedPitch(SoundDatabase.Instance.PlayerAttack);
         }
-        damageCounter.SetTrigger("damage");
+        DamageCounter instance = Instantiate(damageCounterPrefab);
+        instance.SetText(damage.ToString());
+        instance.transform.position = transform.position;
         animator.SetTrigger("damage");
-        damageText.text = "" + damage;
         healthSlider.value = health / maxHealth.GetValue() * 100;
     }
 
@@ -127,7 +125,17 @@ public class EnemyStats : Stats
                 DropNewBag(itemDrops);
             }
         }
-        playerStats.AddXP(experienceDrop);
+
+        int numExpOrbs = HelperScripts.RandomVec(enemy.numExpOrbs);
+        int expPerOrb = Mathf.RoundToInt(experienceDrop / (float)numExpOrbs);
+
+        for (int i = 0; i < numExpOrbs; i++)
+        {
+            Experience exp = Instantiate(experiencePrefab, transform.parent);
+            exp.transform.position = transform.position;
+            exp.experienceAmount = expPerOrb;
+        }
+
         Destroy(gameObject);
     }
 

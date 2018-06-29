@@ -11,6 +11,7 @@ public class Enemy : ScriptableObject
     public float turnDelay;
     public int level;
     public int experienceDrop;
+    public Vector2Int numExpOrbs;
     public Vector2Int dropRange;
     public AnimationClip attack;
     public AnimationClip idle;
