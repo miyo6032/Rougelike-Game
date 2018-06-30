@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine.Tilemaps;
 
 /// <summary>
 /// Generates a DungeonLevel floor customized by the DungeonLevel scriptable object

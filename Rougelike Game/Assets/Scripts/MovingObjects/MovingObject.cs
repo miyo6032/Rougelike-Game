@@ -85,9 +85,15 @@ public abstract class MovingObject : MonoBehaviour
             yield return new WaitForFixedUpdate();
         }
 
+        OnStopMove();
+
         moveManager.RemoveClaim(Vector2Int.FloorToInt(end));
 
         moving = false;
+    }
+
+    protected virtual void OnStopMove()
+    {
     }
 
     /// <summary>
