@@ -9,7 +9,7 @@ public class Room
     public Vector2Int upperRightCorner;
     public Vector2Int lowerLeftCorner;
 
-    List<Vector2Int> takenspots = new List<Vector2Int>();
+    private readonly List<Vector2Int> takenspots = new List<Vector2Int>();
 
     public Room(Vector2Int lowerLeftCorner, Vector2Int upperRightCorner)
     {

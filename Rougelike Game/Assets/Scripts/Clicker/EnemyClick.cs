@@ -6,10 +6,10 @@ using UnityEngine.EventSystems;
 /// </summary>
 public class EnemyClick : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 {
-    PlayerMovement playerMovement;
-    bool pointerIsDown;
+    private PlayerMovement playerMovement;
+    private bool pointerIsDown;
 
-    void Start()
+    private void Start()
     {
         playerMovement = GameObject.Find("Player").GetComponent<PlayerMovement>();
     }

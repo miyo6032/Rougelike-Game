@@ -43,10 +43,10 @@ public class LootInventory : MonoBehaviour {
     /// Removes everything from inventory and stores it in an array to pass to the loot bag
     /// </summary>
     /// <returns></returns>
-    List<ItemSave> ExtractItemsFromInventory()
+    private List<ItemSave> ExtractItemsFromInventory()
     {
         List<ItemSave> items = new List<ItemSave>();
-        for(int i = 0; i < lootSlots.Count; i++)
+        for (int i = 0; i < lootSlots.Count; i++)
         {
             if(lootSlots[i].GetItem() != null)
             {

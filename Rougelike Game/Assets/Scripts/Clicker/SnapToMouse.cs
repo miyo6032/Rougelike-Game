@@ -5,9 +5,9 @@
 /// </summary>
 public class SnapToMouse : MonoBehaviour {
 
-    bool pointerIsDown;
+    private bool pointerIsDown;
 
-    void Update()
+    private void Update()
     {
         // Snap to nearest block
         Vector2 convertedPosition = MousePositionToWorldPosition(Input.mousePosition);
@@ -22,6 +22,6 @@ public class SnapToMouse : MonoBehaviour {
         float pixelsToWorldUnits = Camera.main.orthographicSize * 2 / Screen.height;
         Vector2 cameraOffset = new Vector2(Screen.width / 2f * pixelsToWorldUnits, Screen.height / 2f * pixelsToWorldUnits);
         Vector2 convertedMousePosition = mousePosition * pixelsToWorldUnits;
-        return convertedMousePosition + -1 * cameraOffset + (Vector2)Camera.main.transform.position;
+        return convertedMousePosition + (-1 * cameraOffset) + (Vector2)Camera.main.transform.position;
     }
 }

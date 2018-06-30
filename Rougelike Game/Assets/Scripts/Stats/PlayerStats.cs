@@ -1,6 +1,5 @@
 ﻿using EZCameraShake;
 using UnityEngine;
-using UnityEngine.UI;
 
 public enum ModifierType
 {

@@ -144,9 +144,11 @@ public class DungeonLevelGenerator : TerrainGenerator
         for (int i = 0; i < numEnemies; i++)
         {
             Vector3 enemyPosition;
-            do{
+            do
+            {
                 enemyPosition = new Vector3(room.lowerLeftCorner.x + Random.Range(1, room.GetWidth()), room.lowerLeftCorner.y + Random.Range(1, room.GetHeight()));
-            } while (room.SpotTaken(Vector2Int.RoundToInt(enemyPosition)));
+            }
+            while (room.SpotTaken(Vector2Int.RoundToInt(enemyPosition)));
 
             enemyPrefab.enemy = DungeonLevel.Enemies.GetEnemy();
             EnemyStats enemy = Instantiate(enemyPrefab, enemyPosition, Quaternion.identity);
@@ -368,13 +370,27 @@ public class DungeonLevelGenerator : TerrainGenerator
                     Vector2Int[][] directions = {up, down, left, right};
                     foreach (var direction in directions)
                     {
-                        if (map[x + direction[0].x, y + direction[0].y] == Tiles.floorTile &&
-                            map[x + direction[0].x * 2, y + direction[0].y * 2] == Tiles.floorTile &&
-                            (map[x + direction[0].x + direction[1].x, y + direction[0].y + direction[1].y] ==
-                             Tiles.floorTile ||
-                             map[x + direction[0].x + direction[2].x, y + direction[0].y + direction[2].y] ==
-                             Tiles.floorTile) && IsWallTile(map[x + direction[1].x, y + direction[1].y]) &&
-                            IsWallTile(map[x + direction[2].x, y + direction[2].y]))
+                        /*
+                         * Doors are detected in a certain pattern, where 'o' is open space, 'w' is wall, and 'd' is the door:
+                         *
+                         *      o
+                         *    o o o
+                         *    w d w
+                         *
+                         * The other complexity is the need to rotate the door
+                         */
+                        Vector2Int crossCenter = new Vector2Int(x + direction[0].x, y + direction[0].y);
+                        Vector2Int crossUp = new Vector2Int(x + direction[0].x * 2, y + direction[0].y * 2);
+                        Vector2Int crossLeft = new Vector2Int(x + direction[0].x + direction[1].x, y + direction[0].y + direction[1].y);
+                        Vector2Int crossRight = new Vector2Int(x + direction[0].x + direction[2].x, y + direction[0].y + direction[2].y);
+                        Vector2Int crossBottomLeft = new Vector2Int(x + direction[1].x, y + direction[1].y);
+                        Vector2Int crossBottomRight = new Vector2Int(x + direction[2].x, y + direction[2].y);
+
+                        if (map[crossCenter.x, crossCenter.y] == Tiles.floorTile &&
+                            map[crossUp.x, crossUp.y] == Tiles.floorTile &&
+                            (map[crossLeft.x, crossLeft.y] == Tiles.floorTile || map[crossRight.x, crossRight.y] == Tiles.floorTile) &&
+                            IsWallTile(map[crossBottomLeft.x, crossBottomLeft.y]) &&
+                            IsWallTile(map[crossBottomRight.x, crossBottomRight.y]))
                         {
                             DungeonDoor instance = Instantiate(door, new Vector3(x, y), Quaternion.identity,
                                 mapGameObjects);
@@ -386,17 +402,22 @@ public class DungeonLevelGenerator : TerrainGenerator
         }
     }
 
+    /// <summary>
+    /// Place the entrance and exit.
+    /// </summary>
     public void PlaceExits()
     {
+        // Place the upstairs
         DungeonUpstairs upstairs = Instantiate(upStairs, dungeonExits.ToVector2()[0], Quaternion.identity, mapGameObjects);
         upstairs.GetComponent<SpriteRenderer>().sprite = DungeonLevel.upStairs;
         Vector2Int claimedSpot = Vector2Int.FloorToInt(dungeonExits.ToVector2()[0]);
         rooms[claimedSpot].ClaimRoomSpot(claimedSpot);
+
+        // Also claim the foot of the stairs
         rooms[claimedSpot].ClaimRoomSpot(claimedSpot + new Vector2Int(-1, 0));
         if (generateDownStairs)
         {
-            DungeonDownstairs downstairs = Instantiate(downStairs, dungeonExits.ToVector2()[1],
-                Quaternion.identity, mapGameObjects);
+            DungeonDownstairs downstairs = Instantiate(downStairs, dungeonExits.ToVector2()[1], Quaternion.identity, mapGameObjects);
             downstairs.GetComponent<SpriteRenderer>().sprite = DungeonLevel.downStairs;
             claimedSpot = Vector2Int.FloorToInt(dungeonExits.ToVector2()[1]);
             rooms[claimedSpot].ClaimRoomSpot(claimedSpot);

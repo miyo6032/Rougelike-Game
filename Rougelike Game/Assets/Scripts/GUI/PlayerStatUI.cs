@@ -24,21 +24,14 @@ public class PlayerStatUI : MonoBehaviour
         this.experience.text = "XP: " + experience + "/" + maxExperience;
         this.maxHealth.text = "HP: " + health + "/" + maxHealth;
         this.maxFocus.text = "Focus " + focus + "/" + maxFocus;
-        this.defense.text = "Defense: " + defence;
-        this.attack.text = "Damage per Hit:\n" + minAtack + " to " + maxAttack;
-        this.experienceSlider.value = (float) experience / maxExperience;
+        defense.text = "Defense: " + defence;
+        attack.text = "Damage per Hit:\n" + minAtack + " to " + maxAttack;
+        experienceSlider.value = (float) experience / maxExperience;
     }
 
     public void Toggle()
     {
         gameObject.SetActive(!gameObject.activeSelf);
-        if (gameObject.activeSelf)
-        {
-            StaticCanvasList.instance.panelManagement.SetRightPanel(gameObject);
-        }
-        else
-        {
-            StaticCanvasList.instance.panelManagement.SetRightPanel(null);
-        }
+        StaticCanvasList.instance.panelManagement.SetRightPanel(gameObject.activeSelf ? gameObject : null);
     }
 }

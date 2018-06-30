@@ -7,8 +7,8 @@ public class MapGenerator : TerrainGenerator
     public int initialHeight; // The inital dimensions - the dimensions will grow with more cycles
     public int initialWidth; 
 
-    int height; // The current dimensions
-    int width;
+    private int height; // The current dimensions
+    private int width;
 
     public int detectRange; // How far every cell should look around itself to find neighbors
 
@@ -20,7 +20,7 @@ public class MapGenerator : TerrainGenerator
 
     public int cycles; // Number of evolutionary cycles to do
 
-    Tiles[,] map; // The integer map that stores the cell data
+    private Tiles[,] map; // The integer map that stores the cell data
 
     // Called to generate the entire map from start to finish
     public override void Generate()
@@ -30,16 +30,15 @@ public class MapGenerator : TerrainGenerator
         {
             Cycle();
         }
-        //IntToTile();
     }
 
     // Initialize, scattering living cells randomly in the map based on wallChance
-    void InitMap()
+    private void InitMap()
     {
         map = new Tiles[initialHeight, initialWidth];
         height = initialHeight;
         width = initialWidth;
-        for(int y = 0; y < height; y++)
+        for (int y = 0; y < height; y++)
         {
             for (int x = 0; x < height; x++)
             {
@@ -56,11 +55,11 @@ public class MapGenerator : TerrainGenerator
     }
 
     // Perform a cycle which alters cells according to their neighbor count
-    void Cycle()
+    private void Cycle()
     {
         // We want the cells to potentially grow outside of their range, so we will allocate a slightly bigger array to do that.
-        height = height + detectRange * 2;
-        width = width + detectRange * 2;
+        height = height + (detectRange * 2);
+        width = width + (detectRange * 2);
 
         Tiles[,] newMap = new Tiles[height, width];
 
@@ -71,12 +70,12 @@ public class MapGenerator : TerrainGenerator
             {
                 // Counts the neighbors
                 int neighborCount = 0;
-                for(int xx = -detectRange; xx < detectRange + 1; xx++)
+                for (int xx = -detectRange; xx < detectRange + 1; xx++)
                 {
                     for (int yy = -detectRange; yy < detectRange + 1; yy++)
                     {
                         // Bounds of the original 2d array
-                        if ((x + xx > 0 && x + xx < width - detectRange * 2 && y + yy > 0 && y + yy < height - detectRange * 2))
+                        if ((x + xx > 0 && x + xx < width - (detectRange * 2) && y + yy > 0 && y + yy < height - (detectRange * 2)))
                         {
                             if(map[y + yy, x + xx] == Tiles.floorTile)
                             {
@@ -99,7 +98,7 @@ public class MapGenerator : TerrainGenerator
                 // Otherwise, the cell will initialize to 0.
                 else
                 {
-                    if ((x > 0 && x < width - detectRange * 2 && y > 0 && y < height - detectRange * 2))
+                    if ((x > 0 && x < width - (detectRange * 2) && y > 0 && y < height - (detectRange * 2)))
                     {
                         newMap[y + detectRange, x + detectRange] = map[y, x];
                     }

@@ -14,7 +14,7 @@ public class DungeonGenerator : MonoBehaviour
     public static DungeonGenerator Instance;
     public Transform DungeonEntrance;
 
-    void Awake()
+    private void Awake()
     {
         if (Instance == null)
         {

@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
 using EZCameraShake;
@@ -99,10 +98,12 @@ public class EnemyStats : Stats
     /// </summary>
     public void SpawnDamageParticles()
     {
-        ParticleSystem.EmitParams emitParams = new ParticleSystem.EmitParams();
-        emitParams.position = transform.position;
-        emitParams.applyShapeToPosition = true;
-        emitParams.startColor = enemy.damagedColor;
+        ParticleSystem.EmitParams emitParams = new ParticleSystem.EmitParams
+        {
+            position = transform.position,
+            applyShapeToPosition = true,
+            startColor = enemy.damagedColor
+        };
         ParticleManager.instance.Emit(emitParams, 4);
     }
 

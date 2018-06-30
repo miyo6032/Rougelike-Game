@@ -35,7 +35,7 @@ public class RoomGenerator
     /// <param name="roomHeightBounds"></param>
     /// <param name="roomWidthBounds"></param>
     /// <returns></returns>
-    Room GenerateRoom(Vector2Int pos, Vector2Int roomHeightBounds, Vector2Int roomWidthBounds)
+    private Room GenerateRoom(Vector2Int pos, Vector2Int roomHeightBounds, Vector2Int roomWidthBounds)
     {
         int roomHeight = Random.Range(roomHeightBounds.x, roomHeightBounds.y);
         int roomWidth = Random.Range(roomWidthBounds.x, roomWidthBounds.y);
@@ -51,7 +51,7 @@ public class RoomGenerator
     /// <param name="height"></param>
     /// <param name="width"></param>
     /// <returns></returns>
-    bool CanPlaceRoom(Room room, List<Room> rooms, int height, int width)
+    private bool CanPlaceRoom(Room room, List<Room> rooms, int height, int width)
     {
         if (!RoomInBounds(room, height, width)) return false;
         foreach (var r in rooms)
@@ -72,7 +72,7 @@ public class RoomGenerator
     /// <param name="height"></param>
     /// <param name="width"></param>
     /// <returns></returns>
-    bool RoomInBounds(Room room, int height, int width)
+    private bool RoomInBounds(Room room, int height, int width)
     {
         if (room.lowerLeftCorner.x < 1 || room.lowerLeftCorner.y < 1)
         {
@@ -93,7 +93,7 @@ public class RoomGenerator
     /// <param name="room1"></param>
     /// <param name="room2"></param>
     /// <returns></returns>
-    bool RoomsOverlap(Room room1, Room room2)
+    private bool RoomsOverlap(Room room1, Room room2)
     {
         if (room1.lowerLeftCorner.y > room2.upperRightCorner.y + 1 ||
             room2.lowerLeftCorner.y - 1 > room1.upperRightCorner.y)

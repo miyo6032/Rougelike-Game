@@ -5,7 +5,7 @@
 /// </summary>
 public class GravitateTowards : MonoBehaviour
 {
-    private Rigidbody2D rigidbody;
+    private new Rigidbody2D rigidbody;
     private Transform target;
     public float acceleration;
 

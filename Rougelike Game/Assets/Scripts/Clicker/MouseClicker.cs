@@ -9,7 +9,7 @@ public class MouseClicker : MonoBehaviour, IPointerClickHandler
 {
     private PlayerMovement playerMovement;
 
-    void Start()
+    private void Start()
     {
         playerMovement = GameObject.Find("Player").GetComponent<PlayerMovement>();
     }

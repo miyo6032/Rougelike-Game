@@ -8,10 +8,9 @@ public class SoundDatabase : MonoBehaviour
 {
     public AudioClip[] PlayerAttack;
     public AudioClip[] PlayerHighAttack;
-    public AudioClip[] PlayerDamaged;
     public static SoundDatabase Instance;
 
-    void Start()
+    private void Start()
     {
         if (Instance == null)
         {

@@ -5,15 +5,15 @@
 /// </summary>
 public class PixelMovement : MonoBehaviour
 {
-    Vector3 position;
+    private Vector3 position;
 
-    void Awake()
+    private void Awake()
     {
         position = transform.position;
         transform.position = position + new Vector3(-0.1f, -0.1f);
     }
 
-    void LateUpdate()
+    private void LateUpdate()
     {
         transform.position = position + new Vector3(-0.1f, -0.1f);
     }
