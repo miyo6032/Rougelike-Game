@@ -14,16 +14,14 @@ public class InventoryManager : MonoBehaviour
 
     // The item attached to the mouse pointer, if any
     public ItemInstance attachedItem = null;
-    ItemGenerator itemGenerator;
+    private ItemGenerator itemGenerator;
 
-    void Start()
+    private void Start()
     {
         //Setup all of the databases
         StaticCanvasList.instance.itemModuleDatabase.PopulateItemModuleDatabase();
         TextureDatabase textures = StaticCanvasList.instance.textureDatabase;
-        ItemDatabase itemDatabase = StaticCanvasList.instance.itemDatabase;
         itemGenerator = StaticCanvasList.instance.itemGenerator;
-        itemDatabase.ConstructItemDatabase();
         textures.LoadAllTextures();
 
         // Automatically equip the four starting items
@@ -81,8 +79,6 @@ public class InventoryManager : MonoBehaviour
     /// <summary>
     /// Adds an item to a specified slot
     /// </summary>
-    /// <param name="item"></param>
-    /// <param name="slot"></param>
     public void AddItemToSlot(Item item, ItemSlot slot, int amount)
     {
         if (slot.GetItem() == null)

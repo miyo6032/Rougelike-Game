@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using LitJson;
 using System.IO;
-using System.Linq;
 
 /// <summary>
 /// Loads all of the item data from the json file and holds it for other scripts to use

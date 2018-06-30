@@ -1,12 +1,15 @@
 ﻿using UnityEngine;
+using System.Collections.Generic;
 
 /// <summary>
-/// Holds room data to make dungeon generation more managable
+/// Holds room data to make DungeonLevel generation more managable
 /// </summary>
 public class Room
 {
     public Vector2Int upperRightCorner;
     public Vector2Int lowerLeftCorner;
+
+    private readonly List<Vector2Int> takenspots = new List<Vector2Int>();
 
     public Room(Vector2Int lowerLeftCorner, Vector2Int upperRightCorner)
     {
@@ -27,5 +30,15 @@ public class Room
     public int GetWidth()
     {
         return Mathf.Abs(upperRightCorner.x - lowerLeftCorner.x);
+    }
+
+    public bool SpotTaken(Vector2Int vector2Int)
+    {
+        return takenspots.Contains(vector2Int);
+    }
+
+    public void ClaimRoomSpot(Vector2Int vector2Int)
+    {
+        takenspots.Add(vector2Int);
     }
 }

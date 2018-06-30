@@ -5,21 +5,15 @@
 /// </summary>
 public class PlayerMovement : MovingObject
 {
-    //Automove calculation range
-    public int range = 10;
-    public LayerMask pathfindingLayer;
-    public LayerMask enemyLayer;
-    public LayerMask chestLayer;
-    PlayerStats stats;
-    PlayerAnimation animatorHandler;
-    bool hitting;
-    [HideInInspector] public Vector2Int facingdirection;
+    private PlayerStats stats;
+    private PlayerAnimation animatorHandler;
+    private bool hitting;
+    [HideInInspector]
+    public Vector2Int facingdirection;
 
     // Variables that handle automatic movement when the player clicks a position
-    bool automoving;
-    bool altMove;
-    Vector2 automovePosition;
-    Transform automoveTarget;
+    private bool clickMove;
+    private Vector2 automovePosition;
 
     protected override void Start()
     {
@@ -29,46 +23,61 @@ public class PlayerMovement : MovingObject
     }
 
     /// <summary>
-    /// Automove with a specific enemy in mind
-    /// </summary>
-    /// <param name="target"></param>
-    public void StartAutomoveWithTarget(Transform target)
-    {
-        automoveTarget = target;
-        automoving = true;
-    }
-
-    /// <summary>
     /// Automove to an empty location if a route exists
     /// </summary>
     /// <param name="target"></param>
     public void StartAutomove(Vector2 target)
     {
-        automoveTarget = null;
         automovePosition = target;
-        automoving = true;
+        clickMove = true;
+    }
+
+    /// <summary>
+    /// Automove with a specific enemy in mind
+    /// </summary>
+    /// <param name="target"></param>
+    public void StartAutomoveWithTarget(Transform target)
+    {
+        automovePosition = target.transform.position;
+        clickMove = true;
     }
 
     public void StopAutomove()
     {
-        automoving = false;
-        automoveTarget = null;
+        clickMove = false;
+    }
+
+    /// <summary>
+    /// Stop - even if in the middle of the smooth movement coroutine
+    /// </summary>
+    public override void EmergencyStop()
+    {
+        base.EmergencyStop();
+        StopAutomove();
+    }
+
+    public void TeleportPlayer(Vector3 pos)
+    {
+        EmergencyStop();
+        transform.position = pos;
     }
 
     public bool CanUseSkill()
     {
-        return !hitting && !moving && !(Time.timeScale == 0);
+        return !moving && !(Time.timeScale == 0);
     }
 
     void Update()
     {
-        if (moving || hitting || Time.timeScale == 0) return;
+        if (moving || Time.timeScale == 0) return;
+
+        transform.position = (Vector2)Vector2Int.RoundToInt(transform.position);
 
         SetMoveSpeed(stats.movementDelay.GetValue());
 
         InputMove();
 
-        if (automoving)
+        if (clickMove)
         {
             Automove();
         }
@@ -91,11 +100,11 @@ public class PlayerMovement : MovingObject
         if (input.x != 0 || input.y != 0)
         {
             // check to make sure the spot is not claimed - and keeps enemies and players from moving into the same spot.
-            if (!moveManager.SpotClaimed(Vector2Int.FloorToInt((Vector2) transform.position + input)))
+            if (!moveManager.SpotClaimed(Vector2Int.RoundToInt((Vector2) transform.position + input)))
             {
                 StopAutomove();
                 facingdirection = input;
-                AttemptMove<EnemyStats>(input); // The player moves (or at least tries to)
+                AttemptMove<DungeonLevelGenerator>(input); // The player moves (or at least tries to)
             }
         }
     }
@@ -105,37 +114,19 @@ public class PlayerMovement : MovingObject
     /// </summary>
     private void Automove()
     {
-        Vector2 nextMove;
-        if (automoveTarget != null)
-        {
-            // Automovement to an enemy target
-            automovePosition = Vector2Int.FloorToInt(automoveTarget.position);
-            nextMove = HelperScripts.GetNextMove(Vector2Int.FloorToInt(transform.position),
-                Vector2Int.FloorToInt(automovePosition), pathfindingLayer + chestLayer, range, altMove);
-        }
-        else
-        {
-            // Automovement to a position
-            nextMove = HelperScripts.GetNextMove(Vector2Int.FloorToInt(transform.position),
-                Vector2Int.FloorToInt(automovePosition), pathfindingLayer + enemyLayer, range, altMove);
-        }
+        Vector2 nextMove = automovePosition - Vector2Int.RoundToInt(transform.position);
 
-        // We are done with automoving (we reached the target position)
-        if (Vector2Int.FloorToInt(automovePosition) == Vector2Int.FloorToInt(transform.position))
-        {
-            StopAutomove();
-            return;
-        }
+        bool isNextTo = nextMove == Vector2.down || nextMove == Vector2.left || nextMove == Vector2.right || nextMove == Vector2.up;
 
-        if (nextMove.x != Vector2.positiveInfinity.x &&
-            !moveManager.SpotClaimed(Vector2Int.FloorToInt(transform.position) + Vector2Int.FloorToInt(nextMove)))
+        if (isNextTo && !moveManager.SpotClaimed(Vector2Int.RoundToInt(transform.position) + Vector2Int.RoundToInt(nextMove)))
         {
             // Update the animator to align with the player's input
             facingdirection = Vector2Int.RoundToInt(nextMove);
             animatorHandler.SetAttackAnimationDirection(Vector2Int.RoundToInt(nextMove));
-            AttemptMove<EnemyStats>(Vector2Int.FloorToInt(nextMove)); // The player moves (or at least tries to)
-            altMove = !altMove;
+            AttemptMove<EnemyStats>(Vector2Int.RoundToInt(nextMove)); // The player moves (or at least tries to)
         }
+
+        StopAutomove();
     }
 
     /// <summary>
@@ -162,7 +153,6 @@ public class PlayerMovement : MovingObject
         // Only call OnCantMove if the hit actually has the component
         if (!canMove && hitComponent != null)
         {
-            StopAutomove();
             Attack(hitComponent);
         }
         else
@@ -171,7 +161,6 @@ public class PlayerMovement : MovingObject
             if (!canMove && chest != null)
             {
                 StaticCanvasList.instance.chestInventory.OpenChest(chest);
-                StopAutomove();
             }
 
             animatorHandler.SetIdle(dir);

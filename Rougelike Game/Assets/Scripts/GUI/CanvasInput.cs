@@ -7,12 +7,12 @@ public class CanvasInput : MonoBehaviour
 {
     public HotbarSlot[] hotbarSlots;
 
-    void Update()
+    private void Update()
     {
         CheckInput();
     }
 
-    void CheckInput()
+    private void CheckInput()
     {
         if ((Input.GetButtonDown("Inventory")))
         {

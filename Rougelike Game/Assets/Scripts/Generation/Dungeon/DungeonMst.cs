@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 /// <summary>
-/// Get a triangiulates mst from Triangulator and make it fit for dungeon generation
+/// Get a triangulates mst from Triangulator and make it fit for DungeonLevel generation
 /// </summary>
 public class DungeonMst
 {
@@ -12,10 +12,10 @@ public class DungeonMst
     private Triangulator triangulator;
 
     /// <summary>
-    /// Get the dungeon graph from a list of vectors
+    /// Get the DungeonLevel graph from a list of vectors
     /// </summary>
     /// <param name="vectors"></param>
-    /// <param name="connectedness"></param> Determines how connected the dungeon is - 0.0 being a minimum spanning tree
+    /// <param name="connectedness"></param> Determines how connected the DungeonLevel is - 0.0 being a minimum spanning tree
     /// <returns></returns>
     public Dictionary<Vector2Int, List<Vector2Int>> GetDungeonMap(List<Vector2Int> vectors, float connectedness)
     {
@@ -23,7 +23,7 @@ public class DungeonMst
         triangulator.GenerateMst(vectors);
         dungeonExits = FindStartAndEnd();
 
-        // Prime mst to be more like dungeon hallways
+        // Prime mst to be more like DungeonLevel hallways
         RemoveMstFromGraph();
         RemoveLongShortEdges(Mathf.RoundToInt(triangulator.connectedVertices.Count / 3f));
         AddRandomEdgesToMst(Mathf.RoundToInt(triangulator.connectedVertices.Count * connectedness));
@@ -45,10 +45,10 @@ public class DungeonMst
     }
 
     /// <summary>
-    /// Finds the starting and ending point of the dungeon
+    /// Finds the starting and ending point of the DungeonLevel
     /// </summary>
     /// <returns></returns>
-    VertexPair FindStartAndEnd()
+    private VertexPair FindStartAndEnd()
     {
         Dictionary<Vertex, bool> visited = new Dictionary<Vertex, bool>();
         foreach (var vertex in triangulator.mst.Keys)
@@ -82,7 +82,7 @@ public class DungeonMst
     /// <summary>
     /// Remove the mst from the connection to avoid re-choosing the edge
     /// </summary>
-    void RemoveMstFromGraph()
+    private void RemoveMstFromGraph()
     {
         foreach (var kV in triangulator.mst)
         {
@@ -97,7 +97,7 @@ public class DungeonMst
     /// Remove long and short edges from the connections so we don't choose really long or stubby connections accidentally
     /// </summary>
     /// <param name="num"></param>
-    void RemoveLongShortEdges(int num)
+    private void RemoveLongShortEdges(int num)
     {
         num = Mathf.RoundToInt(num / 2f);
         for (int i = 0; i < num; i++)
@@ -134,10 +134,10 @@ public class DungeonMst
     }
 
     /// <summary>
-    /// Add in some edges back to make the dungeon more connected
+    /// Add in some edges back to make the DungeonLevel more connected
     /// </summary>
     /// <param name="num"></param>
-    void AddRandomEdgesToMst(int num)
+    private void AddRandomEdgesToMst(int num)
     {
         for (int i = 0; i < num; i++)
         {

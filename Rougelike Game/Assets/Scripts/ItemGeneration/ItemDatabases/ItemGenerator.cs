@@ -44,14 +44,7 @@ public class ItemGenerator : MonoBehaviour
     Item GenerateArmor(int level, int equipmentType)
     {
         LeveledItemModule armor;
-        if (equipmentType == 1)
-        {
-            armor = StaticCanvasList.instance.itemModuleDatabase.FindArmor(level);
-        }
-        else
-        {
-            armor = StaticCanvasList.instance.itemModuleDatabase.FindHelmet(level);
-        }
+        armor = equipmentType == 1 ? StaticCanvasList.instance.itemModuleDatabase.FindArmor(level) : StaticCanvasList.instance.itemModuleDatabase.FindHelmet(level);
 
         string title;
         string[] sprites;

@@ -25,8 +25,7 @@ public class Triangulator
         // Put into a polygon and triangulate
         Polygon polygon = new Polygon();
         vertices.ForEach((vertex) => polygon.Add(vertex));
-        TriangleNet.Meshing.ConstraintOptions options =
-            new TriangleNet.Meshing.ConstraintOptions() {ConformingDelaunay = true, SegmentSplitting = 2};
+        TriangleNet.Meshing.ConstraintOptions options = new TriangleNet.Meshing.ConstraintOptions() {ConformingDelaunay = true, SegmentSplitting = 2};
         mesh = (TriangleNet.Mesh) polygon.Triangulate(options);
 
         //Convert the mesh into an adjacency list

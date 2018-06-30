@@ -58,7 +58,6 @@ public class ItemSlot : MonoBehaviour, IPointerClickHandler
     /// Link and item to a slot
     /// </summary>
     /// <param name="itemInstance"></param>
-    /// <param name="slot"></param>
     public void LinkItem(ItemInstance itemInstance)
     {
         itemInstance.slot = this;

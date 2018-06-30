@@ -1,33 +1,56 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
-using System.Runtime.InteropServices;
+using EZCameraShake;
 
 /// <summary>
 /// Keeps track of enemy health and other stats - also handles death
 /// </summary>
 public class EnemyStats : Stats
 {
+    public Enemy enemy;
+    [HideInInspector]
     public Stat turnDelay;
-    public int level;
-    public int experienceDrop;
     [Header("Components")]
+    public Experience experiencePrefab;
     public LootBag lootBagPrefab;
     public LayerMask bagLayerMask;
-    public Vector2Int dropRange = new Vector2Int(0, 3);
-    public Animator damageCounter;
-    Animator animator;
-    Text damageText;
-    Slider healthSlider;
-    private PlayerStats playerStats;
+    public DamageCounter damageCounterPrefab;
+    private Vector2Int dropRange;
+    private Animator animator;
+    private Slider healthSlider;
+    private int experienceDrop;
+    private int level;
 
     private void Start()
     {
-        damageText = HelperScripts.GetComponentFromChildrenExc<Text>(transform);
         healthSlider = HelperScripts.GetComponentFromChildrenExc<Slider>(transform);
-        animator = GetComponent<Animator>();
-        playerStats = GameObject.Find("Player").GetComponent<PlayerStats>();
+        InitializeStats();
+        InitializeAnimations();
+        GetComponent<EnemyMovement>().StartMoving();
+    }
+
+    public void InitializeStats()
+    {
+        minAttack.SetBaseValue(enemy.minAttack);
+        maxAttack.SetBaseValue(enemy.maxAttack);
+        movementDelay.SetBaseValue(enemy.movementDelay);
+        maxHealth.SetBaseValue(enemy.maxHealth);
+        defense.SetBaseValue(enemy.defense);
+        turnDelay.SetBaseValue(enemy.turnDelay);
+        level = enemy.level;
+        experienceDrop = enemy.experienceDrop;
         health = maxHealth.GetIntValue();
+        dropRange = enemy.dropRange;
+    }
+
+    public void InitializeAnimations()
+    {
+        animator = GetComponent<Animator>();
+        AnimatorOverrideController animatorOverrideController = new AnimatorOverrideController(animator.runtimeAnimatorController);
+        animatorOverrideController["ArmedSkeletonIdle"] = enemy.idle;
+        animatorOverrideController["ArmedSkeletonAttack"] = enemy.attack;
+        animator.runtimeAnimatorController = animatorOverrideController;
     }
 
     /// <summary>
@@ -38,14 +61,50 @@ public class EnemyStats : Stats
     {
         damage = Mathf.Clamp(damage - defense.GetIntValue(), 0, damage);
         base.TakeDamage(damage);
-        damageCounter.SetTrigger("damage");
-        animator.SetTrigger("damage");
-        damageText.text = "" + damage;
-        healthSlider.value = health / (float) maxHealth.GetValue() * 100;
+
+        ApplyDamageEffects(damage);
+
         if (health <= 0)
         {
             Death();
         }
+    }
+
+    /// <summary>
+    /// Applies damage effects to indicate to the player that damage is happening!
+    /// </summary>
+    /// <param name="damage"></param>
+    public void ApplyDamageEffects(int damage)
+    {
+        SpawnDamageParticles();
+        if (damage >= maxHealth.GetValue() / 2f)
+        {
+            CameraShaker.Instance.ShakeOnce(1f, 1f, 0.0f, 0.3f);
+            SoundManager.Instance.PlayRandomizedPitch(SoundDatabase.Instance.PlayerHighAttack);
+        }
+        else
+        {
+            SoundManager.Instance.PlayRandomizedPitch(SoundDatabase.Instance.PlayerAttack);
+        }
+        DamageCounter instance = Instantiate(damageCounterPrefab);
+        instance.SetText(damage.ToString());
+        instance.transform.position = transform.position;
+        animator.SetTrigger("damage");
+        healthSlider.value = health / maxHealth.GetValue() * 100;
+    }
+
+    /// <summary>
+    /// Spawn damage particles - which are basically just colored pixels
+    /// </summary>
+    public void SpawnDamageParticles()
+    {
+        ParticleSystem.EmitParams emitParams = new ParticleSystem.EmitParams
+        {
+            position = transform.position,
+            applyShapeToPosition = true,
+            startColor = enemy.damagedColor
+        };
+        ParticleManager.instance.Emit(emitParams, 4);
     }
 
     /// <summary>
@@ -67,7 +126,17 @@ public class EnemyStats : Stats
                 DropNewBag(itemDrops);
             }
         }
-        playerStats.AddXP(experienceDrop);
+
+        int numExpOrbs = HelperScripts.RandomVec(enemy.numExpOrbs);
+        int expPerOrb = Mathf.RoundToInt(experienceDrop / (float)numExpOrbs);
+
+        for (int i = 0; i < numExpOrbs; i++)
+        {
+            Experience exp = Instantiate(experiencePrefab, transform.parent);
+            exp.transform.position = transform.position;
+            exp.experienceAmount = expPerOrb;
+        }
+
         Destroy(gameObject);
     }
 

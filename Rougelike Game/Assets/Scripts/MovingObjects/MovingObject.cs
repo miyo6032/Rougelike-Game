@@ -52,6 +52,11 @@ public abstract class MovingObject : MonoBehaviour
         return false;
     }
 
+    public virtual void EmergencyStop()
+    {
+        moving = false;
+    }
+
     /// <summary>
     /// Performs the physical move to the end
     /// </summary>
@@ -65,6 +70,9 @@ public abstract class MovingObject : MonoBehaviour
         // Keep going until we have reached our destination
         while (sqrRemainingDistance > float.Epsilon)
         {
+            //Emergency Stop!
+            if (!moving) break;
+
             // Determine the incremental position to move do based on the current position and the move time
             // Use fixed delta time because we are waiting for the fixed update
             Vector3 newPosition = Vector3.MoveTowards(rb2D.position, end, inverseMoveTime * Time.fixedDeltaTime);
@@ -78,6 +86,7 @@ public abstract class MovingObject : MonoBehaviour
         }
 
         moveManager.RemoveClaim(Vector2Int.FloorToInt(end));
+
         moving = false;
     }
 

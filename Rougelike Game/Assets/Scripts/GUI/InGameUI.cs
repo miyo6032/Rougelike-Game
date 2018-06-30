@@ -13,10 +13,6 @@ public class InGameUI : MonoBehaviour
     public GameObject menuPopup;
     public GameObject lootPopupPanel;
 
-    void Start()
-    {
-    }
-
     /// <summary>
     /// Update the player's in game health bar
     /// </summary>

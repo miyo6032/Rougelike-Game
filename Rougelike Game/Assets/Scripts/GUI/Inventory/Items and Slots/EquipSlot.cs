@@ -18,7 +18,7 @@ public class EquipSlot : ItemSlot, IPointerClickHandler
     {
         ItemInstance droppedItem = StaticCanvasList.instance.inventoryManager.attachedItem;
         // If there is an item attached to the mouse pointer
-        if (droppedItem && ItemCanBeEquipped(droppedItem))
+        if (droppedItem && ItemCanBeEquipped(droppedItem) && item == null)
         {
             // Do the item drop first to check to see if the item can be equipped
             ItemDropIntoEmpty(droppedItem);

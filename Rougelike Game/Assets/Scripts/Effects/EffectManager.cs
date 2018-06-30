@@ -12,8 +12,6 @@ public class EffectManager : MonoBehaviour
 
     public Sprite invisible;
 
-    public Effect TEST;
-
     public List<TimeAndSprite> ui;
 
     private EffectTooltipShow[] effectInstances;
@@ -37,7 +35,6 @@ public class EffectManager : MonoBehaviour
     {
         effectInstances = GetComponentsInChildren<EffectTooltipShow>();
         activeEffects = new List<ActiveEffect>();
-        AddNewEffect(TEST);
         StartCoroutine(ApplyEffects());
     }
 

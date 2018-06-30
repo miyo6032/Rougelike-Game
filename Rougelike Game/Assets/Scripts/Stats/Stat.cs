@@ -12,6 +12,11 @@ public class Stat
     [SerializeField]
     private float baseValue;
 
+    public void SetBaseValue(float value)
+    {
+        baseValue = value;
+    }
+
     public int GetIntValue()
     {
         return Mathf.RoundToInt(GetValue());
@@ -58,7 +63,6 @@ public class Stat
 
         toRemove.ForEach((mod) => modifiers.Remove(mod));
     }
-
 }
 
 /// <summary>

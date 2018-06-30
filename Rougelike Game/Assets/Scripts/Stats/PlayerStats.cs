@@ -1,5 +1,5 @@
-﻿using UnityEngine;
-using UnityEngine.UI;
+﻿using EZCameraShake;
+using UnityEngine;
 
 public enum ModifierType
 {
@@ -40,20 +40,19 @@ public class PlayerStats : Stats
     public float focus;
     public Stat maxFocus;
 
-    Animator damageCounter;
-    Animator animator;
-    PlayerAnimation playerAnimation;
-    Text damageText;
+    public DamageCounter damageCounterPrefab;
+    private Animator animator;
+    private PlayerAnimation playerAnimation;
+    private SoundManager soundManager;
 
     void Start()
     {
         animator = GetComponent<Animator>();
-        damageCounter = HelperScripts.GetComponentFromChildrenExc<Animator>(transform);
-        damageText = HelperScripts.GetComponentFromChildrenExc<Text>(transform);
         health = maxHealth.GetIntValue();
         focus = maxFocus.GetIntValue();
         UpdateStats();
         playerAnimation = GetComponent<PlayerAnimation>();
+        soundManager = GetComponent<SoundManager>();
     }
 
     /// <summary>
@@ -104,6 +103,24 @@ public class PlayerStats : Stats
     {
         damage = Mathf.Clamp(damage - defense.GetIntValue(), 0, damage);
         DamagePlayerDirectly(damage);
+        ApplyDamageEffects(damage);
+    }
+
+    /// <summary>
+    /// Applies damage effect like camera shake and sound
+    /// </summary>
+    /// <param name="damage"></param>
+    void ApplyDamageEffects(int damage)
+    {
+        if (damage >= maxHealth.GetValue() / 6f)
+        {
+            CameraShaker.Instance.ShakeOnce(1f, 1f, 0.0f, 0.3f);
+            soundManager.PlayRandomizedPitch(SoundDatabase.Instance.PlayerHighAttack);
+        }
+        else
+        {
+            soundManager.PlayRandomizedPitch(SoundDatabase.Instance.PlayerAttack);
+        }
     }
 
     /// <summary>
@@ -112,9 +129,9 @@ public class PlayerStats : Stats
     public void DamagePlayerDirectly(int damage)
     {
         base.TakeDamage(damage);
-        damageCounter.SetTrigger("damage");
+        DamageCounter instance = Instantiate(damageCounterPrefab, transform);
+        instance.SetText(damage.ToString());
         animator.SetTrigger("damage");
-        damageText.text = "" + damage;
         UpdateStats();
     }
 

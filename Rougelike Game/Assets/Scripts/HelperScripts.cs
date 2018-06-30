@@ -7,6 +7,16 @@ using System.Collections.Generic;
 public class HelperScripts
 {
     /// <summary>
+    /// Returns an integer [inclusive] between the two vector values
+    /// </summary>
+    /// <param name="vector2Int"></param>
+    /// <returns></returns>
+    public static int RandomVec(Vector2Int vector2Int)
+    {
+        return Random.Range(vector2Int.x, vector2Int.y + 1);
+    }
+
+    /// <summary>
     /// Finds a component in exclusively the children of the parent
     /// </summary>
     /// <typeparam name="T"></typeparam>

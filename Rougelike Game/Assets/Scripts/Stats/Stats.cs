@@ -8,12 +8,9 @@ public class Stats : MonoBehaviour
     [Header("Stats")]
     public Stat minAttack;
     public Stat maxAttack;
-
     public Stat movementDelay;
-
     public Stat maxHealth;
     public int health { get; protected set; }
-
     public Stat defense;
 
     /// <summary>
