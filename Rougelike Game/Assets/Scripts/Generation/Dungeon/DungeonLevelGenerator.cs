@@ -347,7 +347,7 @@ public class DungeonLevelGenerator : TerrainGenerator
                 if (!containsFloor)
                 {
                     map[x, y] = Tiles.voidTile;
-                    walls.SetTile(new Vector3Int(x, y, 0), DungeonLevel.voidTile.GetTile());
+                    walls.SetTile(new Vector3Int(x, y, 0), null);
                 }
             }
         }
