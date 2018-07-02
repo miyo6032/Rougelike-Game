@@ -60,7 +60,6 @@ public class DungeonGenerator : MonoBehaviour
     public void Upstairs()
     {
         CurrentLevel--;
-        Debug.Log(CurrentLevel);
         if (CurrentLevel == -1)
         {
             Exit();

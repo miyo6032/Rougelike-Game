@@ -88,7 +88,7 @@ public class PlayerMovement : MovingObject
 
     protected override void OnStopMove()
     {
-        lighting.RayLight();
+        lighting.GenerateLight();
     }
 
     /// <summary>
