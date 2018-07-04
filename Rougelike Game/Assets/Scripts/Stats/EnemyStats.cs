@@ -130,14 +130,14 @@ public class EnemyStats : Stats
         int numExpOrbs = HelperScripts.RandomVec(enemy.numExpOrbs);
         int expPerOrb = Mathf.RoundToInt(experienceDrop / (float)numExpOrbs);
 
+        Destroy(gameObject);
+
         for (int i = 0; i < numExpOrbs; i++)
         {
             Experience exp = Instantiate(experiencePrefab, transform.parent);
             exp.transform.position = transform.position;
             exp.experienceAmount = expPerOrb;
         }
-
-        Destroy(gameObject);
     }
 
     /// <summary>

@@ -12,7 +12,7 @@ public class DungeonGenerator : MonoBehaviour
     public DungeonLevelGenerator DungeonLevelGenerator;
     public PlayerMovement player;
     public static DungeonGenerator Instance;
-    public Transform DungeonEntrance;
+    private Transform DungeonEntrance;
 
     private void Awake()
     {
@@ -29,8 +29,9 @@ public class DungeonGenerator : MonoBehaviour
     /// <summary>
     /// Enter the first level of the dungeon
     /// </summary>
-    public void Enter(List<DungeonLevel> dungeonLevels)
+    public void Enter(List<DungeonLevel> dungeonLevels, Transform transform)
     {
+        DungeonEntrance = transform;
         DungeonLevels = dungeonLevels;
         CurrentLevel = -1;
         Downstairs();
@@ -60,7 +61,6 @@ public class DungeonGenerator : MonoBehaviour
     public void Upstairs()
     {
         CurrentLevel--;
-        Debug.Log(CurrentLevel);
         if (CurrentLevel == -1)
         {
             Exit();

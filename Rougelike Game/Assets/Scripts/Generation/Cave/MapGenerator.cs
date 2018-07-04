@@ -121,24 +121,24 @@ public class MapGenerator : TerrainGenerator
     //    {
     //        for (int x = 0; x < height; x++)
     //        {
-    //            if (map[y, x] == Tiles.floorTile)// 1 means a floor tile
+    //            if (map[y, x] == Tiles.FloorTile)// 1 means a floor tile
     //            {
     //                // Offset to keep the tilemap at the expected position
-    //                floor.SetTile(new Vector3Int(x - cycles * detectRange, y - cycles * detectRange, 0), floorTile.GetTile());
+    //                floor.SetTile(new Vector3Int(x - cycles * detectRange, y - cycles * detectRange, 0), FloorTile.GetTile());
     //            }
     //            else
     //            {
     //                //If there is a floor (no wall) below
-    //                if (y > 0 && map[y - 1, x] == Tiles.floorTile)
+    //                if (y > 0 && map[y - 1, x] == Tiles.FloorTile)
     //                {
     //                    //If there is no floor above
-    //                    if(y < height && map[y + 1, x] == Tiles.floorTile)
+    //                    if(y < height && map[y + 1, x] == Tiles.FloorTile)
     //                    {
-    //                        walls.SetTile(new Vector3Int(x - cycles * detectRange, y - cycles * detectRange, 0), freeStandingWallTile.GetTile());
+    //                        walls.SetTile(new Vector3Int(x - cycles * detectRange, y - cycles * detectRange, 0), FreeStandingWallTile.GetTile());
     //                    }
     //                    else
     //                    {
-    //                        walls.SetTile(new Vector3Int(x - cycles * detectRange, y - cycles * detectRange, 0), wallTile.GetTile());
+    //                        walls.SetTile(new Vector3Int(x - cycles * detectRange, y - cycles * detectRange, 0), WallTile.GetTile());
     //                    }
     //                }
     //                else

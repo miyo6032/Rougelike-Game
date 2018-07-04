@@ -7,6 +7,7 @@ public class PlayerMovement : MovingObject
 {
     private PlayerStats stats;
     private PlayerAnimation animatorHandler;
+    private Lighting lighting;
     private bool hitting;
     [HideInInspector]
     public Vector2Int facingdirection;
@@ -20,6 +21,7 @@ public class PlayerMovement : MovingObject
         base.Start();
         stats = GetComponent<PlayerStats>();
         animatorHandler = GetComponent<PlayerAnimation>();
+        lighting = GetComponent<Lighting>();
     }
 
     /// <summary>
@@ -60,6 +62,7 @@ public class PlayerMovement : MovingObject
     {
         EmergencyStop();
         transform.position = pos;
+        lighting.ResetLight();
     }
 
     public bool CanUseSkill()
@@ -81,6 +84,11 @@ public class PlayerMovement : MovingObject
         {
             Automove();
         }
+    }
+
+    protected override void OnStopMove()
+    {
+        lighting.GenerateLight();
     }
 
     /// <summary>

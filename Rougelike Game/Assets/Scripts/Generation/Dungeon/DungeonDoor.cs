@@ -2,7 +2,7 @@
 using UnityEngine.EventSystems;
 
 /// <summary>
-/// The trigger for the dungeon door - just destroys it when walked upon
+/// The trigger for the dungeon Door - just destroys it when walked upon
 /// </summary>
 public class DungeonDoor : PlayerEnterDetector, IPointerClickHandler
 {
