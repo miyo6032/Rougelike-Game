@@ -117,8 +117,6 @@ public class Lighting : MonoBehaviour
             Vector2 end = pos + (Vector2)transform.position;
             BresenhamLine(Vector2Int.RoundToInt(transform.position), Vector2Int.RoundToInt(end));
         }
-
-        FixLightingArtifacts();
     }
 
     /// <summary>
@@ -147,7 +145,6 @@ public class Lighting : MonoBehaviour
         }
         do
         {
-            SetTileColor(start, Color.clear);
             if (ObjectExists(start))
             {
                 if (!rayCollisions.ContainsKey(start))
@@ -156,6 +153,15 @@ public class Lighting : MonoBehaviour
                 }
                 return;
             }
+
+            for (int i = -1; i < 2; i++)
+            {
+                for (int j = -1; j < 2; j++)
+                {
+                    SetTileColor(start + new Vector2Int(i, j), Color.clear);
+                }
+            }
+
             var e2 = err;
             if (e2 > -dx)
             {
@@ -169,49 +175,6 @@ public class Lighting : MonoBehaviour
                 start.y += sy;
             }
         } while (start.x != end.x || start.y != end.y);
-    }
-
-    /// <summary>
-    /// Fixes certain lighting artifacts to make the lighting a little choppy
-    /// </summary>
-    private void FixLightingArtifacts()
-    {
-        int[] x = {1, 2, 1, 1};
-        int[] y = {0, 0, -1, 1};
-        foreach (var pos in rayCollisions.Keys)
-        {
-            CheckQuadrant(pos, x, y, 1);
-            CheckQuadrant(pos, x, y, -1);
-            CheckQuadrant(pos, y, x, 1);
-            CheckQuadrant(pos, y, x, -1);
-        }
-    }
-
-    /*
-     * Detect artifacts of this nature: 'l' for lit and 'u' for unlit
-     *
-     * u l u -> u u u
-     *
-     * l u -> l l
-     *   l      l
-     *
-     *   l      l
-     * l u -> l l
-     *
-     * Of course, the added complexity is to check in all four directions
-     */
-    public void CheckQuadrant(Vector2Int pos, int[] x, int[] y, int sign)
-    {
-        Vector2Int pos0 = new Vector2Int(x[0], y[0]) * sign;
-        Vector2Int pos1 = new Vector2Int(x[1], y[1]) * sign;
-        Vector2Int pos2 = new Vector2Int(x[2], y[2]) * sign;
-        Vector2Int pos3 = new Vector2Int(x[3], y[3]) * sign;
-        Vector2Int unlit = pos + pos0;
-        if ((rayCollisions.ContainsKey(pos + pos1) && !rayCollisions.ContainsKey(unlit)) ||
-            (rayCollisions.ContainsKey(pos + pos2) && !rayCollisions.ContainsKey(unlit)) ||
-            (rayCollisions.ContainsKey(pos + pos3) && !rayCollisions.ContainsKey(unlit))) {
-            SetTileColor(unlit, Color.clear);
-        }
     }
 
     /// <summary>
@@ -232,7 +195,7 @@ public class Lighting : MonoBehaviour
     }
 
     /// <summary>
-    /// If a wall or door exists at this position
+    /// If a wall or Door exists at this position
     /// </summary>
     /// <param name="pos"></param>
     /// <returns></returns>

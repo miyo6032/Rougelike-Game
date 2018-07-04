@@ -61,8 +61,8 @@ public class PlayerMovement : MovingObject
     public void TeleportPlayer(Vector3 pos)
     {
         EmergencyStop();
-        lighting.ResetLight();
         transform.position = pos;
+        lighting.ResetLight();
     }
 
     public bool CanUseSkill()

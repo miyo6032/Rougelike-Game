@@ -17,8 +17,11 @@ public class RoomGenerator
         Dictionary<Vector2Int, Room> rooms = new Dictionary<Vector2Int, Room>();
         for (int i = 0; i < numRooms; i++)
         {
-            Room room = GenerateRoom(new Vector2Int(Random.Range(0, width), Random.Range(0, height)), roomHeightBounds,
-                roomWidthBounds);
+            int roomHeight = Random.Range(roomHeightBounds.x - 1, roomHeightBounds.y - 1);
+            int roomWidth = Random.Range(roomWidthBounds.x - 1, roomWidthBounds.y - 1);
+            Vector2Int randomPos = new Vector2Int(Random.Range(1, width - roomWidth - 1), Random.Range(1, height - roomHeight - 1));
+            Vector2Int upperRightCorner = randomPos + new Vector2Int(roomWidth, roomHeight);
+            Room room = new Room(randomPos, upperRightCorner);
             if (CanPlaceRoom(room, rooms.Values.ToList(), height, width))
             {
                 rooms.Add(room.GetCenter(), room);
@@ -26,21 +29,6 @@ public class RoomGenerator
         }
 
         return rooms;
-    }
-
-    /// <summary>
-    /// Generate a single room with a random position and size
-    /// </summary>
-    /// <param name="pos"></param>
-    /// <param name="roomHeightBounds"></param>
-    /// <param name="roomWidthBounds"></param>
-    /// <returns></returns>
-    private Room GenerateRoom(Vector2Int pos, Vector2Int roomHeightBounds, Vector2Int roomWidthBounds)
-    {
-        int roomHeight = Random.Range(roomHeightBounds.x, roomHeightBounds.y);
-        int roomWidth = Random.Range(roomWidthBounds.x, roomWidthBounds.y);
-        Vector2Int upperRightCorner = pos + new Vector2Int(roomWidth, roomHeight);
-        return new Room(pos, upperRightCorner);
     }
 
     /// <summary>
@@ -53,35 +41,12 @@ public class RoomGenerator
     /// <returns></returns>
     private bool CanPlaceRoom(Room room, List<Room> rooms, int height, int width)
     {
-        if (!RoomInBounds(room, height, width)) return false;
         foreach (var r in rooms)
         {
             if (RoomsOverlap(room, r))
             {
                 return false;
             }
-        }
-
-        return true;
-    }
-
-    /// <summary>
-    /// Determines whether or not the room is within the map width and height
-    /// </summary>
-    /// <param name="room"></param>
-    /// <param name="height"></param>
-    /// <param name="width"></param>
-    /// <returns></returns>
-    private bool RoomInBounds(Room room, int height, int width)
-    {
-        if (room.lowerLeftCorner.x < 1 || room.lowerLeftCorner.y < 1)
-        {
-            return false;
-        }
-
-        if (room.upperRightCorner.x >= width - 1 || room.upperRightCorner.y >= height - 1)
-        {
-            return false;
         }
 
         return true;

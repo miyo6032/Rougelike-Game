@@ -14,6 +14,7 @@ public enum Tiles
 public class WeightedTile
 {
     public Tile tile;
+    [Range(1, 100)]
     public int weight = 1;
 }
 
