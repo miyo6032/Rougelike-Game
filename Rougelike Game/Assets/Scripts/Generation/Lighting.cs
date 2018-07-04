@@ -10,13 +10,17 @@ public class Lighting : MonoBehaviour
     public enum LightType
     {
         flood,
-        ray
+        ray,
+        smooth
     }
     public Tilemap LightingTilemap;
     public Tilemap Walls;
     public int LightingRange;
     public LayerMask lightBlock;
     public LightType LightingType;
+    public Material SmoothLighting;
+    public SpriteRenderer[] SmoothLightingAlteration;
+    public TilemapRenderer[] SmoothLightingTilemaps;
 
     private List<Vector2Int> circlePoints = new List<Vector2Int>(); // The circle for ray lighting
     private Dictionary<Vector2Int, bool> rayCollisions = new Dictionary<Vector2Int, bool>(); // The points where the ray collided with something. Used to remove artifacts
@@ -38,6 +42,19 @@ public class Lighting : MonoBehaviour
         else if (LightingType == LightType.ray)
         {
             RayLight();
+        }
+        // The switch to smooth lighting requires a new material for every sprite
+        else if (LightingType == LightType.smooth)
+        {
+            foreach (var spriteRenderer in SmoothLightingAlteration)
+            {
+                spriteRenderer.material = SmoothLighting;
+            }
+            foreach (var spriteRenderer in SmoothLightingTilemaps)
+            {
+                spriteRenderer.material = SmoothLighting;
+            }
+            LightingTilemap.gameObject.SetActive(false);
         }
     }
 
@@ -153,7 +170,7 @@ public class Lighting : MonoBehaviour
                 }
                 return;
             }
-
+            // Instead of lighting one block, light a 3x3 area
             for (int i = -1; i < 2; i++)
             {
                 for (int j = -1; j < 2; j++)

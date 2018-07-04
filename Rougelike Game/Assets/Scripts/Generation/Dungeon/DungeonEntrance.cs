@@ -10,7 +10,6 @@ public class DungeonEntrance : PlayerEnterDetector
 
     public override void PlayerEnter(Collider2D player)
     {
-        DungeonGenerator.Instance.Enter(DungeonLevels);
-        DungeonGenerator.Instance.DungeonEntrance = transform;
+        DungeonGenerator.Instance.Enter(DungeonLevels, transform);
     }
 }

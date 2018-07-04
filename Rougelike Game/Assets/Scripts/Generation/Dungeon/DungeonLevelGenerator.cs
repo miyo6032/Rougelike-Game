@@ -10,7 +10,9 @@ public class DungeonLevelGenerator : TerrainGenerator
 {
     [HideInInspector]
     public DungeonLevel DungeonLevel;
+
     [Header("References")]
+    public Lighting Lighting;
     public EnemyStats enemyPrefab;
     public Chest chestPrefab;
     public DungeonUpstairs upStairs;
@@ -169,6 +171,10 @@ public class DungeonLevelGenerator : TerrainGenerator
             EnemyStats enemy = Instantiate(enemyPrefab, enemyPosition, Quaternion.identity);
             enemy.transform.SetParent(mapGameObjects);
             room.ClaimRoomSpot(Vector2Int.RoundToInt(enemyPosition));
+            if (Lighting.LightingType == Lighting.LightType.smooth)
+            {
+                enemy.GetComponent<SpriteRenderer>().material = Lighting.SmoothLighting;
+            }
         }
     }
 
@@ -187,6 +193,10 @@ public class DungeonLevelGenerator : TerrainGenerator
             Chest chest = Instantiate(chestPrefab, (Vector2)room.GetCenter(), Quaternion.identity);
             chest.transform.SetParent(mapGameObjects);
             room.ClaimRoomSpot(room.GetCenter());
+            if (Lighting.LightingType == Lighting.LightType.smooth)
+            {
+                chest.GetComponent<SpriteRenderer>().material = Lighting.SmoothLighting;
+            }
         }
     }
 
@@ -410,6 +420,10 @@ public class DungeonLevelGenerator : TerrainGenerator
                             DungeonDoor instance = Instantiate(door, new Vector3(x, y), Quaternion.identity,
                                 mapGameObjects);
                             instance.spriteRenderer.sprite = DungeonLevel.Door;
+                            if (Lighting.LightingType == Lighting.LightType.smooth)
+                            {
+                                instance.spriteRenderer.material = Lighting.SmoothLighting;
+                            }
                         }
                     }
                 }
@@ -430,6 +444,10 @@ public class DungeonLevelGenerator : TerrainGenerator
 
         // Also claim the foot of the stairs
         rooms[claimedSpot].ClaimRoomSpot(claimedSpot + new Vector2Int(-1, 0));
+        if (Lighting.LightingType == Lighting.LightType.smooth)
+        {
+            upstairs.GetComponent<SpriteRenderer>().material = Lighting.SmoothLighting;
+        }
         if (generateDownStairs)
         {
             DungeonDownstairs downstairs = Instantiate(downStairs, dungeonExits.ToVector2()[1], Quaternion.identity, mapGameObjects);
@@ -437,6 +455,10 @@ public class DungeonLevelGenerator : TerrainGenerator
             claimedSpot = Vector2Int.FloorToInt(dungeonExits.ToVector2()[1]);
             rooms[claimedSpot].ClaimRoomSpot(claimedSpot);
             rooms[claimedSpot].ClaimRoomSpot(claimedSpot + new Vector2Int(1, 0));
+            if (Lighting.LightingType == Lighting.LightType.smooth)
+            {
+                downstairs.GetComponent<SpriteRenderer>().material = Lighting.SmoothLighting;
+            }
         }
     }
 
