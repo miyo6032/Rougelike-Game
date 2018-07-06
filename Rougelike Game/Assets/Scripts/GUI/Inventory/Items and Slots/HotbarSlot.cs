@@ -31,6 +31,10 @@ public class HotbarSlot : MonoBehaviour, IPointerClickHandler
             //Only show number amount if item amount is not 1
             stackAmount.text = (item.GetAmount() == 1) ? "" : item.GetAmount().ToString();
         }
+        else
+        {
+            stackAmount.text = "";
+        }
 
         //Set the rest of the item images to invisible
         for (; i < 3; i++)

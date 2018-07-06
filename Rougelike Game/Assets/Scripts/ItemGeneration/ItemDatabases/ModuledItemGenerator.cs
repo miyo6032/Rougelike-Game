@@ -1,26 +1,26 @@
 ﻿using UnityEngine;
+using System.Collections.Generic;
 
 /// <summary>
 /// Produces generated gear from pieces of items
 /// </summary>
-public class ItemGenerator : MonoBehaviour
+public class ModuledItemGenerator : MonoBehaviour
 {
-
     public int damageStart = 5;
 
-    public Item GenerateItem(int level, int equipmentType)
+    public Item GenerateItem(int level, EquipmentType equipmentType)
     {
         //The sword
-        if (equipmentType == 0)
+        if (equipmentType == EquipmentType.Sword)
         {
-            return GenerateSword(level, equipmentType);
+            return GenerateSword(level);
         }
 
         //The other armors
         return GenerateArmor(level, equipmentType);
     }
 
-    Item GenerateSword(int level, int equipmentType)
+    Item GenerateSword(int level)
     {
         ItemModule[] pieces = StaticCanvasList.instance.itemModuleDatabase.GetSword(level);
         ItemModule blade = pieces[0];
@@ -35,16 +35,16 @@ public class ItemGenerator : MonoBehaviour
         int value = attack + maxAttack + defence * 2;
         string description = "";
         string[] sprites = {blade.Sprite, handle.Sprite, hilt.Sprite};
-        Item sword = new Item(title, value, attack, maxAttack, defence, description, false, equipmentType, level,
+        Item sword = new Item(title, value, attack, maxAttack, defence, description, false, EquipmentType.Sword, level,
             sprites, blade.Color, false);
         return sword;
     }
 
     //Generates Helmets and Armor
-    Item GenerateArmor(int level, int equipmentType)
+    Item GenerateArmor(int level, EquipmentType equipmentType)
     {
         LeveledItemModule armor;
-        armor = equipmentType == 1 ? StaticCanvasList.instance.itemModuleDatabase.FindArmor(level) : StaticCanvasList.instance.itemModuleDatabase.FindHelmet(level);
+        armor = equipmentType == EquipmentType.Armor ? StaticCanvasList.instance.itemModuleDatabase.FindArmor(level) : StaticCanvasList.instance.itemModuleDatabase.FindHelmet(level);
 
         string title;
         string[] sprites;

@@ -1,26 +1,46 @@
-﻿using UnityEngine;/// <summary>
+﻿using UnityEngine;
+
+[System.Serializable]
+public enum EquipmentType
+{
+    None,
+    Sword,
+    Armor,
+    Helmet
+}
+
+/// <summary>
 /// Represents an item's data
 /// </summary>
 [System.Serializable]
-[CreateAssetMenu(menuName = "Custom/Item")]
-public class Item : ScriptableObject
+public class Item
 {
     public string Title;
+    [Range(0, 10000)]
     public int Value;
-    public int Attack;
-    public int MaxAttack;
-    public int Defence;
     public string Description;
     public bool Stackable;
-    public bool Consumable;
+    [HideInInspector]
     public string[] Sprites;
-    public int EquippedSlot = -1;
+    [Header("Equipment")]
+    public EquipmentType EquippedSlot = EquipmentType.None;
+    [Range(0, 100)]
+    public int Attack;
+    [Range(0, 100)]
+    public int MaxAttack;
+    [Range(0, 100)]
+    public int Defence;
+    [Range(1, 100)]
     public int ItemLevel = 1;
+    [HideInInspector]
     public string ItemColor;
+    [Header("Consumable")]
+    public bool Consumable;
     public Modifier[] ModifiersAffected;
+    [Range(0, 100)]
     public int focusConsumption;
 
-    public Item(string title, int value, int attack, int maxAttack, int defence, string description, bool stackable, int equippedSlot, int itemLevel, string[] sprites, string itemColor, bool consumable)
+    public Item(string title, int value, int attack, int maxAttack, int defence, string description, bool stackable, EquipmentType equippedSlot, int itemLevel, string[] sprites, string itemColor, bool consumable)
         : this (title, value, description, stackable, itemLevel, sprites, consumable)
     {
         Attack = attack;
@@ -42,7 +62,7 @@ public class Item : ScriptableObject
         Defence = 0;
         Description = description;
         Stackable = stackable;
-        EquippedSlot = -1;
+        EquippedSlot = EquipmentType.None;
         Sprites = sprites;
         ItemLevel = itemLevel;
         ItemColor = "";

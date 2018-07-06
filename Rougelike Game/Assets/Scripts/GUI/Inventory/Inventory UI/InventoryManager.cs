@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
+using System;
 
 /// <summary>
 /// Holds the inventory slot information, and implements some necessary item operations
@@ -10,28 +11,35 @@ public class InventoryManager : MonoBehaviour
     public List<ItemSlot> equipSlots = new List<ItemSlot>();
     public ItemInstance itemPrefab;
 
-    public Item TEST;
-
     // The item attached to the mouse pointer, if any
     public ItemInstance attachedItem = null;
-    private ItemGenerator itemGenerator;
+    private ModuledItemGenerator itemGenerator;
 
     private void Start()
     {
         //Setup all of the databases
         StaticCanvasList.instance.itemModuleDatabase.PopulateItemModuleDatabase();
         TextureDatabase textures = StaticCanvasList.instance.textureDatabase;
-        itemGenerator = StaticCanvasList.instance.itemGenerator;
+        itemGenerator = StaticCanvasList.instance.moduledItemGenerator;
         textures.LoadAllTextures();
 
         // Automatically equip the four starting items
-        AddItemToSlot(itemGenerator.GenerateItem(1, 0), equipSlots[0], 1);
-        AddItemToSlot(itemGenerator.GenerateItem(1, 0), equipSlots[1], 1);
-        AddItemToSlot(itemGenerator.GenerateItem(1, 1), equipSlots[2], 1);
-        AddItemToSlot(itemGenerator.GenerateItem(1, 2), equipSlots[3], 1);
+        AddItemToSlot(itemGenerator.GenerateItem(1, EquipmentType.Sword), equipSlots[0], 1);
+        AddItemToSlot(itemGenerator.GenerateItem(1, EquipmentType.Sword), equipSlots[1], 1);
+        AddItemToSlot(itemGenerator.GenerateItem(1, EquipmentType.Armor), equipSlots[2], 1);
+        AddItemToSlot(itemGenerator.GenerateItem(1, EquipmentType.Helmet), equipSlots[3], 1);
 
-        AddItem(TEST, 1);
         gameObject.SetActive(false);
+    }
+
+    /// <summary>
+    /// Adds a scriptable item, allowing sprites to be dragged in
+    /// </summary>
+    /// <param name="item"></param>
+    public void AddScriptableItem(ItemScriptableObject item)
+    {
+        item.Start();
+        AddItem(item.Item, 1);
     }
 
     /// <summary>
@@ -39,7 +47,7 @@ public class InventoryManager : MonoBehaviour
     /// </summary>
     /// <param name="level"></param>
     /// <param name="equipment"></param>
-    public void AddGeneratedItem(int level, int equipment)
+    public void AddGeneratedItem(int level, EquipmentType equipment)
     {
         AddItem(itemGenerator.GenerateItem(level, equipment));
     }

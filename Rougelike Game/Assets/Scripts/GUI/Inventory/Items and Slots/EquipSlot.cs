@@ -7,7 +7,7 @@ using UnityEngine;
 /// </summary>
 public class EquipSlot : ItemSlot, IPointerClickHandler
 {
-    public int equipmentSlot;
+    public EquipmentType equipmentSlot;
     public Sprite emptySprite;
     public Sprite fullSprite;
     public Image slotImage;
