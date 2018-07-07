@@ -146,6 +146,7 @@ TextureImporter:
     21300278: Valuables_139
     21300280: Valuables_140
     21300282: Valuables_141
+    21300284: Valuables_142
   externalObjects: {}
   serializedVersion: 4
   mipmaps:
@@ -651,7 +652,7 @@ TextureImporter:
       name: Valuables_29
       rect:
         serializedVersion: 2
-        x: 95
+        x: 104
         y: 112
         width: 8
         height: 8
@@ -2221,6 +2222,20 @@ TextureImporter:
         serializedVersion: 2
         x: 64
         y: 33
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Valuables_142
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 112
         width: 8
         height: 8
       alignment: 0

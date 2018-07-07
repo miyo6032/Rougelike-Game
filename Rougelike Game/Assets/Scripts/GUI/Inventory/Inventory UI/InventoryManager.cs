@@ -15,6 +15,8 @@ public class InventoryManager : MonoBehaviour
     public ItemInstance attachedItem = null;
     private ModuledItemGenerator itemGenerator;
 
+    public ItemScriptableObject meat;
+
     private void Start()
     {
         //Setup all of the databases
@@ -29,6 +31,8 @@ public class InventoryManager : MonoBehaviour
         AddItemToSlot(itemGenerator.GenerateItem(1, EquipmentType.Armor), equipSlots[2], 1);
         AddItemToSlot(itemGenerator.GenerateItem(1, EquipmentType.Helmet), equipSlots[3], 1);
 
+        AddScriptableItem(meat, 3);
+
         gameObject.SetActive(false);
     }
 
@@ -36,10 +40,10 @@ public class InventoryManager : MonoBehaviour
     /// Adds a scriptable item, allowing sprites to be dragged in
     /// </summary>
     /// <param name="item"></param>
-    public void AddScriptableItem(ItemScriptableObject item)
+    public void AddScriptableItem(ItemScriptableObject item, int amount)
     {
         item.Start();
-        AddItem(item.Item, 1);
+        AddItem(item.Item, amount);
     }
 
     /// <summary>

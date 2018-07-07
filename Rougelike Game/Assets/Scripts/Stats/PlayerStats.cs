@@ -135,7 +135,7 @@ public class PlayerStats : Stats
         UpdateStats();
     }
 
-    public override void Heal(int amount)
+    public override void Heal(float amount)
     {
         base.Heal(amount);
         UpdateStats();
@@ -185,7 +185,7 @@ public class PlayerStats : Stats
     {
         StaticCanvasList.instance.gameUI.UpdateHealth(health / maxHealth.GetValue());
         StaticCanvasList.instance.gameUI.UpdateFocus(focus / maxFocus.GetValue());
-        StaticCanvasList.instance.statUI.UpdateStatUI(level, experience, maxExperience, health, maxHealth.GetIntValue(), Mathf.RoundToInt(focus), maxFocus.GetIntValue(), defense.GetIntValue(), minAttack.GetIntValue(), maxAttack.GetIntValue());
+        StaticCanvasList.instance.statUI.UpdateStatUI(level, experience, maxExperience, (int)health, maxHealth.GetIntValue(), Mathf.RoundToInt(focus), maxFocus.GetIntValue(), defense.GetIntValue(), minAttack.GetIntValue(), maxAttack.GetIntValue());
         StaticCanvasList.instance.skillTree.upgradePointsText.text = "Availible Upgrade Points: " + upgradePoints;
     }
 
@@ -228,7 +228,7 @@ public class PlayerStats : Stats
                 DamagePlayerDirectly(Mathf.RoundToInt(modifier.value));
                 break;
             case ModifierType.healing:
-                Heal(Mathf.RoundToInt(modifier.value));
+                Heal(modifier.value);
                 break;
         }
     }

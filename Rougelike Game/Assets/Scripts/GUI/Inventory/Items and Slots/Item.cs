@@ -36,7 +36,7 @@ public class Item
     public string ItemColor;
     [Header("Consumable")]
     public bool Consumable;
-    public Modifier[] ModifiersAffected;
+    public Effect[] ConsumptionEffects;
     [Range(0, 100)]
     public int focusConsumption;
 
@@ -49,8 +49,6 @@ public class Item
         Description = description;
         EquippedSlot = equippedSlot;
         ItemColor = itemColor;
-        ModifiersAffected = new Modifier[0];
-        focusConsumption = 0;
     }
 
     public Item(string title, int value, string description, bool stackable, int itemLevel, string[] sprites, bool consumable)
@@ -66,7 +64,7 @@ public class Item
         Sprites = sprites;
         ItemLevel = itemLevel;
         ItemColor = "";
-        ModifiersAffected = new Modifier[0];
+        ConsumptionEffects = new Effect[0];
         Consumable = consumable;
         focusConsumption = 0;
     }
