@@ -27,7 +27,6 @@ public class EnemyStats : Stats
         healthSlider = HelperScripts.GetComponentFromChildrenExc<Slider>(transform);
         InitializeStats();
         InitializeAnimations();
-        GetComponent<EnemyMovement>().StartMoving();
     }
 
     public void InitializeStats()
@@ -102,7 +101,7 @@ public class EnemyStats : Stats
         {
             position = transform.position,
             applyShapeToPosition = true,
-            startColor = enemy.damagedColor
+            startColor = enemy.particleDamagedColor
         };
         ParticleManager.instance.Emit(emitParams, 4);
     }
@@ -126,7 +125,7 @@ public class EnemyStats : Stats
                 DropNewBag(itemDrops);
             }
         }
-
+         
         int numExpOrbs = HelperScripts.RandomVec(enemy.numExpOrbs);
         int expPerOrb = Mathf.RoundToInt(experienceDrop / (float)numExpOrbs);
 

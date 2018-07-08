@@ -115,9 +115,9 @@ public class ItemModuleDatabase : MonoBehaviour
     /// </summary>
     /// <param name="type"></param>
     /// <returns></returns>
-    public ItemModule GetRandomAccessory(int type)
+    public ItemModule GetRandomAccessory(EquipmentType type)
     {
-        if (type == 1)
+        if (type == EquipmentType.Armor)
         {
             return beltsAndCollars[Random.Range(0, beltsAndCollars.Count)];
         }

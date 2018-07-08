@@ -204,7 +204,7 @@ public class Lighting : MonoBehaviour
         // Set tile flags to allow us to change the color
         LightingTilemap.SetTileFlags(new Vector3Int(pos.x, pos.y, 0), TileFlags.LockTransform);
         LightingTilemap.SetColor(new Vector3Int(pos.x, pos.y, 0), color);
-        if (color == Color.clear)
+        if (color.a < 1f)
         {
             litTiles.Add(pos);
             brightTiles.Add(pos);

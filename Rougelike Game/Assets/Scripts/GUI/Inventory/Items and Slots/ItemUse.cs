@@ -5,7 +5,7 @@
 /// </summary>
 public class ItemUse : MonoBehaviour
 {
-    public PlayerStats player;
+    public EffectManager effectManager;
     public SkillManager skillManager;
 
     /// <summary>
@@ -14,7 +14,10 @@ public class ItemUse : MonoBehaviour
     /// <param name="itemInstance"></param>
     public void ApplyItemEffect(ItemInstance itemInstance)
     {
-        player.ApplyStats(itemInstance.item.ModifiersAffected);
+        foreach (Effect effect in itemInstance.item.ConsumptionEffects)
+        {
+            effectManager.AddNewEffect(effect);
+        }
         if (itemInstance.item.Consumable)
         {
             itemInstance.ChangeAmount(-1);

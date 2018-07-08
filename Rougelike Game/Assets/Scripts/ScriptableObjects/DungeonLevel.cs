@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
-using Microsoft.Win32;
 
 /// <summary>
 /// The DungeonLevel scriptable object that allows a DungeonLevel floor to be customized
@@ -12,9 +11,15 @@ public class DungeonLevel : ScriptableObject
     public TileType FloorTile;
     public TileType WallTile; // The tile that will be the wall texture
     public TileType FreeStandingWallTile; // A freestanding wall tile
+    public TileType DecorativeFloorTile;
+    [Range(0, 1)]
+    public float DecorationDensity;
     public Sprite UpStairs;
     public Sprite DownStairs;
     public Sprite Door;
+    public Sprite HiddenDoor;
+    [Range(0, 1)]
+    public float HiddenDoorDensity;
     [Header("Dungeon Size")]
     [Range(3, 100)]
     public int Height = 3;

@@ -47,10 +47,19 @@ public class ItemSlot : MonoBehaviour, IPointerClickHandler
         // If there is an item attached to the mouse pointer
         if (droppedItem && item != null)
         {
+            if(droppedItem.item == item.item)
+            {
+                item.ChangeAmount(droppedItem.GetAmount());
+                SetItem(item);
+                Destroy(droppedItem.gameObject);
+            }
+            else
+            {
+                item.PickItemUp();
+                LinkItem(droppedItem);
+            }
             // Disconnnect the item from the mouse
             droppedItem.attached = false;
-            item.PickItemUp();
-            LinkItem(droppedItem);
         }
     }
 
@@ -62,7 +71,7 @@ public class ItemSlot : MonoBehaviour, IPointerClickHandler
     {
         itemInstance.slot = this;
         itemInstance.transform.SetParent(transform);
-        item = itemInstance;
+        SetItem(itemInstance);
         itemInstance.ItemToParentSlot();
         itemInstance.transform.localScale = new Vector3(1, 1, 1);
         itemInstance.transform.localPosition = Vector2.zero;

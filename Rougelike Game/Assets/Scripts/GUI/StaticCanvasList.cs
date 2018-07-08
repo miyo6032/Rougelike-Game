@@ -14,7 +14,8 @@ public class StaticCanvasList : MonoBehaviour {
     public UIColoring uiColoring;
     public LootInventory lootInventory;
     public ChestInventory chestInventory;
-    public ItemGenerator itemGenerator;
+    public ModuledItemGenerator moduledItemGenerator;
+    public PresetItemDatabase presetItemDatabase;
     public ItemModuleDatabase itemModuleDatabase;
     public ItemDatabase itemDatabase;
     public TextureDatabase textureDatabase;

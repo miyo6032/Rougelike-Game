@@ -10,7 +10,7 @@ public class Stats : MonoBehaviour
     public Stat maxAttack;
     public Stat movementDelay;
     public Stat maxHealth;
-    public int health { get; protected set; }
+    public float health { get; protected set; }
     public Stat defense;
 
     /// <summary>
@@ -26,9 +26,9 @@ public class Stats : MonoBehaviour
     /// Heal the player by some amount
     /// </summary>
     /// <param name="amount"></param>
-    public virtual void Heal(int amount)
+    public virtual void Heal(float amount)
     {
-        health = Mathf.Clamp(health + amount, 0, maxHealth.GetIntValue());
+        health = Mathf.Clamp(health + amount, 0, maxHealth.GetValue());
     }
 
 }
