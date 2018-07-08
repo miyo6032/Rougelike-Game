@@ -35,12 +35,8 @@ public class EnemyMovement : MovingObject
         target = GameObject.Find("Player").transform;
         playerCol = target.gameObject.GetComponent<BoxCollider2D>();
         enemyCol = GetComponent<BoxCollider2D>();
-        base.Start();
-    }
-
-    public void StartMoving()
-    {
         Invoke("DelayedStart", Random.Range(0f, stats.turnDelay.GetValue()));
+        base.Start();
     }
 
     void DelayedStart()

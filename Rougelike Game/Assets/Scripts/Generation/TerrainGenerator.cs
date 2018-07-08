@@ -45,6 +45,7 @@ public class TerrainGenerator : MonoBehaviour
 {
     public Tilemap floor;
     public Tilemap walls;
+    public Tilemap upperFloor;
 
     // Called to generate the entire map from start to finish
     public virtual void Generate()

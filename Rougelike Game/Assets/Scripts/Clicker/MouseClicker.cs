@@ -3,7 +3,6 @@ using UnityEngine.EventSystems;
 
 /// <summary>
 /// An object that follows the mouse and does things like automoving when clicked
-/// CURRENTY NOT IN USE
 /// </summary>
 public class MouseClicker : MonoBehaviour, IPointerClickHandler
 {

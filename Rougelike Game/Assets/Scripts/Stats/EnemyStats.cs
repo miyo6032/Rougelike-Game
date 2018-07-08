@@ -27,7 +27,6 @@ public class EnemyStats : Stats
         healthSlider = HelperScripts.GetComponentFromChildrenExc<Slider>(transform);
         InitializeStats();
         InitializeAnimations();
-        GetComponent<EnemyMovement>().StartMoving();
     }
 
     public void InitializeStats()

@@ -46,6 +46,7 @@ public class DungeonLevelGenerator : TerrainGenerator
     {
         floor.ClearAllTiles();
         walls.ClearAllTiles();
+        upperFloor.ClearAllTiles();
         ClearGameObjects();
     }
 
@@ -83,19 +84,23 @@ public class DungeonLevelGenerator : TerrainGenerator
         LinksIntoHallways();
         dungeonExits = dungeonMst.dungeonExits;
 
-        PlaceExits();
-        PlaceChests();
-
         // Adds hubs
         foreach (var room in rooms.Values)
         {
             WriteRoomToMap(room);
-            SpawnEnemies(room);
         }
 
         foreach (var edge in hallways)
         {
             WriteEdgeToMap(edge);
+        }
+
+        PlaceExits();
+        PlaceChests();
+
+        foreach (var room in rooms.Values)
+        {
+            SpawnEnemies(room);
         }
     }
 
@@ -338,6 +343,10 @@ public class DungeonLevelGenerator : TerrainGenerator
                 {
                     // Offset to keep the tilemap at the expected position
                     floor.SetTile(new Vector3Int(x, y, 0), DungeonLevel.FloorTile.GetTile());
+                    if(Random.Range(0, 1f) < DungeonLevel.DecorationDensity)
+                    {
+                        upperFloor.SetTile(new Vector3Int(x, y, 0), DungeonLevel.DecorativeFloorTile.GetTile());
+                    }
                 }
 
                 // Fill in anything else with walls
@@ -382,6 +391,7 @@ public class DungeonLevelGenerator : TerrainGenerator
     /// </summary>
     public void PlaceDoors()
     {
+        Dictionary<Vector2Int, bool> placedDoors = new Dictionary<Vector2Int, bool>();
         for (int y = 2; y < DungeonLevel.Height - 2; y++)
         {
             for (int x = 2; x < DungeonLevel.Width - 2; x++)
@@ -415,15 +425,24 @@ public class DungeonLevelGenerator : TerrainGenerator
                             map[crossUp.x, crossUp.y] == Tiles.floorTile &&
                             (map[crossLeft.x, crossLeft.y] == Tiles.floorTile || map[crossRight.x, crossRight.y] == Tiles.floorTile) &&
                             IsWallTile(map[crossBottomLeft.x, crossBottomLeft.y]) &&
-                            IsWallTile(map[crossBottomRight.x, crossBottomRight.y]))
+                            IsWallTile(map[crossBottomRight.x, crossBottomRight.y]) &&
+                            !placedDoors.ContainsKey(new Vector2Int(x, y)))
                         {
                             DungeonDoor instance = Instantiate(door, new Vector3(x, y), Quaternion.identity,
                                 mapGameObjects);
+
                             instance.spriteRenderer.sprite = DungeonLevel.Door;
+                            if (Random.Range(0, 1f) < DungeonLevel.HiddenDoorDensity)
+                            {
+                                instance.spriteRenderer.sprite = DungeonLevel.HiddenDoor;
+                            }
+
                             if (Lighting.LightingType == Lighting.LightType.smooth)
                             {
                                 instance.spriteRenderer.material = Lighting.SmoothLighting;
                             }
+
+                            placedDoors.Add(new Vector2Int(x, y), true);
                         }
                     }
                 }
