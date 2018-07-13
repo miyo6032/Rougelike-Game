@@ -42,11 +42,9 @@ public class DungeonLevelGenerator : TerrainGenerator
         MapToTilemap();
     }
 
-    public void ClearDungeon()
+    public override void ClearTilemap()
     {
-        floor.ClearAllTiles();
-        walls.ClearAllTiles();
-        upperFloor.ClearAllTiles();
+        base.ClearTilemap();
         ClearGameObjects();
     }
 
@@ -55,7 +53,7 @@ public class DungeonLevelGenerator : TerrainGenerator
     /// </summary>
     private void InitMap()
     {
-        ClearDungeon();
+        ClearTilemap();
         map = new Tiles[DungeonLevel.Width, DungeonLevel.Height];
         for (int y = 0; y < DungeonLevel.Height; y++)
         {
@@ -325,7 +323,10 @@ public class DungeonLevelGenerator : TerrainGenerator
     private void ClearGameObjects()
     {
         GameObject prevGameObject = GameObject.Find("MapGameObjects");
-        if (prevGameObject) Destroy(prevGameObject);
+        if (Application.isPlaying)
+        {
+            if (prevGameObject) Destroy(prevGameObject);
+        }
         mapGameObjects = new GameObject("MapGameObjects").GetComponent<Transform>();
         mapGameObjects.transform.SetParent(transform);
     }

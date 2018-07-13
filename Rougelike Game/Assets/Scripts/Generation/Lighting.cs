@@ -35,6 +35,7 @@ public class Lighting : MonoBehaviour
 
     public void GenerateLight()
     {
+        FloodLight();
         if (LightingType == LightType.flood)
         {
             FloodLight();
@@ -54,7 +55,7 @@ public class Lighting : MonoBehaviour
             {
                 spriteRenderer.material = SmoothLighting;
             }
-            LightingTilemap.gameObject.SetActive(false);
+            //LightingTilemap.gameObject.SetActive(false);
         }
     }
 

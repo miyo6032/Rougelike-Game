@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
-using System;
 
 /// <summary>
 /// Holds the inventory slot information, and implements some necessary item operations

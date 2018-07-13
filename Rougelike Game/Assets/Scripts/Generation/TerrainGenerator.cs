@@ -51,4 +51,11 @@ public class TerrainGenerator : MonoBehaviour
     public virtual void Generate()
     {
     }
+
+    public virtual void ClearTilemap()
+    {
+        floor.ClearAllTiles();
+        walls.ClearAllTiles();
+        upperFloor.ClearAllTiles();
+    }
 }

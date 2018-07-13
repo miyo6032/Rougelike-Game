@@ -24,6 +24,7 @@ public class DungeonGenerator : MonoBehaviour
         {
             throw new Exception("Duplicate Dungeon Generator!");
         }
+        gameObject.SetActive(false);
     }
 
     /// <summary>
@@ -34,6 +35,7 @@ public class DungeonGenerator : MonoBehaviour
         DungeonEntrance = transform;
         DungeonLevels = dungeonLevels;
         CurrentLevel = -1;
+        gameObject.SetActive(true);
         Downstairs();
     }
 
@@ -77,8 +79,9 @@ public class DungeonGenerator : MonoBehaviour
     {
         // Teleport the player just to the left of the exit
         player.TeleportPlayer(new Vector3(Mathf.FloorToInt(DungeonEntrance.position.x), Mathf.FloorToInt(DungeonEntrance.position.y)) + new Vector3(1, 0, 0));
-        DungeonLevelGenerator.ClearDungeon();
+        DungeonLevelGenerator.ClearTilemap();
         DungeonLevels = null;
+        gameObject.SetActive(false);
     }
 
     private void GenerateLevel(int level)
