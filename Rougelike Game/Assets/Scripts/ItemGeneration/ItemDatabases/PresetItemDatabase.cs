@@ -13,13 +13,13 @@ public class PresetItemDatabase : MonoBehaviour {
     /// </summary>
     public Item GetArtifact(int level)
     {
-        List<ItemScriptableObject> candidateItems = Artifacts.FindAll(itemtype => itemtype.Item.ItemLevel == level);
+        List<ItemScriptableObject> candidateItems = Artifacts.FindAll(itemtype => itemtype.item.ItemLevel == level);
 
         if (candidateItems.Count > 0)
         {
             ItemScriptableObject item = candidateItems[Random.Range(0, candidateItems.Count)];
             item.Start();
-            return item.Item;
+            return item.item;
         }
         return GetArtifact(level - 1);
     }

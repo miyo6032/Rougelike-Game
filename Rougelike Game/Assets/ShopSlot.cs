@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class ShopSlot : ItemSlot {
 
-    public override void SetItem(ItemInstance itemInstance)
+    public override void SetItem(ItemStack itemInstance)
     {
         if(itemInstance == null)
         {
@@ -12,15 +12,15 @@ public class ShopSlot : ItemSlot {
         base.SetItem(itemInstance);
     }
 
-    public override void ItemDropIntoEmpty(ItemInstance droppedItem)
+    public override void ItemDropIntoEmpty(ItemStack droppedItem)
     {
         Debug.Log("+gold");
         base.ItemDropIntoEmpty(droppedItem);
     }
 
-    public override void ItemDropIntoFull(ItemInstance droppedItem)
+    public override void ItemDropIntoFull(ItemStack droppedItem)
     {
-        Debug.Log("-gold" + item.item.Title);
+        Debug.Log("-gold" + itemStack.item.Title);
         Debug.Log("+gold" + droppedItem.item.Title);
         base.ItemDropIntoFull(droppedItem);
     }

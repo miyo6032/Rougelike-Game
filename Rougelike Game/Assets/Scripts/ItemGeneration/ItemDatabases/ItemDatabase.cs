@@ -29,17 +29,17 @@ public class ItemDatabase : MonoBehaviour
     /// <summary>
     /// Populates the database for use - called from the InventoryManager to populate before its start
     /// </summary>
-    public void ConstructItemDatabase()
-    {
-        JsonData itemData = JsonMapper.ToObject(File.ReadAllText(Application.dataPath + "/StreamingAssets/Consumables.json"));
-        for (int i = 0; i < itemData.Count; i++)
-        {
-            string[] sprites = new string[1];
-            sprites[0] = itemData[i]["sprite"].ToString();
-            items.Add(itemData[i]["title"].ToString(),
-                new Item(itemData[i]["title"].ToString(), (int) itemData[i]["value"],
-                    itemData[i]["description"].ToString(), (bool) itemData[i]["stackable"],
-                    (int) itemData[i]["itemLevel"], sprites, false));
-        }
-    }
+    //public void ConstructItemDatabase()
+    //{
+    //    JsonData itemData = JsonMapper.ToObject(File.ReadAllText(Application.dataPath + "/StreamingAssets/Consumables.json"));
+    //    for (int i = 0; i < itemData.Count; i++)
+    //    {
+    //        string[] sprites = new string[1];
+    //        sprites[0] = itemData[i]["sprite"].ToString();
+    //        items.Add(itemData[i]["title"].ToString(),
+    //            new Item(itemData[i]["title"].ToString(), (int) itemData[i]["value"],
+    //                itemData[i]["description"].ToString(), (bool) itemData[i]["stackable"],
+    //                (int) itemData[i]["itemLevel"], sprites, false));
+    //    }
+    //}
 }

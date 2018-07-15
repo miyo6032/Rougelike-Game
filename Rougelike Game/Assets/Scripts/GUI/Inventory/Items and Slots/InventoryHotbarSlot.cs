@@ -9,9 +9,21 @@ public class InventoryHotbarSlot : ItemSlot
     /// Used to detect an item change
     /// </summary>
     /// <param name="itemInstance"></param>
-    public override void SetItem(ItemInstance itemInstance)
+    public override void SetItem(ItemStack itemInstance)
     {
         base.SetItem(itemInstance);
-        hotbarSlot.UpdateItem(itemInstance);
+        hotbarSlot.UpdateItem();
+    }
+
+    public override void RemoveItem()
+    {
+        base.RemoveItem();
+        hotbarSlot.UpdateItem();
+    }
+
+    public override void ChangeAmount(int i)
+    {
+        base.ChangeAmount(i);
+        hotbarSlot.UpdateItem();
     }
 }

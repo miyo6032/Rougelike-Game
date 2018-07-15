@@ -11,21 +11,20 @@ public class ItemUse : MonoBehaviour
     /// <summary>
     /// Look the items based on its title and apply an existing value
     /// </summary>
-    /// <param name="itemInstance"></param>
-    public void ApplyItemEffect(ItemInstance itemInstance)
+    /// <param name="itemSlot"></param>
+    public void ApplyItemEffect(ItemSlot itemSlot)
     {
-        foreach (Effect effect in itemInstance.item.ConsumptionEffects)
+        foreach (Effect effect in itemSlot.itemStack.item.ConsumptionEffects)
         {
             effectManager.AddNewEffect(effect);
         }
-        if (itemInstance.item.Consumable)
+        if (itemSlot.itemStack.item.Consumable)
         {
-            itemInstance.ChangeAmount(-1);
+            itemSlot.ChangeAmount(-1);
         }
-
-        if (itemInstance.item.Title == "Critical Hit")
+        if (itemSlot.itemStack.item.Title == "Critical Hit")
         {
-            skillManager.DoTheSkill(Skills.CriticalHit, itemInstance.item.focusConsumption);
+            skillManager.DoTheSkill(Skills.CriticalHit, itemSlot.itemStack.item.focusConsumption);
         }
     }
 }

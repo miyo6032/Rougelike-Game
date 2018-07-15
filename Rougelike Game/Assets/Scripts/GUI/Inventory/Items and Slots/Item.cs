@@ -21,7 +21,7 @@ public class Item
     public string Description;
     public bool Stackable;
     [HideInInspector]
-    public string[] Sprites;
+    public string Sprite;
     [Header("Equipment")]
     public EquipmentType EquippedSlot = EquipmentType.None;
     [Range(0, 100)]
@@ -39,35 +39,4 @@ public class Item
     public Effect[] ConsumptionEffects;
     [Range(0, 100)]
     public int focusConsumption;
-
-    public Item(string title, int value, int attack, int maxAttack, int defence, string description, bool stackable, EquipmentType equippedSlot, int itemLevel, string[] sprites, string itemColor, bool consumable)
-        : this (title, value, description, stackable, itemLevel, sprites, consumable)
-    {
-        Attack = attack;
-        MaxAttack = maxAttack;
-        Defence = defence;
-        Description = description;
-        EquippedSlot = equippedSlot;
-        ItemColor = itemColor;
-    }
-
-    public Item(string title, int value, string description, bool stackable, int itemLevel, string[] sprites, bool consumable)
-    {
-        Title = title;
-        Value = value;
-        Attack = 0;
-        MaxAttack = 0;
-        Defence = 0;
-        Description = description;
-        Stackable = stackable;
-        EquippedSlot = EquipmentType.None;
-        Sprites = sprites;
-        ItemLevel = itemLevel;
-        ItemColor = "";
-        ConsumptionEffects = new Effect[0];
-        Consumable = consumable;
-        focusConsumption = 0;
-    }
-
-    public Item() { }
 }

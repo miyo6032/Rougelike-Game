@@ -14,15 +14,14 @@ public class StaticCanvasList : MonoBehaviour {
     public UIColoring uiColoring;
     public LootInventory lootInventory;
     public ChestInventory chestInventory;
-    public ModuledItemGenerator moduledItemGenerator;
     public PresetItemDatabase presetItemDatabase;
-    public ItemModuleDatabase itemModuleDatabase;
     public ItemDatabase itemDatabase;
     public TextureDatabase textureDatabase;
     public PanelManagement panelManagement;
     public ItemDropGenerator itemDropGenerator;
     public SkillTree skillTree;
     public DialoguePanel dialoguePanel;
+    public ItemDragger itemDragger;
 
 	void Start () {
 		if(instance == null)

@@ -5,7 +5,7 @@ using UnityEngine;
 /// <summary>
 /// The slot that represents an equipped item when dropped into
 /// </summary>
-public class EquipSlot : ItemSlot, IPointerClickHandler
+public class EquipSlot : ItemSlot
 {
     public EquipmentType equipmentSlot;
     public Sprite emptySprite;
@@ -13,31 +13,18 @@ public class EquipSlot : ItemSlot, IPointerClickHandler
     public Image slotImage;
     public PlayerStats playerStat;
 
-    // When the player drops an item from clicking
-    public override void OnPointerClick(PointerEventData eventData)
-    {
-        ItemInstance droppedItem = StaticCanvasList.instance.inventoryManager.attachedItem;
-        // If there is an item attached to the mouse pointer
-        if (droppedItem && ItemCanBeEquipped(droppedItem) && item == null)
-        {
-            // Do the item drop first to check to see if the item can be equipped
-            ItemDropIntoEmpty(droppedItem);
-            StaticCanvasList.instance.inventoryManager.attachedItem = null;
-        }
-    }
-
     /// <summary>
     /// When the items is dropped, equip it and attach it to the slot
     /// </summary>
     /// <param name="droppedItem"></param>
-    public override void ItemDropIntoEmpty(ItemInstance droppedItem)
+    public override void ItemDropIntoEmpty(ItemStack droppedItem)
     {
         // If there is an item attached to the mouse pointer
-        if (droppedItem && item == null && ItemCanBeEquipped(droppedItem))
+        if (ItemCanBeEquipped(droppedItem))
         {
-            LinkItem(droppedItem);
+            SetItem(droppedItem);
             playerStat.EquipItem(droppedItem, this);
-            droppedItem.attached = false;
+            StaticCanvasList.instance.itemDragger.RemoveItem();
             slotImage.sprite = fullSprite;
         }
     }
@@ -46,25 +33,28 @@ public class EquipSlot : ItemSlot, IPointerClickHandler
     /// When the item is dropped, unequip the previous item and equip this one
     /// </summary>
     /// <param name="droppedItem"></param>
-    public override void ItemDropIntoFull(ItemInstance droppedItem)
+    public override void ItemDropIntoFull(ItemStack droppedItem)
     {
-        if (droppedItem && item != null && ItemCanBeEquipped(droppedItem))
+        if (ItemCanBeEquipped(droppedItem))
         {
-            playerStat.UnequipItem(item);
-            item.PickItemUp();
-            LinkItem(droppedItem);
+            playerStat.UnequipItem(itemStack);
             playerStat.EquipItem(droppedItem, this);
-            droppedItem.attached = false;
+            PickItemUp();
+            SetItem(droppedItem);
             slotImage.sprite = fullSprite;
         }
     }
 
-    /// <summary>
-    /// When dropped, the remove the slot's background empty image
-    /// </summary>
-    public void SlotImageToEmpty()
+    public override void PickItemUp()
     {
+        base.PickItemUp();
         slotImage.sprite = emptySprite;
+    }
+
+    public override void RemoveItem()
+    {
+        playerStat.UnequipItem(itemStack);
+        base.RemoveItem();
     }
 
     /// <summary>
@@ -72,7 +62,7 @@ public class EquipSlot : ItemSlot, IPointerClickHandler
     /// </summary>
     /// <param name="droppedItem"></param>
     /// <returns></returns>
-    bool ItemCanBeEquipped(ItemInstance droppedItem)
+    bool ItemCanBeEquipped(ItemStack droppedItem)
     {
         return droppedItem.item.EquippedSlot == equipmentSlot && playerStat.GetLevel() >= droppedItem.item.ItemLevel;
     }

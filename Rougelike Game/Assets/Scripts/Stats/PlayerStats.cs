@@ -147,7 +147,7 @@ public class PlayerStats : Stats
     /// <param name="inst"></param>
     /// <param name="slot"></param>
     /// <returns></returns>
-    public bool EquipItem(ItemInstance inst, EquipSlot slot)
+    public bool EquipItem(ItemStack inst, EquipSlot slot)
     {
         // If the item has the correct stats to equip
         if (level >= inst.item.ItemLevel)
@@ -155,7 +155,6 @@ public class PlayerStats : Stats
             maxAttack.AddModifier(inst.item.MaxAttack, inst);
             minAttack.AddModifier(inst.item.Attack, inst);
             defense.AddModifier(inst.item.Defence, inst);
-            inst.equipped = true;
             UpdateStats();
             playerAnimation.ColorAnimator(slot.gameObject.name, inst.item.ItemColor);
             return true;
@@ -168,13 +167,11 @@ public class PlayerStats : Stats
     /// Unequip an item when it is removed from the equipment slot
     /// </summary>
     /// <param name="inst"></param>
-    public void UnequipItem(ItemInstance inst)
+    public void UnequipItem(ItemStack inst)
     {
         maxAttack.RemoveSource(inst);
         minAttack.RemoveSource(inst);
         defense.RemoveSource(inst);
-        inst.equipped = false;
-        inst.slot.GetComponent<EquipSlot>().SlotImageToEmpty();
         UpdateStats();
     }
 

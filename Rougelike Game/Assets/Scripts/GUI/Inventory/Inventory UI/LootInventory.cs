@@ -22,7 +22,7 @@ public class LootInventory : MonoBehaviour {
 
         foreach(ItemSave itemSave in bag.items)
         {
-            inventoryManager.AddItemToSlot(itemSave.item, lootSlots[itemSave.slotPosition], itemSave.amount);
+            inventoryManager.AddItemToSlot(itemSave.item, lootSlots[itemSave.slotPosition]);
         }
 
         gameObject.SetActive(true);
@@ -48,11 +48,10 @@ public class LootInventory : MonoBehaviour {
         List<ItemSave> items = new List<ItemSave>();
         for (int i = 0; i < lootSlots.Count; i++)
         {
-            if(lootSlots[i].GetItem() != null)
+            if(lootSlots[i].itemStack != null)
             {
-                items.Add(new ItemSave(lootSlots[i].GetItem().item, i, lootSlots[i].GetItem().GetAmount()));
-                Destroy(lootSlots[i].GetItem().gameObject);
-                lootSlots[i].SetItem(null);
+                items.Add(new ItemSave(lootSlots[i].itemStack, lootSlots[i].itemStack.amount));
+                lootSlots[i].RemoveItem();
             }
         }
         return items;

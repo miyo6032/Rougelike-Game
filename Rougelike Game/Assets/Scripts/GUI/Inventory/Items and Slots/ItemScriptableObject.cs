@@ -5,25 +5,25 @@ using System;
 public class ItemScriptableObject : ScriptableObject
 {
 
-	public Item Item;
+	public Item item;
 
-    public Sprite[] ItemSprites;
+    public Sprite itemSprite;
 
-    public Color EquipColor;
+    public Color equipColor = Color.gray;
 
     public void Start()
     {
-        if (ItemSprites.Length > 0)
+        string path = itemSprite.ToString();
+        int index = path.IndexOf(" ", StringComparison.Ordinal);
+        if (index < 0)
         {
-            Item.Sprites = new string[Mathf.Min(ItemSprites.Length, 3)];
-            for (int i = 0; i < ItemSprites.Length && i < 3; i++)
-            {
-                string path = ItemSprites[i].ToString();
-                path = path.Substring(0, path.IndexOf(" ", StringComparison.Ordinal));
-                Item.Sprites[i] = path;
-            }
+            item.Sprite = "invisible";
         }
-        Item.ItemColor = "#" + ColorUtility.ToHtmlStringRGBA(EquipColor);
+        else {
+            path = path.Substring(0, index);
+            item.Sprite = path;
+        }
+        item.ItemColor = "#" + ColorUtility.ToHtmlStringRGBA(equipColor);
     }
 
 }
