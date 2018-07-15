@@ -18,13 +18,13 @@ public class ItemUse : MonoBehaviour
         {
             effectManager.AddNewEffect(effect);
         }
-        if (itemSlot.itemStack.item.Consumable)
-        {
-            itemSlot.ChangeAmount(-1);
-        }
         if (itemSlot.itemStack.item.Title == "Critical Hit")
         {
             skillManager.DoTheSkill(Skills.CriticalHit, itemSlot.itemStack.item.focusConsumption);
+        }
+        if (itemSlot.itemStack.item.Consumable)
+        {
+            itemSlot.ChangeAmount(-1);
         }
     }
 }

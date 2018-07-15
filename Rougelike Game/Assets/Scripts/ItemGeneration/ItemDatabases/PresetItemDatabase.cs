@@ -6,14 +6,17 @@ using UnityEngine;
 /// </summary>
 public class PresetItemDatabase : MonoBehaviour {
 
-    public List<ItemScriptableObject> Artifacts;
+    public List<ItemScriptableObject> artifacts;
+    public List<ItemScriptableObject> swords;
+    public List<ItemScriptableObject> armor;
+    public List<ItemScriptableObject> helmets;
 
     /// <summary>
     /// Get an artifact based on a level given (and thus more valuable)
     /// </summary>
     public Item GetArtifact(int level)
     {
-        List<ItemScriptableObject> candidateItems = Artifacts.FindAll(itemtype => itemtype.item.ItemLevel == level);
+        List<ItemScriptableObject> candidateItems = artifacts.FindAll(itemtype => itemtype.item.ItemLevel == level);
 
         if (candidateItems.Count > 0)
         {

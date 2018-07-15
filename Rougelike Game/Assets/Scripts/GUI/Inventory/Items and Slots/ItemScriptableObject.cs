@@ -4,7 +4,6 @@ using System;
 [CreateAssetMenu(menuName = "Custom/Item")]
 public class ItemScriptableObject : ScriptableObject
 {
-
 	public Item item;
 
     public Sprite itemSprite;

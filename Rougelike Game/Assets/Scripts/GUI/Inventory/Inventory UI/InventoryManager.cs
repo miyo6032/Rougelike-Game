@@ -10,7 +10,9 @@ public class InventoryManager : MonoBehaviour
     public List<ItemSlot> equipSlots = new List<ItemSlot>();
 
     public ItemScriptableObject meat;
-    public ItemScriptableObject secondItem;
+    public ItemScriptableObject starterSword;
+    public ItemScriptableObject starterHelmet;
+    public ItemScriptableObject starterArmor;
 
     private void Start()
     {
@@ -19,7 +21,10 @@ public class InventoryManager : MonoBehaviour
         textures.LoadAllTextures();
 
         AddScriptableItem(meat, 1);
-        AddScriptableItem(secondItem, 1);
+        EquipScriptableItem(starterSword, equipSlots[0]);
+        EquipScriptableItem(starterSword, equipSlots[1]);
+        EquipScriptableItem(starterHelmet, equipSlots[3]);
+        EquipScriptableItem(starterArmor, equipSlots[2]);
 
         gameObject.SetActive(false);
     }
@@ -32,6 +37,12 @@ public class InventoryManager : MonoBehaviour
     {
         item.Start();
         AddItem(new ItemStack(item.item, amount));
+    }
+
+    public void EquipScriptableItem(ItemScriptableObject item, ItemSlot slot)
+    {
+        item.Start();
+        AddItemToSlot(new ItemStack(item.item, 1), slot);
     }
 
     /// <summary>
