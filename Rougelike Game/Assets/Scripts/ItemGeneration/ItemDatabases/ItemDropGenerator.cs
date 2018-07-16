@@ -6,6 +6,8 @@ using System.Collections.Generic;
 /// </summary>
 public class ItemDropGenerator : MonoBehaviour {
 
+    public static ItemDropGenerator instance;
+
     public enum ItemDropTypes
     {
         CommonArtifact,
@@ -25,6 +27,15 @@ public class ItemDropGenerator : MonoBehaviour {
 
     private void Start()
     {
+        if (instance == null)
+        {
+            instance = this;
+        }
+        else if (instance != this)
+        {
+            Debug.LogError("Duplicate " + this.GetType().Name);
+            Destroy(gameObject);
+        }
         FillItemDropQueue();
     }
 
@@ -63,26 +74,17 @@ public class ItemDropGenerator : MonoBehaviour {
             ItemSave item;
             switch (itemType)
             {
-                case ItemDropTypes.RareArmor:
-                    item = new ItemSave(StaticCanvasList.instance.moduledItemGenerator.GenerateItem(randomLevel, EquipmentType.Armor), i, 1);
-                    break;
-                case ItemDropTypes.RareWeapon:
-                    item = new ItemSave(StaticCanvasList.instance.moduledItemGenerator.GenerateItem(randomLevel, EquipmentType.Sword), i, 1);
-                    break;
-                case ItemDropTypes.RareHelmet:
-                    item = new ItemSave(StaticCanvasList.instance.moduledItemGenerator.GenerateItem(randomLevel, EquipmentType.Helmet), i, 1);
-                    break;
                 case ItemDropTypes.RareArtifact:
-                    item = new ItemSave(StaticCanvasList.instance.presetItemDatabase.GetArtifact(randomLevel + 3), i, 1);
+                    item = new ItemSave(new ItemStack(ItemDatabase.instance.GetArtifact(randomLevel + 3), 1), 1);
                     break;
                 default:
-                    item = new ItemSave(StaticCanvasList.instance.presetItemDatabase.GetArtifact(randomLevel), i, 1);
+                    item = new ItemSave(new ItemStack(ItemDatabase.instance.GetArtifact(randomLevel), 1), 1);
                     break;
             }
             ItemSave duplicateItem = GetDuplicateItem(items, item);
             if (duplicateItem != null)
             {
-                duplicateItem.amount += 1;
+                duplicateItem.item.amount += 1;
             }
             else
             {

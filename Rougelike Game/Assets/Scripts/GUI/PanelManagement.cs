@@ -6,6 +6,20 @@
 public class PanelManagement : MonoBehaviour
 {
     GameObject rightPanel;
+    public static PanelManagement instance;
+
+    private void Start()
+    {
+        if (instance == null)
+        {
+            instance = this;
+        }
+        else if (instance != this)
+        {
+            Debug.LogError("Duplicate " + this.GetType().Name);
+            Destroy(gameObject);
+        }
+    }
 
     /// <summary>
     /// Keeps track of the right panel to keep only one panel open at a time

@@ -7,9 +7,8 @@ public class ItemDelete : ItemSlot
     /// When dropped, destroy that item
     /// </summary>
     /// <param name="droppedItem"></param>
-    public override void ItemDropIntoEmpty(ItemInstance droppedItem)
+    public override void ItemDropIntoEmpty(ItemStack droppedItem)
     {
-        //If there is an item attached to the mouse pointer
-        if (droppedItem && item == null) droppedItem.DestroyItem();
+        ItemDragger.instance.RemoveItem();
     }
 }

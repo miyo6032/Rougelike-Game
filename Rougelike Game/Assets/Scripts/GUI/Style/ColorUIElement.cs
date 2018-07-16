@@ -21,18 +21,18 @@ public class ColorUIElement : MonoBehaviour
         switch (UIElement)
         {
             case UIElements.darkButton:
-                ColorButton(StaticCanvasList.instance.uiColoring.DARK_BUTTON_NORMAL,
-                    StaticCanvasList.instance.uiColoring.DARK_BUTTON_PRESSED);
+                ColorButton(UIColoring.instance.DARK_BUTTON_NORMAL,
+                    UIColoring.instance.DARK_BUTTON_PRESSED);
                 break;
             case UIElements.lightButton:
-                ColorButton(StaticCanvasList.instance.uiColoring.LIGHT_BUTTON_NORMAL,
-                    StaticCanvasList.instance.uiColoring.LIGHT_BUTTON_PRESSED);
+                ColorButton(UIColoring.instance.LIGHT_BUTTON_NORMAL,
+                    UIColoring.instance.LIGHT_BUTTON_PRESSED);
                 break;
             case UIElements.mainPanel:
-                ColorImage(StaticCanvasList.instance.uiColoring.MAIN_PANEL);
+                ColorImage(UIColoring.instance.MAIN_PANEL);
                 break;
             case UIElements.secondaryPanel:
-                ColorImage(StaticCanvasList.instance.uiColoring.SECONDARY_PANEL);
+                ColorImage(UIColoring.instance.SECONDARY_PANEL);
                 break;
         }
     }

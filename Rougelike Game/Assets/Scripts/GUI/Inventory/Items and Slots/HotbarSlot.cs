@@ -7,8 +7,8 @@ using UnityEngine.EventSystems;
 /// </summary>
 public class HotbarSlot : MonoBehaviour, IPointerClickHandler
 {
-    private ItemInstance itemInstance;
-    public Image[] itemSprites;
+    public ItemSlot itemSlot;
+    public Image itemSprite;
     public Text stackAmount;
     public ItemUse itemUse;
 
@@ -16,30 +16,18 @@ public class HotbarSlot : MonoBehaviour, IPointerClickHandler
     /// Re render the items - amount and sprites
     /// </summary>
     /// <param name="item"></param>
-    public void UpdateItem(ItemInstance item)
+    public void UpdateItem()
     {
-        itemInstance = item;
-        int i = 0;
-        if (item != null)
+        if (itemSlot.itemStack != null)
         {
-            for (; i < itemInstance.item.Sprites.Length; i++)
-            {
-                itemSprites[i].sprite =
-                    StaticCanvasList.instance.textureDatabase.LoadTexture(itemInstance.item.Sprites[i]);
-            }
-
+            itemSprite.sprite = TextureDatabase.instance.LoadTexture(itemSlot.itemStack.item.Sprite);
             //Only show number amount if item amount is not 1
-            stackAmount.text = (item.GetAmount() == 1) ? "" : item.GetAmount().ToString();
+            stackAmount.text = (itemSlot.itemStack.amount == 1) ? "" : itemSlot.itemStack.amount.ToString();
         }
         else
         {
             stackAmount.text = "";
-        }
-
-        //Set the rest of the item images to invisible
-        for (; i < 3; i++)
-        {
-            itemSprites[i].sprite = StaticCanvasList.instance.textureDatabase.LoadTexture("Invisible");
+            itemSprite.sprite = TextureDatabase.instance.LoadTexture("Invisible");
         }
     }
 
@@ -53,10 +41,10 @@ public class HotbarSlot : MonoBehaviour, IPointerClickHandler
     /// </summary>
     public void UseItem()
     {
-        if (itemInstance != null)
+        if (itemSlot.itemStack != null)
         {
-            itemUse.ApplyItemEffect(itemInstance);
-            UpdateItem(itemInstance);
+            itemUse.ApplyItemEffect(itemSlot);
+            UpdateItem();
         }
     }
 }

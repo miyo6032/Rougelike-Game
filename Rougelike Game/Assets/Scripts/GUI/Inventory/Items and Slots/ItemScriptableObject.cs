@@ -4,26 +4,29 @@ using System;
 [CreateAssetMenu(menuName = "Custom/Item")]
 public class ItemScriptableObject : ScriptableObject
 {
+	public Item item;
 
-	public Item Item;
+    public Sprite itemSprite;
 
-    public Sprite[] ItemSprites;
+    public Color equipColor = Color.gray;
 
-    public Color EquipColor;
-
-    public void Start()
+    /// <summary>
+    /// Automatically update the color and item texture in string mode so the engine can load the textures and colors 
+    /// </summary>
+    public void OnValidate()
     {
-        if (ItemSprites.Length > 0)
+        string path = itemSprite.ToString();
+        int index = path.IndexOf(" ", StringComparison.Ordinal);
+        if (index < 0)
         {
-            Item.Sprites = new string[Mathf.Min(ItemSprites.Length, 3)];
-            for (int i = 0; i < ItemSprites.Length && i < 3; i++)
-            {
-                string path = ItemSprites[i].ToString();
-                path = path.Substring(0, path.IndexOf(" ", StringComparison.Ordinal));
-                Item.Sprites[i] = path;
-            }
+            item.Sprite = "invisible";
         }
-        Item.ItemColor = "#" + ColorUtility.ToHtmlStringRGBA(EquipColor);
+        else
+        {
+            path = path.Substring(0, index);
+            item.Sprite = path;
+        }
+        item.ItemColor = "#" + ColorUtility.ToHtmlStringRGBA(equipColor);
     }
 
 }

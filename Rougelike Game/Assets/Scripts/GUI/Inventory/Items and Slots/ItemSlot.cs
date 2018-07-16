@@ -1,90 +1,129 @@
 ﻿using UnityEngine.EventSystems;
 using UnityEngine;
+using UnityEngine.UI;
 
 /// <summary>
 /// The item slot in the inventory that items will go into
 /// </summary>
-public class ItemSlot : MonoBehaviour, IPointerClickHandler
+public class ItemSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler
 {
-    public ItemInstance item;
+    public ItemStack itemStack;
+    public Text stackText;
+    public Image itemSprite;
 
     /// <summary>
-    /// When the player drops an item from clicking
+    /// Handles item manipulation by the mouse pointer
     /// </summary>
     /// <param name="eventData"></param>
-    public virtual void OnPointerClick(PointerEventData eventData)
+    public void OnPointerDown(PointerEventData eventData)
     {
-        ItemInstance droppedItem = StaticCanvasList.instance.inventoryManager.attachedItem;
+        ItemStack attachedItem = ItemDragger.instance.itemStack;
 
-        if (item == null)
+        if (itemStack == null && attachedItem != null)
         {
-            ItemDropIntoEmpty(droppedItem);
-            StaticCanvasList.instance.inventoryManager.attachedItem = null;
+            ItemDropIntoEmpty(attachedItem);
+        }
+        else if(itemStack != null && attachedItem == null)
+        {
+            PickItemUp();
+        }
+        else if(itemStack != null && attachedItem != null)
+        {
+            ItemDropIntoFull(attachedItem);
         }
     }
 
     /// <summary>
-    /// Handles when an item is dropped upon the slot
+    /// Pick the current item up
+    /// </summary>
+    public virtual void PickItemUp()
+    {
+        ItemDragger.instance.SetItem(itemStack);
+        RemoveItem();
+    }
+
+    /// <summary>
+    /// Set the previously empty slot to a new item
     /// </summary>
     /// <param name="droppedItem"></param>
-    public virtual void ItemDropIntoEmpty(ItemInstance droppedItem)
+    public virtual void ItemDropIntoEmpty(ItemStack droppedItem)
     {
-        // If there is an item attached to the mouse pointer
-        if (droppedItem && item == null)
+        SetItem(droppedItem);
+        ItemDragger.instance.RemoveItem();
+    }
+
+    /// <summary>
+    /// Exchange items with the item dragger, or if the items are the same, increase the stack amount
+    /// </summary>
+    public virtual void ItemDropIntoFull(ItemStack droppedItem)
+    {
+        if(droppedItem.item == itemStack.item && droppedItem.item.Stackable)
         {
-            // Disconnnect the item from the mouse
-            droppedItem.attached = false;
-            LinkItem(droppedItem);
+            ChangeAmount(droppedItem.amount);
+            SetItem(itemStack);
+            ItemDragger.instance.RemoveItem();
+        }
+        else
+        {
+            PickItemUp();
+            SetItem(droppedItem);
         }
     }
 
     /// <summary>
-    /// When the item is dropped into a slot that is already full
+    /// When the slot recieves a new item
     /// </summary>
-    /// <param name="droppedItem"></param>
-    public virtual void ItemDropIntoFull(ItemInstance droppedItem)
+    public virtual void SetItem(ItemStack stack)
     {
-        // If there is an item attached to the mouse pointer
-        if (droppedItem && item != null)
-        {
-            if(droppedItem.item == item.item)
-            {
-                item.ChangeAmount(droppedItem.GetAmount());
-                SetItem(item);
-                Destroy(droppedItem.gameObject);
-            }
-            else
-            {
-                item.PickItemUp();
-                LinkItem(droppedItem);
-            }
-            // Disconnnect the item from the mouse
-            droppedItem.attached = false;
-        }
+        itemStack = stack;
+        stackText.text = stack.amount == 1 ? "" : stack.amount.ToString();
+        itemSprite.sprite = TextureDatabase.instance.LoadTexture(stack.item.Sprite);
     }
 
     /// <summary>
-    /// Link and item to a slot
+    /// When the slot removes the item
     /// </summary>
-    /// <param name="itemInstance"></param>
-    public void LinkItem(ItemInstance itemInstance)
+    public virtual void RemoveItem()
     {
-        itemInstance.slot = this;
-        itemInstance.transform.SetParent(transform);
-        SetItem(itemInstance);
-        itemInstance.ItemToParentSlot();
-        itemInstance.transform.localScale = new Vector3(1, 1, 1);
-        itemInstance.transform.localPosition = Vector2.zero;
+        itemStack = null;
+        stackText.text = "";
+        itemSprite.sprite = TextureDatabase.instance.LoadTexture("Invisible");
     }
 
-    public ItemInstance GetItem()
+    /// <summary>
+    /// Show the tooltip
+    /// </summary>
+    public void OnPointerEnter(PointerEventData eventData)
     {
-        return item;
+        if (itemStack != null)
+        {
+            Tooltip.instance.ShowItemTooltip(itemStack.item);
+        }
     }
 
-    public virtual void SetItem(ItemInstance itemInstance)
+    public void OnPointerExit(PointerEventData eventData)
     {
-        item = itemInstance;
+        Tooltip.instance.gameObject.SetActive(false);
+    }
+
+    /// <summary>
+    /// Change the amount of an itemstack
+    /// </summary>
+    public virtual void ChangeAmount(int i)
+    {
+        itemStack.amount += i;
+        if (itemStack.amount > 1)
+        {
+            stackText.text = itemStack.amount.ToString();
+        }
+        else if (itemStack.amount == 1)
+        {
+            stackText.text = "";
+        }
+        else
+        {
+            RemoveItem();
+        }
     }
 
 }

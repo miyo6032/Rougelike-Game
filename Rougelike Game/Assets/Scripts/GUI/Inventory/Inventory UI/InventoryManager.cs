@@ -1,105 +1,57 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
-using System;
 
 /// <summary>
 /// Holds the inventory slot information, and implements some necessary item operations
 /// </summary>
 public class InventoryManager : MonoBehaviour
 {
+    public static InventoryManager instance;
+
     public List<ItemSlot> slots = new List<ItemSlot>();
     public List<ItemSlot> equipSlots = new List<ItemSlot>();
-    public ItemInstance itemPrefab;
-
-    // The item attached to the mouse pointer, if any
-    public ItemInstance attachedItem = null;
-    private ModuledItemGenerator itemGenerator;
-
-    public ItemScriptableObject meat;
 
     private void Start()
     {
+        if (instance == null)
+        {
+            instance = this;
+        }
+        else if (instance != this)
+        {
+            Debug.LogError("Duplicate " + this.GetType().Name);
+            Destroy(gameObject);
+        }
+
         //Setup all of the databases
-        StaticCanvasList.instance.itemModuleDatabase.PopulateItemModuleDatabase();
-        TextureDatabase textures = StaticCanvasList.instance.textureDatabase;
-        itemGenerator = StaticCanvasList.instance.moduledItemGenerator;
-        textures.LoadAllTextures();
-
-        // Automatically equip the four starting items
-        AddItemToSlot(itemGenerator.GenerateItem(1, EquipmentType.Sword), equipSlots[0], 1);
-        AddItemToSlot(itemGenerator.GenerateItem(1, EquipmentType.Sword), equipSlots[1], 1);
-        AddItemToSlot(itemGenerator.GenerateItem(1, EquipmentType.Armor), equipSlots[2], 1);
-        AddItemToSlot(itemGenerator.GenerateItem(1, EquipmentType.Helmet), equipSlots[3], 1);
-
-        AddScriptableItem(meat, 3);
+        TextureDatabase.instance.LoadAllTextures();
 
         gameObject.SetActive(false);
     }
 
     /// <summary>
-    /// Adds a scriptable item, allowing sprites to be dragged in
-    /// </summary>
-    /// <param name="item"></param>
-    public void AddScriptableItem(ItemScriptableObject item, int amount)
-    {
-        item.Start();
-        AddItem(item.Item, amount);
-    }
-
-    /// <summary>
-    /// Adds a randomly generated equipment item based on level and equipment type
-    /// </summary>
-    /// <param name="level"></param>
-    /// <param name="equipment"></param>
-    public void AddGeneratedItem(int level, EquipmentType equipment)
-    {
-        AddItem(itemGenerator.GenerateItem(level, equipment));
-    }
-
-    /// <summary>
     /// Creates a new item instance and stacks it to an existing stack, or to the next available slot
     /// </summary>
-    /// <param name="item"></param>
-    public void AddItem(Item item)
+    /// <param name="stack"></param>
+    public void AddItem(ItemStack stack)
     {
-        ItemSlot slot = FindSlotWithItem(item.Title, slots);
-        if (slot && item.Stackable)
+        ItemSlot slot = FindSlotWithItem(stack.item, slots);
+        if (slot && stack.item.Stackable)
         {
-            ItemInstance instance = slot.GetItem();
-            instance.ChangeAmount(1);
-            slot.SetItem(instance);
+            slot.ItemDropIntoFull(stack);
         }
         else
         {
-            AddItemToSlot(item, FindNextOpenSlot(slots), 1);
-        }
-    }
-
-    /// <summary>
-    /// Creates multiple identical items
-    /// </summary>
-    /// <param name="item"></param>
-    /// <param name="amount"></param>
-    public void AddItem(Item item, int amount)
-    {
-        for (int i = 0; i < amount; i++)
-        {
-            AddItem(item);
+            AddItemToSlot(stack, FindNextOpenSlot(slots));
         }
     }
 
     /// <summary>
     /// Adds an item to a specified slot
     /// </summary>
-    public void AddItemToSlot(Item item, ItemSlot slot, int amount)
+    public void AddItemToSlot(ItemStack item, ItemSlot slot)
     {
-        if (slot.GetItem() == null)
-        {
-            ItemInstance itemObj = Instantiate(itemPrefab);
-            itemObj.Initialize(item);
-            itemObj.ChangeAmount(amount - 1);
-            slot.ItemDropIntoEmpty(itemObj);
-        }
+        slot.ItemDropIntoEmpty(item);
     }
 
     /// <summary>
@@ -112,7 +64,7 @@ public class InventoryManager : MonoBehaviour
         foreach (ItemSlot slot in slotList)
         {
             // If there is no item in the slot, Adds new item to that slot
-            if (slot.GetItem() == null)
+            if (slot.itemStack == null)
             {
                 return slot.GetComponent<ItemSlot>();
             }
@@ -127,12 +79,12 @@ public class InventoryManager : MonoBehaviour
     /// <param name="itemId"></param>
     /// <param name="slotList"></param>
     /// <returns></returns>
-    public ItemSlot FindSlotWithItem(string itemId, List<ItemSlot> slotList)
+    public ItemSlot FindSlotWithItem(Item item, List<ItemSlot> slotList)
     {
         foreach (ItemSlot slot in slotList)
         {
             // If there is no item in the slot, Adds new item to that slot
-            if (slot.GetItem() != null && slot.GetItem().item.Title == itemId)
+            if (slot.itemStack != null && slot.itemStack.item == item)
             {
                 return slot.GetComponent<ItemSlot>();
             }
@@ -149,13 +101,12 @@ public class InventoryManager : MonoBehaviour
     {
         if (gameObject.activeSelf)
         {
-            if (attachedItem != null)
+            if (ItemDragger.instance.itemStack != null)
             {
-                FindNextOpenSlot(slots).ItemDropIntoEmpty(attachedItem);
-                attachedItem = null;
+                FindNextOpenSlot(slots).ItemDropIntoEmpty(ItemDragger.instance.itemStack);
             }
 
-            StaticCanvasList.instance.inventoryTooltip.gameObject.SetActive(false);
+            Tooltip.instance.gameObject.SetActive(false);
             gameObject.SetActive(false);
         }
         else

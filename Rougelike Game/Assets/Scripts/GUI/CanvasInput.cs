@@ -16,15 +16,15 @@ public class CanvasInput : MonoBehaviour
     {
         if ((Input.GetButtonDown("Inventory")))
         {
-            StaticCanvasList.instance.inventoryManager.Toggle();
+            InventoryManager.instance.Toggle();
         }
         else if (Input.GetButtonDown("PlayerStat"))
         {
-            StaticCanvasList.instance.statUI.Toggle();
+            PlayerStatUI.instance.Toggle();
         }
         else if (Input.GetButtonDown("SkillTree"))
         {
-            StaticCanvasList.instance.skillTree.Toggle();
+            SkillTree.instance.Toggle();
         }
         else if ((Input.GetButtonDown("Hotbar1")))
         {

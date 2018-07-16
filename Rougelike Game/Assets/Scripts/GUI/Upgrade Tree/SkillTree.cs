@@ -8,9 +8,9 @@ using UnityEngine.UI;
 /// </summary>
 public class SkillTree : MonoBehaviour
 {
+    public static SkillTree instance;
     private List<UpgradeInstance> upgrades;
     private List<Image> rims;
-    public PlayerStats playerStats;
     public Transform content;
     public Transform rimTranform;
     public Transform backgroundTransform;
@@ -26,7 +26,7 @@ public class SkillTree : MonoBehaviour
     public void Toggle()
     {
         gameObject.SetActive(!gameObject.activeSelf);
-        StaticCanvasList.instance.inventoryTooltip.gameObject.SetActive(false);
+        Tooltip.instance.gameObject.SetActive(false);
     }
 
     /// <summary>
@@ -35,12 +35,12 @@ public class SkillTree : MonoBehaviour
     /// <param name="instance"></param>
     public bool ApplyUpgrade(UpgradeInstance instance)
     {
-        if (playerStats.GetUpgradePoints() > 0)
+        if (PlayerStats.instance.GetUpgradePoints() > 0)
         {
-            playerStats.AddUpgrade(instance.upgrade);
+            PlayerStats.instance.AddUpgrade(instance.upgrade);
             rims[instance.id].sprite = instance.upgrade.unlockedRimSprite;
             SetNeighborsUnlockable(instance.id);
-            playerStats.UseUpgradePoint();
+            PlayerStats.instance.UseUpgradePoint();
             return true;
         }
         return false;
@@ -48,12 +48,22 @@ public class SkillTree : MonoBehaviour
 
     private void Start()
     {
+        if (instance == null)
+        {
+            instance = this;
+        }
+        else if (instance != this)
+        {
+            Debug.LogError("Duplicate " + this.GetType().Name);
+            Destroy(gameObject);
+        }
         upgrades = content.GetComponentsInChildren<UpgradeInstance>().ToList();
         rims = new List<Image>();
         InitializeUpgrades();
         upgrades[1].SetCanBeApplied(true);
         upgrades[3].SetCanBeApplied(true);
         upgrades[5].SetCanBeApplied(true);
+        gameObject.SetActive(false);
     }
 
     /// <summary>

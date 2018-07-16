@@ -6,12 +6,25 @@ using UnityEngine.UI;
 /// </summary>
 public class InGameUI : MonoBehaviour
 {
+    public static InGameUI instance;
     public Slider healthSlider; // The player's in-game health bar
     public Slider focusSlider;
     public GameObject pauseUI;
-    public GameObject invUI;
     public GameObject menuPopup;
     public GameObject lootPopupPanel;
+
+    private void Start()
+    {
+        if (instance == null)
+        {
+            instance = this;
+        }
+        else if (instance != this)
+        {
+            Debug.LogError("Duplicate " + this.GetType().Name);
+            Destroy(gameObject);
+        }
+    }
 
     /// <summary>
     /// Update the player's in game health bar
@@ -39,7 +52,7 @@ public class InGameUI : MonoBehaviour
 
     public void OpenInventory()
     {
-        invUI.SetActive(true);
+        InventoryManager.instance.gameObject.SetActive(true);
         gameObject.SetActive(false);
     }
 

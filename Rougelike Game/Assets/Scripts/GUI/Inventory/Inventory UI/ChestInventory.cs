@@ -6,9 +6,23 @@ using UnityEngine;
 /// </summary>
 public class ChestInventory : MonoBehaviour
 {
+    public static ChestInventory instance;
     public List<ItemSlot> chestSlots;
-    public InventoryManager inventoryManager;
     private Chest loadedChest;
+
+    private void Start()
+    {
+        if (instance == null)
+        {
+            instance = this;
+        }
+        else if (instance != this)
+        {
+            Debug.LogError("Duplicate " + this.GetType().Name);
+            Destroy(gameObject);
+        }
+        gameObject.SetActive(false);
+    }
 
     public void OpenChest(Chest newchest)
     {
@@ -19,15 +33,15 @@ public class ChestInventory : MonoBehaviour
             newchest.SetOpenSprite();
             foreach (ItemSave itemSave in newchest.chestItems)
             {
-                inventoryManager.AddItemToSlot(itemSave.item, chestSlots[itemSave.slotPosition], itemSave.amount);
+                InventoryManager.instance.AddItemToSlot(itemSave.item, chestSlots[itemSave.slotPosition]);
             }
         }
 
         gameObject.SetActive(true);
-        StaticCanvasList.instance.panelManagement.SetRightPanel(gameObject);
-        if (!inventoryManager.gameObject.activeSelf)
+        PanelManagement.instance.SetRightPanel(gameObject);
+        if (!InventoryManager.instance.gameObject.activeSelf)
         {
-            inventoryManager.Toggle();
+            InventoryManager.instance.Toggle();
         }
     }
 
@@ -38,9 +52,9 @@ public class ChestInventory : MonoBehaviour
             loadedChest.SetClosedSprite();
             loadedChest.chestItems = ExtractItemsFromInventory();
             loadedChest = null;
-            StaticCanvasList.instance.inventoryTooltip.gameObject.SetActive(false);
+            Tooltip.instance.gameObject.SetActive(false);
             gameObject.SetActive(false);
-            StaticCanvasList.instance.panelManagement.SetRightPanel(null);
+            PanelManagement.instance.SetRightPanel(null);
         }
     }
 
@@ -53,11 +67,10 @@ public class ChestInventory : MonoBehaviour
         List<ItemSave> items = new List<ItemSave>();
         for (int i = 0; i < chestSlots.Count; i++)
         {
-            if (chestSlots[i].GetItem() != null)
+            if (chestSlots[i].itemStack != null)
             {
-                items.Add(new ItemSave(chestSlots[i].GetItem().item, i, chestSlots[i].GetItem().GetAmount()));
-                Destroy(chestSlots[i].GetItem().gameObject);
-                chestSlots[i].SetItem(null);
+                items.Add(new ItemSave(chestSlots[i].itemStack, chestSlots[i].itemStack.amount));
+                chestSlots[i].RemoveItem();
             }
         }
 

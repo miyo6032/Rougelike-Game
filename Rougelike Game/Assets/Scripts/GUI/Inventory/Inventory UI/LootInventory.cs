@@ -8,9 +8,22 @@ public class LootInventory : MonoBehaviour {
 
 	public List<ItemSlot> lootSlots;
 
-    public InventoryManager inventoryManager;
-
     private LootBag loadedBag;
+
+    public static LootInventory instance;
+
+    private void Start()
+    {
+        if (instance == null)
+        {
+            instance = this;
+        }
+        else if (instance != this)
+        {
+            Debug.LogError("Duplicate " + this.GetType().Name);
+        }
+        gameObject.SetActive(false);
+    }
 
     /// <summary>
     /// Get data from the loot bag and load the items into the loot inventory
@@ -22,7 +35,7 @@ public class LootInventory : MonoBehaviour {
 
         foreach(ItemSave itemSave in bag.items)
         {
-            inventoryManager.AddItemToSlot(itemSave.item, lootSlots[itemSave.slotPosition], itemSave.amount);
+            InventoryManager.instance.AddItemToSlot(itemSave.item, lootSlots[itemSave.slotPosition]);
         }
 
         gameObject.SetActive(true);
@@ -35,7 +48,7 @@ public class LootInventory : MonoBehaviour {
     {
         loadedBag.items = ExtractItemsFromInventory();
         loadedBag = null;
-        StaticCanvasList.instance.inventoryTooltip.gameObject.SetActive(false);
+        Tooltip.instance.gameObject.SetActive(false);
         gameObject.SetActive(false);
     }
 
@@ -48,11 +61,10 @@ public class LootInventory : MonoBehaviour {
         List<ItemSave> items = new List<ItemSave>();
         for (int i = 0; i < lootSlots.Count; i++)
         {
-            if(lootSlots[i].GetItem() != null)
+            if(lootSlots[i].itemStack != null)
             {
-                items.Add(new ItemSave(lootSlots[i].GetItem().item, i, lootSlots[i].GetItem().GetAmount()));
-                Destroy(lootSlots[i].GetItem().gameObject);
-                lootSlots[i].SetItem(null);
+                items.Add(new ItemSave(lootSlots[i].itemStack, lootSlots[i].itemStack.amount));
+                lootSlots[i].RemoveItem();
             }
         }
         return items;
@@ -62,9 +74,9 @@ public class LootInventory : MonoBehaviour {
     // Called from a button
     public void OpenLoot()
     {
-        if (!inventoryManager.gameObject.activeSelf)
+        if (!InventoryManager.instance.gameObject.activeSelf)
         {
-            inventoryManager.Toggle();
+            InventoryManager.instance.Toggle();
         }
         gameObject.SetActive(true);
     }

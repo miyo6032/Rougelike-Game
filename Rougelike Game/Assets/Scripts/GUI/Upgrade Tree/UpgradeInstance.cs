@@ -32,7 +32,7 @@ public class UpgradeInstance : MonoBehaviour, IPointerEnterHandler, IPointerExit
     {
         if (isUnlocked || !canBeUnlocked) return;
 
-        if(StaticCanvasList.instance.skillTree.ApplyUpgrade(this))
+        if(SkillTree.instance.ApplyUpgrade(this))
             isUnlocked = true;
     }
 
@@ -46,12 +46,11 @@ public class UpgradeInstance : MonoBehaviour, IPointerEnterHandler, IPointerExit
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        if(!isEmpty)
-            StaticCanvasList.instance.inventoryTooltip.ShowUpgradeTooltip(this);
+        if(!isEmpty) Tooltip.instance.ShowUpgradeTooltip(this);
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        StaticCanvasList.instance.inventoryTooltip.gameObject.SetActive(false);
+        Tooltip.instance.gameObject.SetActive(false);
     }
 }
