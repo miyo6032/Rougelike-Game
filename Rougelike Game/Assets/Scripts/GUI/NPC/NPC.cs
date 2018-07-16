@@ -31,7 +31,7 @@ public class NPC : MonoBehaviour, IPointerClickHandler
     /// </summary>
     public virtual void OnNPCClicked()
     {
-        StaticCanvasList.instance.dialoguePanel.StartDialogue(dialogue);
+        DialoguePanel.instance.StartDialogue(dialogue);
     }
 
 }

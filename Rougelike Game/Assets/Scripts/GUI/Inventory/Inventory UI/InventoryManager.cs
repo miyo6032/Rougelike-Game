@@ -6,25 +6,25 @@ using System.Collections.Generic;
 /// </summary>
 public class InventoryManager : MonoBehaviour
 {
+    public static InventoryManager instance;
+
     public List<ItemSlot> slots = new List<ItemSlot>();
     public List<ItemSlot> equipSlots = new List<ItemSlot>();
 
-    public ItemScriptableObject meat;
-    public ItemScriptableObject starterSword;
-    public ItemScriptableObject starterHelmet;
-    public ItemScriptableObject starterArmor;
-
     private void Start()
     {
-        //Setup all of the databases
-        TextureDatabase textures = StaticCanvasList.instance.textureDatabase;
-        textures.LoadAllTextures();
+        if (instance == null)
+        {
+            instance = this;
+        }
+        else if (instance != this)
+        {
+            Debug.LogError("Duplicate " + this.GetType().Name);
+            Destroy(gameObject);
+        }
 
-        AddItem(new ItemStack(meat.item, 1));
-        AddItemToSlot(new ItemStack(starterSword.item, 1), equipSlots[0]);
-        AddItemToSlot(new ItemStack(starterSword.item, 1), equipSlots[1]);
-        AddItemToSlot(new ItemStack(starterHelmet.item, 1), equipSlots[3]);
-        AddItemToSlot(new ItemStack(starterArmor.item, 1), equipSlots[2]);
+        //Setup all of the databases
+        TextureDatabase.instance.LoadAllTextures();
 
         gameObject.SetActive(false);
     }
@@ -101,12 +101,12 @@ public class InventoryManager : MonoBehaviour
     {
         if (gameObject.activeSelf)
         {
-            if (StaticCanvasList.instance.itemDragger.itemStack != null)
+            if (ItemDragger.instance.itemStack != null)
             {
-                FindNextOpenSlot(slots).ItemDropIntoEmpty(StaticCanvasList.instance.itemDragger.itemStack);
+                FindNextOpenSlot(slots).ItemDropIntoEmpty(ItemDragger.instance.itemStack);
             }
 
-            StaticCanvasList.instance.inventoryTooltip.gameObject.SetActive(false);
+            Tooltip.instance.gameObject.SetActive(false);
             gameObject.SetActive(false);
         }
         else

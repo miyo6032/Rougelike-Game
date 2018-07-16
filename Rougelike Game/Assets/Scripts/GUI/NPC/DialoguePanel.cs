@@ -8,6 +8,7 @@ using System.Collections;
 /// </summary>
 public class DialoguePanel : MonoBehaviour
 {
+    public static DialoguePanel instance;
     private Queue<string> dialogueQueue;
     private DialogueString currentDialogue;
 
@@ -17,6 +18,15 @@ public class DialoguePanel : MonoBehaviour
 
     private void Start()
     {
+        if (instance == null)
+        {
+            instance = this;
+        }
+        else if (instance != this)
+        {
+            Debug.LogError("Duplicate " + this.GetType().Name);
+            Destroy(gameObject);
+        }
         gameObject.SetActive(false);
         dialogueQueue = new Queue<string>();
     }

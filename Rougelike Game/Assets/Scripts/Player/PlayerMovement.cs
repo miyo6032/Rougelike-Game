@@ -5,6 +5,7 @@
 /// </summary>
 public class PlayerMovement : MovingObject
 {
+    public static PlayerMovement instance;
     private PlayerStats stats;
     private PlayerAnimation animatorHandler;
     private Lighting lighting;
@@ -18,6 +19,15 @@ public class PlayerMovement : MovingObject
 
     protected override void Start()
     {
+        if (instance == null)
+        {
+            instance = this;
+        }
+        else if (instance != this)
+        {
+            Debug.LogError("Duplicate " + this.GetType().Name);
+            Destroy(gameObject);
+        }
         base.Start();
         stats = GetComponent<PlayerStats>();
         animatorHandler = GetComponent<PlayerAnimation>();
@@ -150,10 +160,10 @@ public class PlayerMovement : MovingObject
         if (hit.transform == null)
         {
             // We were able to move, so animate that movement
-            StaticCanvasList.instance.dialoguePanel.EndDialogue();
-            StaticCanvasList.instance.shopManager.CloseShop();
+            DialoguePanel.instance.EndDialogue();
+            ShopManager.instance.CloseShop();
+            ChestInventory.instance.CloseChest();
             animatorHandler.AnimateMovement(dir);
-            StaticCanvasList.instance.chestInventory.CloseChest();
             return;
         }
 
@@ -170,7 +180,7 @@ public class PlayerMovement : MovingObject
             Chest chest = hit.transform.GetComponent<Chest>();
             if (!canMove && chest != null)
             {
-                StaticCanvasList.instance.chestInventory.OpenChest(chest);
+                ChestInventory.instance.OpenChest(chest);
             }
 
             animatorHandler.SetIdle(dir);

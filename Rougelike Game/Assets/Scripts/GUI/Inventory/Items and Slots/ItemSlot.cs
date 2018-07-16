@@ -17,7 +17,7 @@ public class ItemSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     /// <param name="eventData"></param>
     public void OnPointerDown(PointerEventData eventData)
     {
-        ItemStack attachedItem = StaticCanvasList.instance.itemDragger.itemStack;
+        ItemStack attachedItem = ItemDragger.instance.itemStack;
 
         if (itemStack == null && attachedItem != null)
         {
@@ -38,7 +38,7 @@ public class ItemSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     /// </summary>
     public virtual void PickItemUp()
     {
-        StaticCanvasList.instance.itemDragger.SetItem(itemStack);
+        ItemDragger.instance.SetItem(itemStack);
         RemoveItem();
     }
 
@@ -49,7 +49,7 @@ public class ItemSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     public virtual void ItemDropIntoEmpty(ItemStack droppedItem)
     {
         SetItem(droppedItem);
-        StaticCanvasList.instance.itemDragger.RemoveItem();
+        ItemDragger.instance.RemoveItem();
     }
 
     /// <summary>
@@ -61,7 +61,7 @@ public class ItemSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         {
             ChangeAmount(droppedItem.amount);
             SetItem(itemStack);
-            StaticCanvasList.instance.itemDragger.RemoveItem();
+            ItemDragger.instance.RemoveItem();
         }
         else
         {
@@ -77,7 +77,7 @@ public class ItemSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
         itemStack = stack;
         stackText.text = stack.amount == 1 ? "" : stack.amount.ToString();
-        itemSprite.sprite = StaticCanvasList.instance.textureDatabase.LoadTexture(stack.item.Sprite);
+        itemSprite.sprite = TextureDatabase.instance.LoadTexture(stack.item.Sprite);
     }
 
     /// <summary>
@@ -87,7 +87,7 @@ public class ItemSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
         itemStack = null;
         stackText.text = "";
-        itemSprite.sprite = StaticCanvasList.instance.textureDatabase.LoadTexture("Invisible");
+        itemSprite.sprite = TextureDatabase.instance.LoadTexture("Invisible");
     }
 
     /// <summary>
@@ -97,13 +97,13 @@ public class ItemSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
         if (itemStack != null)
         {
-            StaticCanvasList.instance.inventoryTooltip.ShowItemTooltip(itemStack.item);
+            Tooltip.instance.ShowItemTooltip(itemStack.item);
         }
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        StaticCanvasList.instance.inventoryTooltip.gameObject.SetActive(false);
+        Tooltip.instance.gameObject.SetActive(false);
     }
 
     /// <summary>

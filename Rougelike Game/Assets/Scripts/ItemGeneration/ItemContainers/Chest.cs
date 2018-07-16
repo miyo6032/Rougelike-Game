@@ -15,7 +15,7 @@ public class Chest : MonoBehaviour {
 
     void Start()
     {
-        chestItems = StaticCanvasList.instance.itemDropGenerator.GenerateItemDrops(lootLevel, dropRange);
+        chestItems = ItemDropGenerator.instance.GenerateItemDrops(lootLevel, dropRange);
     }
 
     public void SetOpenSprite()

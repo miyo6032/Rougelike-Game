@@ -5,10 +5,24 @@ using UnityEngine.UI;
 /// Responsible for item dragging whenever an item is picked up
 /// </summary>
 public class ItemDragger : MonoBehaviour {
+    public static ItemDragger instance;
     [HideInInspector]
     public ItemStack itemStack;
     public Text stackText;
     public Image itemSprite;
+
+    private void Start()
+    {
+        if (instance == null)
+        {
+            instance = this;
+        }
+        else if (instance != this)
+        {
+            Debug.LogError("Duplicate " + this.GetType().Name);
+            Destroy(gameObject);
+        }
+    }
 
     /// <summary>
     /// Set the item dragger to be dragging this item
@@ -17,7 +31,7 @@ public class ItemDragger : MonoBehaviour {
     {
         itemStack = item;
         stackText.text = itemStack.amount == 1 ? "" : itemStack.amount.ToString();
-        itemSprite.sprite = StaticCanvasList.instance.textureDatabase.LoadTexture(itemStack.item.Sprite);
+        itemSprite.sprite = TextureDatabase.instance.LoadTexture(itemStack.item.Sprite);
     }
 
     /// <summary>
@@ -27,7 +41,7 @@ public class ItemDragger : MonoBehaviour {
     {
         itemStack = null;
         stackText.text = "";
-        itemSprite.sprite = StaticCanvasList.instance.textureDatabase.LoadTexture("Invisible");
+        itemSprite.sprite = TextureDatabase.instance.LoadTexture("Invisible");
     }
 
     private void Update()

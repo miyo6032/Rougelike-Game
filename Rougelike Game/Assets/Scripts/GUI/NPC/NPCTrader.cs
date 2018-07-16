@@ -13,7 +13,7 @@ public class NPCTrader : NPC {
 
     public override void OnNPCClicked()
     {
-        StaticCanvasList.instance.shopManager.OpenShop(this);
+        ShopManager.instance.OpenShop(this);
     }
 
 }

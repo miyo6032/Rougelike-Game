@@ -17,12 +17,12 @@ public class EffectTooltipShow : MonoBehaviour, IPointerEnterHandler, IPointerEx
     {
         if (effect != null)
         {
-            StaticCanvasList.instance.inventoryTooltip.ShowEffectTooltip(effect);
+            Tooltip.instance.ShowEffectTooltip(effect);
         }
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        StaticCanvasList.instance.inventoryTooltip.gameObject.SetActive(false);
+        Tooltip.instance.gameObject.SetActive(false);
     }
 }

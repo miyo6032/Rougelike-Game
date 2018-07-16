@@ -7,8 +7,22 @@ using UnityEngine;
 /// </summary>
 public class TextureDatabase : MonoBehaviour
 {
+    public static TextureDatabase instance;
     private readonly Dictionary<string, Sprite> textures = new Dictionary<string, Sprite>();
     private readonly string[] itemCategories = {"Armor", "Swords", "Helmets", "Items", "Skills"};
+
+    private void Start()
+    {
+        if (instance == null)
+        {
+            instance = this;
+        }
+        else if (instance != this)
+        {
+            Debug.LogError("Duplicate " + this.GetType().Name);
+            Destroy(gameObject);
+        }
+    }
 
     /// <summary>
     /// Load every texture into the database

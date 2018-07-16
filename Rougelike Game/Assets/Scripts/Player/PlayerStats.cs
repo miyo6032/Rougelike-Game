@@ -24,6 +24,7 @@ public class Modifier
 /// </summary>
 public class PlayerStats : Stats
 {
+    public static PlayerStats instance;
     public Stat hitDelay;
 
     // Just standard rpg experience, when the player has enough they will level up
@@ -41,18 +42,40 @@ public class PlayerStats : Stats
     public Stat maxFocus;
 
     public DamageCounter damageCounterPrefab;
+
+    public ItemScriptableObject meat;
+    public ItemScriptableObject starterSword;
+    public ItemScriptableObject starterHelmet;
+    public ItemScriptableObject starterArmor;
+
     private Animator animator;
     private PlayerAnimation playerAnimation;
     private SoundManager soundManager;
 
     void Start()
     {
+        if (instance == null)
+        {
+            instance = this;
+        }
+        else if (instance != this)
+        {
+            Debug.LogError("Duplicate " + this.GetType().Name);
+            Destroy(gameObject);
+        }
         animator = GetComponent<Animator>();
         health = maxHealth.GetIntValue();
         focus = maxFocus.GetIntValue();
         UpdateStats();
         playerAnimation = GetComponent<PlayerAnimation>();
         soundManager = GetComponent<SoundManager>();
+
+        InventoryManager.instance.AddItem(new ItemStack(meat.item, 1));
+        InventoryManager.instance.AddItemToSlot(new ItemStack(starterSword.item, 1), InventoryManager.instance.equipSlots[0]);
+        InventoryManager.instance.AddItemToSlot(new ItemStack(starterSword.item, 1), InventoryManager.instance.equipSlots[1]);
+        InventoryManager.instance.AddItemToSlot(new ItemStack(starterHelmet.item, 1), InventoryManager.instance.equipSlots[3]);
+        InventoryManager.instance.AddItemToSlot(new ItemStack(starterArmor.item, 1), InventoryManager.instance.equipSlots[2]);
+
     }
 
     /// <summary>
@@ -180,10 +203,10 @@ public class PlayerStats : Stats
     /// </summary>
     public void UpdateStats()
     {
-        StaticCanvasList.instance.gameUI.UpdateHealth(health / maxHealth.GetValue());
-        StaticCanvasList.instance.gameUI.UpdateFocus(focus / maxFocus.GetValue());
-        StaticCanvasList.instance.statUI.UpdateStatUI(level, experience, maxExperience, (int)health, maxHealth.GetIntValue(), Mathf.RoundToInt(focus), maxFocus.GetIntValue(), defense.GetIntValue(), minAttack.GetIntValue(), maxAttack.GetIntValue());
-        StaticCanvasList.instance.skillTree.upgradePointsText.text = "Availible Upgrade Points: " + upgradePoints;
+        InGameUI.instance.UpdateHealth(health / maxHealth.GetValue());
+        InGameUI.instance.UpdateFocus(focus / maxFocus.GetValue());
+        PlayerStatUI.instance.UpdateStatUI(level, experience, maxExperience, (int)health, maxHealth.GetIntValue(), Mathf.RoundToInt(focus), maxFocus.GetIntValue(), defense.GetIntValue(), minAttack.GetIntValue(), maxAttack.GetIntValue());
+        SkillTree.instance.upgradePointsText.text = "Availible Upgrade Points: " + upgradePoints;
     }
 
     /// <summary>

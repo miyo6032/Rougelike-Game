@@ -8,7 +8,8 @@ public abstract class MovingObject : MonoBehaviour
 {
     // Keeps the player from moving extra
     public LayerMask blockingLayer;
-    [HideInInspector] public bool moving;
+    [HideInInspector]
+    public bool moving;
     protected MovementTracker moveManager;
     private Rigidbody2D rb2D;
     private float inverseMoveTime;
@@ -66,7 +67,7 @@ public abstract class MovingObject : MonoBehaviour
     {
         moving = true;
         // The remaining distance to the target position
-        float sqrRemainingDistance = (rb2D.position - (Vector2) end).sqrMagnitude;
+        float sqrRemainingDistance = (rb2D.position - (Vector2)end).sqrMagnitude;
         // Keep going until we have reached our destination
         while (sqrRemainingDistance > float.Epsilon)
         {
@@ -79,7 +80,7 @@ public abstract class MovingObject : MonoBehaviour
             rb2D.MovePosition(newPosition);
 
             // Update our distance
-            sqrRemainingDistance = (rb2D.position - (Vector2) end).sqrMagnitude;
+            sqrRemainingDistance = (rb2D.position - (Vector2)end).sqrMagnitude;
 
             // Fixed update
             yield return new WaitForFixedUpdate();

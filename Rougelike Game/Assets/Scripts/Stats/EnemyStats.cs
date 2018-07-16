@@ -111,7 +111,7 @@ public class EnemyStats : Stats
     /// </summary>
     private void Death()
     {
-        List<ItemSave> itemDrops = StaticCanvasList.instance.itemDropGenerator.GenerateItemDrops(level, dropRange);
+        List<ItemSave> itemDrops = ItemDropGenerator.instance.GenerateItemDrops(level, dropRange);
         if (itemDrops.Count > 0)
         {
             //If a bag already exists, just add the items to that bag

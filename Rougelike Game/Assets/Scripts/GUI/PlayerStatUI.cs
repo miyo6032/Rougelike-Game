@@ -6,6 +6,7 @@ using UnityEngine;
 /// </summary>
 public class PlayerStatUI : MonoBehaviour
 {
+    public static PlayerStatUI instance;
     public Text level;
     public Text experience;
     public Text maxHealth;
@@ -13,6 +14,20 @@ public class PlayerStatUI : MonoBehaviour
     public Text defense;
     public Text attack;
     public Slider experienceSlider;
+
+    private void Start()
+    {
+        if (instance == null)
+        {
+            instance = this;
+        }
+        else if (instance != this)
+        {
+            Debug.LogError("Duplicate " + this.GetType().Name);
+            Destroy(gameObject);
+        }
+        gameObject.SetActive(false);
+    }
 
     /// <summary>
     /// Updates the UI by passing int all of the player's statistics
@@ -32,6 +47,6 @@ public class PlayerStatUI : MonoBehaviour
     public void Toggle()
     {
         gameObject.SetActive(!gameObject.activeSelf);
-        StaticCanvasList.instance.panelManagement.SetRightPanel(gameObject.activeSelf ? gameObject : null);
+        PanelManagement.instance.SetRightPanel(gameObject.activeSelf ? gameObject : null);
     }
 }

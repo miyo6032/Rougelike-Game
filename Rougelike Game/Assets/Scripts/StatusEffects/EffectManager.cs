@@ -8,8 +8,6 @@ using UnityEngine.UI;
 /// </summary>
 public class EffectManager : MonoBehaviour
 {
-    public PlayerStats playerStats;
-
     public Sprite invisible;
 
     public List<TimeAndSprite> ui;
@@ -26,7 +24,7 @@ public class EffectManager : MonoBehaviour
     {
         if (effect.applyOnce)
         {
-            playerStats.ApplyStats(effect.ModifiersAffected);
+            PlayerStats.instance.ApplyStats(effect.ModifiersAffected);
         }
         activeEffects.Add(new ActiveEffect(effect, effect.duration));
     }
@@ -44,7 +42,7 @@ public class EffectManager : MonoBehaviour
     /// <returns></returns>
     private IEnumerator ApplyEffects()
     {
-        while (playerStats)
+        while (PlayerStats.instance)
         {
             List<ActiveEffect> toRemove = new List<ActiveEffect>();
             foreach (ActiveEffect effect in activeEffects)
@@ -52,14 +50,14 @@ public class EffectManager : MonoBehaviour
                 effect.currentDuration--;
                 if (!effect.effect.applyOnce)
                 {
-                    playerStats.ApplyStats(effect.effect.ModifiersAffected);
+                    PlayerStats.instance.ApplyStats(effect.effect.ModifiersAffected);
                 }
                 if (effect.currentDuration == 0)
                 {
                     toRemove.Add(effect);
                     if (effect.effect.removeAfterDone)
                     {
-                        playerStats.ReverseStats(effect.effect.ModifiersAffected);
+                        PlayerStats.instance.ReverseStats(effect.effect.ModifiersAffected);
                     }
                 }
             }

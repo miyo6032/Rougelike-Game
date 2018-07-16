@@ -6,6 +6,7 @@ using UnityEngine.UI;
 /// Handles the shop ui and buy and selling items
 /// </summary>
 public class ShopManager : MonoBehaviour {
+    public static ShopManager instance;
     public Text NPCName;
     public Text NPCIntro;
     public Text buyTitleText;
@@ -22,6 +23,20 @@ public class ShopManager : MonoBehaviour {
     private NPCTrader currentTrader;
     private int buyItemIndex;
     private int sellItemIndex;
+
+    private void Start()
+    {
+        if (instance == null)
+        {
+            instance = this;
+        }
+        else if (instance != this)
+        {
+            Debug.LogError("Duplicate " + this.GetType().Name);
+            Destroy(gameObject);
+        }
+        gameObject.SetActive(false);
+    }
 
     /// <summary>
     /// Open the shop of a particular trader - showing the shop ui
@@ -86,8 +101,8 @@ public class ShopManager : MonoBehaviour {
     /// </summary>
     public void SellItem()
     {
-        gold += StaticCanvasList.instance.inventoryManager.slots[sellItemIndex].itemStack.item.Value;
-        StaticCanvasList.instance.inventoryManager.slots[sellItemIndex].ChangeAmount(-1);
+        gold += InventoryManager.instance.slots[sellItemIndex].itemStack.item.Value;
+        InventoryManager.instance.slots[sellItemIndex].ChangeAmount(-1);
         UpdateSellItems();
         goldText.text = gold.ToString();
     }
@@ -100,7 +115,7 @@ public class ShopManager : MonoBehaviour {
         Item itemToBuy = currentTrader.itemsForSale[buyItemIndex].item;
         if (gold >= itemToBuy.Value)
         {
-            StaticCanvasList.instance.inventoryManager.AddItem(new ItemStack(itemToBuy, 1));
+            InventoryManager.instance.AddItem(new ItemStack(itemToBuy, 1));
             UpdateSellItems();
             gold -= itemToBuy.Value;
             goldText.text = gold.ToString();
@@ -112,7 +127,7 @@ public class ShopManager : MonoBehaviour {
     /// </summary>
     public void OpenDialogue()
     {
-        StaticCanvasList.instance.dialoguePanel.StartDialogue(currentTrader.dialogue);
+        DialoguePanel.instance.StartDialogue(currentTrader.dialogue);
     }
 
     /// <summary>
@@ -122,7 +137,7 @@ public class ShopManager : MonoBehaviour {
     {
         buyItemIndex = changeIndex(buyItemIndex, currentTrader.itemsForSale.Count);
         Item itemToShow = currentTrader.itemsForSale[buyItemIndex].item;
-        buyItemImage.sprite = StaticCanvasList.instance.textureDatabase.LoadTexture(itemToShow.Sprite);
+        buyItemImage.sprite = TextureDatabase.instance.LoadTexture(itemToShow.Sprite);
         buyTitleText.text = itemToShow.Title;
         buyItemCost.text = itemToShow.Value.ToString();
     }
@@ -132,7 +147,7 @@ public class ShopManager : MonoBehaviour {
     /// </summary>
     private void UpdateSellItem(ChangeIndex changeIndex)
     {
-        List<ItemSlot> slots = StaticCanvasList.instance.inventoryManager.slots;
+        List<ItemSlot> slots = InventoryManager.instance.slots;
         // Search for the next slot that has an item, and show that item
         int counter = 0;
         do
@@ -147,7 +162,7 @@ public class ShopManager : MonoBehaviour {
         } while (slots[sellItemIndex].itemStack == null);
         noItemsToSell.SetActive(false);
         ItemStack itemStack = slots[sellItemIndex].itemStack;
-        sellItemImage.sprite = StaticCanvasList.instance.textureDatabase.LoadTexture(itemStack.item.Sprite);
+        sellItemImage.sprite = TextureDatabase.instance.LoadTexture(itemStack.item.Sprite);
         sellTitleText.text = itemStack.item.Title;
         sellStackAmount.text = itemStack.amount == 1 ? "" : itemStack.amount.ToString();
         sellItemCost.text = itemStack.item.Value.ToString();

@@ -6,8 +6,23 @@ using UnityEngine.UI;
 /// </summary>
 public class Tooltip : MonoBehaviour
 {
+    public static Tooltip instance;
     public Text title;
     public Text description;
+
+    private void Start()
+    {
+        if (instance == null)
+        {
+            instance = this;
+        }
+        else if (instance != this)
+        {
+            Debug.LogError("Duplicate " + this.GetType().Name);
+            Destroy(gameObject);
+        }
+        gameObject.SetActive(false);
+    }
 
     public void ShowEffectTooltip(Effect effect)
     {

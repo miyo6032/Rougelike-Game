@@ -6,6 +6,8 @@ using System.Collections.Generic;
 /// </summary>
 public class ItemDropGenerator : MonoBehaviour {
 
+    public static ItemDropGenerator instance;
+
     public enum ItemDropTypes
     {
         CommonArtifact,
@@ -25,6 +27,15 @@ public class ItemDropGenerator : MonoBehaviour {
 
     private void Start()
     {
+        if (instance == null)
+        {
+            instance = this;
+        }
+        else if (instance != this)
+        {
+            Debug.LogError("Duplicate " + this.GetType().Name);
+            Destroy(gameObject);
+        }
         FillItemDropQueue();
     }
 
@@ -64,10 +75,10 @@ public class ItemDropGenerator : MonoBehaviour {
             switch (itemType)
             {
                 case ItemDropTypes.RareArtifact:
-                    item = new ItemSave(new ItemStack(StaticCanvasList.instance.presetItemDatabase.GetArtifact(randomLevel + 3), 1), 1);
+                    item = new ItemSave(new ItemStack(ItemDatabase.instance.GetArtifact(randomLevel + 3), 1), 1);
                     break;
                 default:
-                    item = new ItemSave(new ItemStack(StaticCanvasList.instance.presetItemDatabase.GetArtifact(randomLevel), 1), 1);
+                    item = new ItemSave(new ItemStack(ItemDatabase.instance.GetArtifact(randomLevel), 1), 1);
                     break;
             }
             ItemSave duplicateItem = GetDuplicateItem(items, item);

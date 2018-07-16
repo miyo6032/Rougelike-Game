@@ -24,14 +24,14 @@ public class LootBag : PlayerEnterDetector
     }
 
     public override void PlayerEnter(Collider2D player) {
-        StaticCanvasList.instance.lootInventory.LoadInventory(this);
-        StaticCanvasList.instance.gameUI.ToggleLootPanel();
+        LootInventory.instance.LoadInventory(this);
+        InGameUI.instance.ToggleLootPanel();
     }
 
     public override void PlayerExit(Collider2D player)
     {
-        StaticCanvasList.instance.lootInventory.UnloadInventory();
-        StaticCanvasList.instance.gameUI.ToggleLootPanel();
+        LootInventory.instance.UnloadInventory();
+        InGameUI.instance.ToggleLootPanel();
         if (items.Count == 0)
         {
             Destroy(gameObject);

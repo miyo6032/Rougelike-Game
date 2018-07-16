@@ -24,7 +24,7 @@ public class EquipSlot : ItemSlot
         {
             SetItem(droppedItem);
             playerStat.EquipItem(droppedItem, this);
-            StaticCanvasList.instance.itemDragger.RemoveItem();
+            ItemDragger.instance.RemoveItem();
             slotImage.sprite = fullSprite;
         }
     }

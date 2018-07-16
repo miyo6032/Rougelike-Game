@@ -9,6 +9,6 @@ public class ItemDelete : ItemSlot
     /// <param name="droppedItem"></param>
     public override void ItemDropIntoEmpty(ItemStack droppedItem)
     {
-        StaticCanvasList.instance.itemDragger.RemoveItem();
+        ItemDragger.instance.RemoveItem();
     }
 }
