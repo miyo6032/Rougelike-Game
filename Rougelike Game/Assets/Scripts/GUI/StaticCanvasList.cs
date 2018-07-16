@@ -22,6 +22,7 @@ public class StaticCanvasList : MonoBehaviour {
     public SkillTree skillTree;
     public DialoguePanel dialoguePanel;
     public ItemDragger itemDragger;
+    public ShopManager shopManager;
 
 	void Start () {
 		if(instance == null)

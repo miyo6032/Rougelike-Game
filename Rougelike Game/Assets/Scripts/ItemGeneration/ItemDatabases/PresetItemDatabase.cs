@@ -20,9 +20,7 @@ public class PresetItemDatabase : MonoBehaviour {
 
         if (candidateItems.Count > 0)
         {
-            ItemScriptableObject item = candidateItems[Random.Range(0, candidateItems.Count)];
-            item.Start();
-            return item.item;
+            return candidateItems[Random.Range(0, candidateItems.Count)].item;
         }
         return GetArtifact(level - 1);
     }

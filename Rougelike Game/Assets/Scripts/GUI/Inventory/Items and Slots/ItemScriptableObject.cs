@@ -10,7 +10,10 @@ public class ItemScriptableObject : ScriptableObject
 
     public Color equipColor = Color.gray;
 
-    public void Start()
+    /// <summary>
+    /// Automatically update the color and item texture in string mode so the engine can load the textures and colors 
+    /// </summary>
+    public void OnValidate()
     {
         string path = itemSprite.ToString();
         int index = path.IndexOf(" ", StringComparison.Ordinal);
@@ -18,7 +21,8 @@ public class ItemScriptableObject : ScriptableObject
         {
             item.Sprite = "invisible";
         }
-        else {
+        else
+        {
             path = path.Substring(0, index);
             item.Sprite = path;
         }

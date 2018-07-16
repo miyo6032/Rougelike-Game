@@ -1,86 +1,174 @@
 ﻿using UnityEngine;
+using System.Collections.Generic;
 using UnityEngine.UI;
 
+/// <summary>
+/// Handles the shop ui and buy and selling items
+/// </summary>
 public class ShopManager : MonoBehaviour {
-
+    public Text NPCName;
+    public Text NPCIntro;
     public Text buyTitleText;
     public Text sellTitleText;
+    public Text sellStackAmount;
+    public Text buyItemCost;
+    public Text sellItemCost;
+    public Text goldText;
     public Image buyItemImage;
     public Image sellItemImage;
-    public Slider amountSlider;
-    public GameObject amountConfirm;
-    public ItemSave itemToExchange;
+    public GameObject noItemsToSell;
 
     public int gold;
-    public ItemSave[] buyItems;
+    private NPCTrader currentTrader;
     private int buyItemIndex;
+    private int sellItemIndex;
 
-    public void LoadNPCItems(ItemSave[] items)
+    /// <summary>
+    /// Open the shop of a particular trader - showing the shop ui
+    /// </summary>
+    public void OpenShop(NPCTrader trader)
     {
-        if(buyItems != items)
+        if (currentTrader != trader)
         {
-            buyItems = items;
-            buyItemIndex = 0;
+            currentTrader = trader;
+            NPCName.text = trader.dialogue.name;
+            NPCIntro.text = trader.introDialogue;
+            goldText.text = gold.ToString();
+            // Reset indices
+            buyItemIndex = 1;
+            PrevBuyItem();
+            sellItemIndex = 1;
+            PrevSellItem();
+            gameObject.SetActive(true);
         }
     }
 
-    public void SetSprites(Image spritesToSet, string spriteNames)
+    public void CloseShop()
     {
-        spritesToSet.sprite = StaticCanvasList.instance.textureDatabase.LoadTexture(spriteNames);
-    }
-
-    public void NextBuyItem()
-    {
-        buyItemIndex = buyItemIndex == buyItems.Length - 1 ? 0 : buyItemIndex + 1;
-        ItemSave itemToShow = buyItems[buyItemIndex];
-        SetSprites(buyItemImage, itemToShow.item.item.Sprite);
-        buyTitleText.text = itemToShow.item.item.Title;
-    }
-
-    public void PrevBuyItem()
-    {
-        buyItemIndex = buyItemIndex == 0 ? buyItems.Length - 1 : buyItemIndex - 1;
-        ItemSave itemToShow = buyItems[buyItemIndex];
-        SetSprites(buyItemImage, itemToShow.item.item.Sprite);
-        buyTitleText.text = itemToShow.item.item.Title;
-    }
-
-    public void NextSellItem()
-    {
-
-    }
-
-    public void PrevSellItem()
-    {
-
-    }
-
-    public void SellItem()
-    {
-
-    }
-
-    public void BuyItem()
-    {
-
-    }
-
-    public void AddGold(int amount)
-    {
-        gold += amount;
+        currentTrader = null;
+        gameObject.SetActive(false);
     }
 
     /// <summary>
-    /// Will attempt to "buy" gold, and return a bool as to whether there is enough gold left
+    /// Used by a button to go to the next buy item
     /// </summary>
-    public bool RemoveGold(int amount)
+    public void NextBuyItem()
     {
-        if(amount > gold)
+        UpdateBuyItem(IncreaseIndex);
+    }
+
+    /// <summary>
+    /// Used by a button to go to the previous buy item
+    /// </summary>
+    public void PrevBuyItem()
+    {
+        UpdateBuyItem(DecreaseIndex);
+    }
+
+    /// <summary>
+    /// Used by a button to go to the next sell item
+    /// </summary>
+    public void NextSellItem()
+    {
+        UpdateSellItem(IncreaseIndex);
+    }
+
+    /// <summary>
+    /// Used by a button to go to the previous sell item
+    /// </summary>
+    public void PrevSellItem()
+    {
+        UpdateSellItem(DecreaseIndex);
+    }
+
+    /// <summary>
+    /// Sell an item, reducing the amount from the inventory
+    /// </summary>
+    public void SellItem()
+    {
+        gold += StaticCanvasList.instance.inventoryManager.slots[sellItemIndex].itemStack.item.Value;
+        StaticCanvasList.instance.inventoryManager.slots[sellItemIndex].ChangeAmount(-1);
+        UpdateSellItems();
+        goldText.text = gold.ToString();
+    }
+
+    /// <summary>
+    /// Buy and item, or do nothing if there are not enough funds
+    /// </summary>
+    public void BuyItem()
+    {
+        Item itemToBuy = currentTrader.itemsForSale[buyItemIndex].item;
+        if (gold >= itemToBuy.Value)
         {
-            return false;
+            StaticCanvasList.instance.inventoryManager.AddItem(new ItemStack(itemToBuy, 1));
+            UpdateSellItems();
+            gold -= itemToBuy.Value;
+            goldText.text = gold.ToString();
         }
-        gold -= amount;
-        return true;
+    }
+
+    /// <summary>
+    /// Initiate the dialogue for the trader (even traders have something to say)
+    /// </summary>
+    public void OpenDialogue()
+    {
+        StaticCanvasList.instance.dialoguePanel.StartDialogue(currentTrader.dialogue);
+    }
+
+    /// <summary>
+    /// Change the item index and update the ui to show the current buy item.
+    /// </summary>
+    private void UpdateBuyItem(ChangeIndex changeIndex)
+    {
+        buyItemIndex = changeIndex(buyItemIndex, currentTrader.itemsForSale.Count);
+        Item itemToShow = currentTrader.itemsForSale[buyItemIndex].item;
+        buyItemImage.sprite = StaticCanvasList.instance.textureDatabase.LoadTexture(itemToShow.Sprite);
+        buyTitleText.text = itemToShow.Title;
+        buyItemCost.text = itemToShow.Value.ToString();
+    }
+
+    /// <summary>
+    /// Change the item index and update the sell item to show the current sell item.
+    /// </summary>
+    private void UpdateSellItem(ChangeIndex changeIndex)
+    {
+        List<ItemSlot> slots = StaticCanvasList.instance.inventoryManager.slots;
+        // Search for the next slot that has an item, and show that item
+        int counter = 0;
+        do
+        {
+            sellItemIndex = changeIndex(sellItemIndex, slots.Count);
+            counter++;
+            if (counter > slots.Count)
+            {
+                noItemsToSell.SetActive(true);
+                return;
+            }
+        } while (slots[sellItemIndex].itemStack == null);
+        noItemsToSell.SetActive(false);
+        ItemStack itemStack = slots[sellItemIndex].itemStack;
+        sellItemImage.sprite = StaticCanvasList.instance.textureDatabase.LoadTexture(itemStack.item.Sprite);
+        sellTitleText.text = itemStack.item.Title;
+        sellStackAmount.text = itemStack.amount == 1 ? "" : itemStack.amount.ToString();
+        sellItemCost.text = itemStack.item.Value.ToString();
+    }
+
+    private void UpdateSellItems()
+    {
+        sellItemIndex--;
+        NextSellItem();
+    }
+
+    private delegate int ChangeIndex(int index, int count);
+
+    private int IncreaseIndex(int index, int count)
+    {
+        return index >= count - 1 ? 0 : index + 1;
+    }
+
+    private int DecreaseIndex(int index, int count)
+    {
+        return index <= 0 ? count - 1 : index - 1;
     }
 
 }

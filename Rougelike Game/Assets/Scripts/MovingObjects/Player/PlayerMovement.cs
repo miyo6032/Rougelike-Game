@@ -151,6 +151,7 @@ public class PlayerMovement : MovingObject
         {
             // We were able to move, so animate that movement
             StaticCanvasList.instance.dialoguePanel.EndDialogue();
+            StaticCanvasList.instance.shopManager.CloseShop();
             animatorHandler.AnimateMovement(dir);
             StaticCanvasList.instance.chestInventory.CloseChest();
             return;

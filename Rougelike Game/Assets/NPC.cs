@@ -22,7 +22,16 @@ public class NPC : MonoBehaviour, IPointerClickHandler
     {
         if (Vector3.Distance(player.position, transform.position) < speakingDistance)
         {
-            StaticCanvasList.instance.dialoguePanel.StartDialogue(dialogue);
+            OnNPCClicked();
         }
     }
+
+    /// <summary>
+    /// When the npc is clicked, and thus activated
+    /// </summary>
+    public virtual void OnNPCClicked()
+    {
+        StaticCanvasList.instance.dialoguePanel.StartDialogue(dialogue);
+    }
+
 }

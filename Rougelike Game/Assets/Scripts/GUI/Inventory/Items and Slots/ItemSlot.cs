@@ -12,7 +12,7 @@ public class ItemSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     public Image itemSprite;
 
     /// <summary>
-    /// When the player drops an item from clicking
+    /// Handles item manipulation by the mouse pointer
     /// </summary>
     /// <param name="eventData"></param>
     public void OnPointerDown(PointerEventData eventData)
@@ -33,6 +33,9 @@ public class ItemSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         }
     }
 
+    /// <summary>
+    /// Pick the current item up
+    /// </summary>
     public virtual void PickItemUp()
     {
         StaticCanvasList.instance.itemDragger.SetItem(itemStack);
@@ -40,7 +43,7 @@ public class ItemSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     }
 
     /// <summary>
-    /// Handles when an item is dropped upon the slot
+    /// Set the previously empty slot to a new item
     /// </summary>
     /// <param name="droppedItem"></param>
     public virtual void ItemDropIntoEmpty(ItemStack droppedItem)
@@ -50,9 +53,8 @@ public class ItemSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     }
 
     /// <summary>
-    /// When the item is dropped into a slot that is already full
+    /// Exchange items with the item dragger, or if the items are the same, increase the stack amount
     /// </summary>
-    /// <param name="droppedItem"></param>
     public virtual void ItemDropIntoFull(ItemStack droppedItem)
     {
         if(droppedItem.item == itemStack.item && droppedItem.item.Stackable)
@@ -68,6 +70,9 @@ public class ItemSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         }
     }
 
+    /// <summary>
+    /// When the slot recieves a new item
+    /// </summary>
     public virtual void SetItem(ItemStack stack)
     {
         itemStack = stack;
@@ -75,6 +80,9 @@ public class ItemSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         itemSprite.sprite = StaticCanvasList.instance.textureDatabase.LoadTexture(stack.item.Sprite);
     }
 
+    /// <summary>
+    /// When the slot removes the item
+    /// </summary>
     public virtual void RemoveItem()
     {
         itemStack = null;
@@ -82,6 +90,9 @@ public class ItemSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         itemSprite.sprite = StaticCanvasList.instance.textureDatabase.LoadTexture("Invisible");
     }
 
+    /// <summary>
+    /// Show the tooltip
+    /// </summary>
     public void OnPointerEnter(PointerEventData eventData)
     {
         if (itemStack != null)
@@ -96,9 +107,8 @@ public class ItemSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     }
 
     /// <summary>
-    /// Change the amount of an item
+    /// Change the amount of an itemstack
     /// </summary>
-    /// <param name="i"></param>
     public virtual void ChangeAmount(int i)
     {
         itemStack.amount += i;

@@ -20,29 +20,13 @@ public class InventoryManager : MonoBehaviour
         TextureDatabase textures = StaticCanvasList.instance.textureDatabase;
         textures.LoadAllTextures();
 
-        AddScriptableItem(meat, 1);
-        EquipScriptableItem(starterSword, equipSlots[0]);
-        EquipScriptableItem(starterSword, equipSlots[1]);
-        EquipScriptableItem(starterHelmet, equipSlots[3]);
-        EquipScriptableItem(starterArmor, equipSlots[2]);
+        AddItem(new ItemStack(meat.item, 1));
+        AddItemToSlot(new ItemStack(starterSword.item, 1), equipSlots[0]);
+        AddItemToSlot(new ItemStack(starterSword.item, 1), equipSlots[1]);
+        AddItemToSlot(new ItemStack(starterHelmet.item, 1), equipSlots[3]);
+        AddItemToSlot(new ItemStack(starterArmor.item, 1), equipSlots[2]);
 
         gameObject.SetActive(false);
-    }
-
-    /// <summary>
-    /// Adds a scriptable item, allowing sprites to be dragged in
-    /// </summary>
-    /// <param name="item"></param>
-    public void AddScriptableItem(ItemScriptableObject item, int amount)
-    {
-        item.Start();
-        AddItem(new ItemStack(item.item, amount));
-    }
-
-    public void EquipScriptableItem(ItemScriptableObject item, ItemSlot slot)
-    {
-        item.Start();
-        AddItemToSlot(new ItemStack(item.item, 1), slot);
     }
 
     /// <summary>
