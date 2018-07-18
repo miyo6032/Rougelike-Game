@@ -8,13 +8,12 @@ public class EnemyMovement : MovingObject
 {
     public int enemySight = 3;
 
-    // the loot bag detects everytime the collider is turned off and on
-    // We want enemy pathfinding to disreguard enemies in the way of doorways and stuff like that,
+    private Vector2Int attackDir;
+
+    // We want enemy pathfinding to disreguard enemies in the way of doorways and stuff like that
     public LayerMask firstpassPathfindingLayer;
     public LayerMask secondPassPathfindingLayer;
 
-    // So we only use the environment layer to do the pathfinding
-    public Animator attackAnimator;
     protected Animator animator;
     protected EnemyStats stats;
 
@@ -22,7 +21,6 @@ public class EnemyMovement : MovingObject
     protected Transform target;
 
     // Disabled during the linecast for pathfinding
-    protected BoxCollider2D playerCol;
     protected BoxCollider2D enemyCol;
 
     // Responsible for alternating the move priorities - will sometimes be horizontal, and sometimes be vertical
@@ -32,16 +30,33 @@ public class EnemyMovement : MovingObject
     {
         stats = GetComponent<EnemyStats>();
         animator = GetComponent<Animator>();
-        target = GameObject.Find("Player").transform;
-        playerCol = target.gameObject.GetComponent<BoxCollider2D>();
+        target = PlayerStats.instance.transform;
         enemyCol = GetComponent<BoxCollider2D>();
         Invoke("DelayedStart", Random.Range(0f, stats.turnDelay.GetValue()));
         base.Start();
     }
 
-    void DelayedStart()
+    private void DelayedStart()
     {
         StartCoroutine(moveCounter());
+    }
+
+    private bool GetNextMove(out Vector2 nextMove)
+    {
+        nextMove = HelperScripts.GetNextMove(Vector2Int.RoundToInt(transform.position),
+            Vector2Int.RoundToInt(target.transform.position), firstpassPathfindingLayer,
+            enemySight, altMove);
+
+        if (nextMove.x != Vector2.positiveInfinity.x) return true;
+
+        // If there is a blockage, it might be because an enemy is in the way, so then we look for a path
+        // with the enemy's layer disabled
+        nextMove = HelperScripts.GetNextMove(Vector2Int.RoundToInt(transform.position),
+                Vector2Int.RoundToInt(target.transform.position), secondPassPathfindingLayer, enemySight, altMove);
+
+        if (nextMove.x != Vector2.positiveInfinity.x) return true;
+
+        return false;
     }
 
     /// <summary>
@@ -53,30 +68,18 @@ public class EnemyMovement : MovingObject
         // While the enemy is not dead
         while (this)
         {
-            transform.position = (Vector2)Vector2Int.RoundToInt(transform.position);
-
             // Disable Box colliders for future linecasts
             enemyCol.enabled = false;
-            Vector2 nextMove = HelperScripts.GetNextMove(Vector2Int.RoundToInt(transform.position),
-                Vector2Int.RoundToInt(target.transform.position), firstpassPathfindingLayer,
-                enemySight, altMove);
 
-            // If there is a blockage, it might be because an enemy is in the way, so then we look for a path
-            // with the enemy's layer disabled
-            if (nextMove.x == Vector2.positiveInfinity.x)
-            {
-                nextMove = HelperScripts.GetNextMove(Vector2Int.RoundToInt(transform.position),
-                    Vector2Int.RoundToInt(target.transform.position), secondPassPathfindingLayer, enemySight, altMove);
-            }
+            Vector2 nextMove;
 
             // Make sure that nextMove actually found a path
-            if (nextMove.x != Vector2.positiveInfinity.x)
+            if (GetNextMove(out nextMove))
             {
                 // As long at the spot is not claimed already something else, we can try to move into the position
-                if (!moveManager.SpotClaimed(
-                    Vector2Int.RoundToInt(transform.position) + Vector2Int.RoundToInt(nextMove)))
+                if (!moveManager.SpotClaimed(Vector2Int.RoundToInt(transform.position) + Vector2Int.RoundToInt(nextMove)))
                 {
-                    AttemptMove<PlayerStats>(Vector2Int.RoundToInt(nextMove));
+                    AttemptMove(Vector2Int.RoundToInt(nextMove));
                     altMove = !altMove;
                 }
             }
@@ -84,21 +87,74 @@ public class EnemyMovement : MovingObject
             enemyCol.enabled = true;
             // Wait for however many second for the turn delay
             SetMoveSpeed(stats.movementDelay.GetValue());
-            attackAnimator.speed = 1 / (stats.turnDelay.GetValue());
-            attackAnimator.SetTrigger("Animate Indicator");
+
+            yield return new WaitUntil(() => !moving);
             yield return new WaitForSeconds(stats.turnDelay.GetValue());
         }
+    }
+
+    protected override void OnStopMove()
+    {
+        enemyCol.enabled = false;
+        Vector2 nextMove;
+        if (GetNextMove(out nextMove))
+        {
+            TryToAttack(Vector2Int.RoundToInt(nextMove));
+        }
+        enemyCol.enabled = true;
     }
 
     /// <summary>
     /// When the enemy encounters the player in its direct path
     /// </summary>
-    /// <typeparam name="T">The PlayerStats component of the player</typeparam>
-    /// <param name="component">PlayerStats</param>
-    protected override void Attack<T>(T component)
+    private void Attack()
     {
-        PlayerStats hitPlayer = component as PlayerStats;
+        enemyCol.enabled = false;
         animator.SetTrigger("EnemyAttack");
-        hitPlayer.TakeDamage(Random.Range(stats.minAttack.GetIntValue(), stats.maxAttack.GetIntValue() + 1));
+        if (PlayerInTheWay(attackDir))
+            PlayerStats.instance.TakeDamage(Random.Range(stats.minAttack.GetIntValue(), stats.maxAttack.GetIntValue() + 1));
+        moving = false;
+        enemyCol.enabled = true;
+        OnStopMove();
     }
+
+    /// <summary>
+    /// If the player is in the way of the movement
+    /// </summary>
+    private bool PlayerInTheWay(Vector2Int dir)
+    {
+        RaycastHit2D hit;
+        if (CanMove(dir, out hit)) return false;
+        PlayerStats player = hit.transform.GetComponent<PlayerStats>();
+        if (player == null) return false;
+        return true;
+    }
+
+    /// <summary>
+    /// If the player is in the way, initiate an attack sequence
+    /// </summary>
+    private void TryToAttack(Vector2Int dir)
+    {
+        if (PlayerInTheWay(dir))
+        {
+            moving = true;
+            attackDir = dir;
+            Invoke("Attack", stats.attackDelay.GetValue());
+        }
+    }
+
+    /// <summary>
+    /// If nothing is in the way, initiate a move sequence
+    /// </summary>
+    private void AttemptMove(Vector2Int dir)
+    {
+        RaycastHit2D hit;
+        if (!CanMove(dir, out hit)) return;
+
+        Vector2 start = transform.position;
+        Vector2 end = start + dir;
+        moveManager.ClaimSpot(Vector2Int.FloorToInt(end));
+        StartCoroutine(SmoothMovement(end));
+    }
+
 }

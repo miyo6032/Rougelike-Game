@@ -122,7 +122,7 @@ public class PlayerMovement : MovingObject
             {
                 StopAutomove();
                 facingdirection = input;
-                AttemptMove<DungeonLevelGenerator>(input); // The player moves (or at least tries to)
+                AttemptMove(input); // The player moves (or at least tries to)
             }
         }
     }
@@ -141,44 +141,31 @@ public class PlayerMovement : MovingObject
             // Update the animator to align with the player's input
             facingdirection = Vector2Int.RoundToInt(nextMove);
             animatorHandler.SetAttackAnimationDirection(Vector2Int.RoundToInt(nextMove));
-            AttemptMove<EnemyStats>(Vector2Int.RoundToInt(nextMove)); // The player moves (or at least tries to)
+            Click(Vector2Int.RoundToInt(nextMove)); // The player moves (or at least tries to)
         }
 
         StopAutomove();
     }
 
     /// <summary>
-    /// Tries to move - handles different cases when the player can and cannot move
+    /// Actions when clicked on the environment (chest opening, attacking)
     /// </summary>
-    /// <typeparam name="T"></typeparam>
-    /// <param name="dir"></param>
-    protected override void AttemptMove<T>(Vector2Int dir)
+    private void Click(Vector2Int dir)
     {
-        // Hit to see if something is in the way
         RaycastHit2D hit;
-        bool canMove = Move(dir, out hit);
-        if (hit.transform == null)
-        {
-            // We were able to move, so animate that movement
-            DialoguePanel.instance.EndDialogue();
-            ShopManager.instance.CloseShop();
-            ChestInventory.instance.CloseChest();
-            animatorHandler.AnimateMovement(dir);
-            return;
-        }
+        if(CanMove(dir, out hit)) return;
 
-        // Get the specified component
-        T hitComponent = hit.transform.GetComponent<T>();
+        // Did we hit an enemy?
+        EnemyStats enemy = hit.transform.GetComponent<EnemyStats>();
 
-        // Only call OnCantMove if the hit actually has the component
-        if (!canMove && hitComponent != null)
+        if (enemy != null)
         {
-            Attack(hitComponent);
+            Attack(enemy);
         }
         else
         {
             Chest chest = hit.transform.GetComponent<Chest>();
-            if (!canMove && chest != null)
+            if (chest != null)
             {
                 ChestInventory.instance.OpenChest(chest);
             }
@@ -188,17 +175,36 @@ public class PlayerMovement : MovingObject
     }
 
     /// <summary>
+    /// Tries to move - handles different cases when the player can and cannot move
+    /// </summary>
+    private void AttemptMove(Vector2Int dir)
+    {
+        // Hit to see if something is in the way
+        RaycastHit2D hit;
+        if(!CanMove(dir, out hit)) return;
+
+        // Initiate the movement
+        Vector2 start = transform.position;
+        Vector2 end = start + dir;
+        moveManager.ClaimSpot(Vector2Int.FloorToInt(end));
+        StartCoroutine(SmoothMovement(end));
+
+        // Update certain other events
+        DialoguePanel.instance.EndDialogue();
+        ShopManager.instance.CloseShop();
+        ChestInventory.instance.CloseChest();
+        animatorHandler.AnimateMovement(dir);
+    }
+
+    /// <summary>
     /// When the player tries to move into an enemy
     /// </summary>
-    /// <typeparam name="T"></typeparam>
-    /// <param name="component"></param>
-    protected override void Attack<T>(T component)
+    protected void Attack(EnemyStats hitEnemy)
     {
         if (hitting) return;
         hitting = true;
         Invoke("HittingFalse", stats.hitDelay.GetValue());
         animatorHandler.AnimateAttack();
-        EnemyStats hitEnemy = component as EnemyStats;
         hitEnemy.TakeDamage(Random.Range(stats.minAttack.GetIntValue(), stats.maxAttack.GetIntValue() + 1));
     }
 
