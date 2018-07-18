@@ -11,6 +11,8 @@ public class EnemyStats : Stats
     public Enemy enemy;
     [HideInInspector]
     public Stat turnDelay;
+    [HideInInspector]
+    public Stat attackDelay;
     [Header("Components")]
     public Experience experiencePrefab;
     public LootBag lootBagPrefab;
@@ -34,6 +36,7 @@ public class EnemyStats : Stats
         minAttack.SetBaseValue(enemy.minAttack);
         maxAttack.SetBaseValue(enemy.maxAttack);
         movementDelay.SetBaseValue(enemy.movementDelay);
+        attackDelay.SetBaseValue(enemy.attackDelay);
         maxHealth.SetBaseValue(enemy.maxHealth);
         defense.SetBaseValue(enemy.defense);
         turnDelay.SetBaseValue(enemy.turnDelay);

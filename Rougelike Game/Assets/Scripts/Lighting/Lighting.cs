@@ -35,7 +35,7 @@ public class Lighting : MonoBehaviour
 
     public void GenerateLight()
     {
-        FloodLight();
+        RayLight();
         if (LightingType == LightType.flood)
         {
             FloodLight();
@@ -258,7 +258,12 @@ public class Lighting : MonoBehaviour
     /// </summary>
     public void ResetLight()
     {
+        List<Vector2Int> tiles = new List<Vector2Int>();
         foreach (var tile in litTiles)
+        {
+            tiles.Add(tile);
+        }
+        foreach(var tile in tiles)
         {
             SetTileColor(tile, Color.black);
         }
@@ -271,7 +276,12 @@ public class Lighting : MonoBehaviour
     /// </summary>
     public void DimLight()
     {
+        List<Vector2Int> tiles = new List<Vector2Int>();
         foreach (var tile in brightTiles)
+        {
+            tiles.Add(tile);
+        }
+        foreach (var tile in tiles)
         {
             SetTileColor(tile, new Color(0, 0, 0, 0.5f));
         }
