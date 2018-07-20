@@ -34,6 +34,8 @@ public class TileType
             }
         }
 
+        if (t.Count == 0) return null;
+
         return t[Random.Range(0, t.Count)];
     }
 }

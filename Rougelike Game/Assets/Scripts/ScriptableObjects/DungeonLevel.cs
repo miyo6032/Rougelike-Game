@@ -12,14 +12,18 @@ public class DungeonLevel : ScriptableObject
     public TileType WallTile; // The tile that will be the wall texture
     public TileType FreeStandingWallTile; // A freestanding wall tile
     public TileType DecorativeFloorTile;
-    [Range(0, 1)]
-    public float DecorationDensity;
+    public TileType FreeStandingDecor;
     public Sprite UpStairs;
     public Sprite DownStairs;
     public Sprite Door;
     public Sprite HiddenDoor;
+    [Header("Decoration")]
+    [Range(0, 1)]
+    public float FloorDecorationDensity;
     [Range(0, 1)]
     public float HiddenDoorDensity;
+    [Range(0, 100)]
+    public int FreeStandingDecorationCount;
     [Header("Dungeon Size")]
     [Range(3, 100)]
     public int Height = 3;
@@ -41,16 +45,12 @@ public class DungeonLevel : ScriptableObject
     [Range(3, 30)]
     public int MaxRoomWidth = 3;
     [Header("Enemies")]
-    [Range(0, 10)]
-    public int MinEnemiesPerRoom;
-    [Range(0, 10)]
-    public int MaxEnemiesPerRoom;
+    [Range(0, 100)]
+    public int EnemiesPerLevel;
     public EnemyType Enemies;
     [Header("Chests")]
     [Range(0, 30)]
-    public int MinChestPerLevel;
-    [Range(0, 30)]
-    public int MaxChestsPerLevel;
+    public int ChestsPerLevel;
     [Range(1, 30)]
     public int ChestLevel = 1;
 }
