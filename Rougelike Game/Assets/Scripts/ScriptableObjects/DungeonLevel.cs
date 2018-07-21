@@ -53,6 +53,25 @@ public class DungeonLevel : ScriptableObject
     public int ChestsPerLevel;
     [Range(1, 30)]
     public int ChestLevel = 1;
+    [Header("Cave")]
+    public TileType CaveFloor;
+    public TileType CaveFreeStandingDecor;
+    [Range(0, 100)]
+    public int CaveDecorationCount;
+    [Range(0, 100)]
+    public int fillPercent;
+    [Range(0, 10)]
+    public int smoothingCycles;
+    [Range(0, 8)]
+    public int birthLimit;
+    [Range(0, 8)]
+    public int deathLimit;
+    [Range(0, 100)]
+    public int wallThresholdSize = 50;
+    [Range(0, 100)]
+    public int roomThresholdSize = 50;
+    public string seed;
+    public bool useRandomSeed = true;
 }
 
 [System.Serializable]

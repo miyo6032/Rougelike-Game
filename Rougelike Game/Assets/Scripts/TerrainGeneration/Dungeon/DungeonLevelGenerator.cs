@@ -92,6 +92,18 @@ public class DungeonLevelGenerator : TerrainGenerator
             WriteEdgeToMap(edge);
         }
 
+        CellularAutomata caveGen = new CellularAutomata(DungeonLevel);
+        List<List<Vector2Int>> caveRooms = caveGen.Generate();
+
+        foreach(var caveRoom in caveRooms)
+        {
+            foreach(var tile in caveRoom)
+            {
+                map[tile.x, tile.y] = Tiles.caveTile;
+            }
+        }
+
+        // Place the physical objects into the world
         AddFloorsAndWalls();
         PlaceDoors();
 
@@ -361,6 +373,16 @@ public class DungeonLevelGenerator : TerrainGenerator
                     }
                 }
 
+                else if(map[x, y] == Tiles.caveTile)
+                {
+                    // Offset to keep the tilemap at the expected position
+                    floor.SetTile(new Vector3Int(x, y, 0), DungeonLevel.CaveFloor.GetTile());
+                    if (Random.Range(0, 1f) < DungeonLevel.FloorDecorationDensity)
+                    {
+                        upperFloor.SetTile(new Vector3Int(x, y, 0), DungeonLevel.DecorativeFloorTile.GetTile());
+                    }
+                }
+
                 // Fill in anything else with walls
                 else
                 {
@@ -381,7 +403,7 @@ public class DungeonLevelGenerator : TerrainGenerator
                     {
                         if (x + i > 0 && x + i < DungeonLevel.Width - 1 && y + j > 0 && y + j < DungeonLevel.Height - 1)
                         {
-                            if (map[x + i, y + j] == Tiles.floorTile)
+                            if (map[x + i, y + j] == Tiles.floorTile || map[x + i, y + j] == Tiles.caveTile)
                             {
                                 containsFloor = true;
                             }
@@ -423,7 +445,7 @@ public class DungeonLevelGenerator : TerrainGenerator
                          *      o
                          *    o o o
                          *    w d w
-                         *
+                         *      o
                          * The other complexity is the need to rotate the Door
                          */
                         Vector2Int crossCenter = new Vector2Int(x + direction[0].x, y + direction[0].y);
@@ -432,12 +454,14 @@ public class DungeonLevelGenerator : TerrainGenerator
                         Vector2Int crossRight = new Vector2Int(x + direction[0].x + direction[2].x, y + direction[0].y + direction[2].y);
                         Vector2Int crossBottomLeft = new Vector2Int(x + direction[1].x, y + direction[1].y);
                         Vector2Int crossBottomRight = new Vector2Int(x + direction[2].x, y + direction[2].y);
+                        Vector2Int crossDown = new Vector2Int(x - direction[0].x, y - direction[0].y);
 
                         if (map[crossCenter.x, crossCenter.y] == Tiles.floorTile &&
                             map[crossUp.x, crossUp.y] == Tiles.floorTile &&
                             (map[crossLeft.x, crossLeft.y] == Tiles.floorTile || map[crossRight.x, crossRight.y] == Tiles.floorTile) &&
                             IsWallTile(map[crossBottomLeft.x, crossBottomLeft.y]) &&
                             IsWallTile(map[crossBottomRight.x, crossBottomRight.y]) &&
+                            map[crossDown.x, crossDown.y] == Tiles.floorTile &&
                             !placedDoors.ContainsKey(new Vector2Int(x, y)))
                         {
                             DungeonDoor instance = Instantiate(door, new Vector3(x, y), Quaternion.identity,

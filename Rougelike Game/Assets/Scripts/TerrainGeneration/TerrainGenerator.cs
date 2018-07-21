@@ -8,6 +8,7 @@ public enum Tiles
     wallTile,
     voidTile,
     freeStandingWallTile,
+    caveTile,
 }
 
 [System.Serializable]
