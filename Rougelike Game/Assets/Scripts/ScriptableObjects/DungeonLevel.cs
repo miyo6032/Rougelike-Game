@@ -17,6 +17,12 @@ public class DungeonLevel : ScriptableObject
     public Sprite DownStairs;
     public Sprite Door;
     public Sprite HiddenDoor;
+    public Sprite HoleEdge;
+    public Sprite Hole;
+    [Header("Liquid")]
+    public Sprite Liquid;
+    public Sprite LiquidEdge;
+    public Effect liquidEffect;
     [Header("Decoration")]
     [Range(0, 1)]
     public float FloorDecorationDensity;
@@ -24,6 +30,10 @@ public class DungeonLevel : ScriptableObject
     public float HiddenDoorDensity;
     [Range(0, 100)]
     public int FreeStandingDecorationCount;
+    [Range(0, 10)]
+    public int HoleCount;
+    [Range(0, 10)]
+    public int LiquidCount;
     [Header("Dungeon Size")]
     [Range(3, 100)]
     public int Height = 3;

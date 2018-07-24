@@ -9,6 +9,7 @@ public class Effect : ScriptableObject
     public int duration;
     public bool applyOnce;
     public bool removeAfterDone;
+    public bool isPermanent;
     public Modifier[] ModifiersAffected;
 
 }

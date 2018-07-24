@@ -7,6 +7,8 @@ public enum Tiles
     floorTile,
     wallTile,
     voidTile,
+    holeTile,
+    liquidTile,
     freeStandingWallTile,
     caveTile,
 }
