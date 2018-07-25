@@ -13,36 +13,6 @@ public enum Tiles
     caveTile,
 }
 
-[System.Serializable]
-public class WeightedTile
-{
-    public Tile tile;
-    [Range(1, 100)]
-    public int weight = 1;
-}
-
-[System.Serializable]
-public class TileType
-{
-    public WeightedTile[] tiles;
-
-    public Tile GetTile()
-    {
-        List<Tile> t = new List<Tile>();
-        foreach (var weightedTile in tiles)
-        {
-            for (int i = 0; i < weightedTile.weight; i++)
-            {
-                t.Add(weightedTile.tile);
-            }
-        }
-
-        if (t.Count == 0) return null;
-
-        return t[Random.Range(0, t.Count)];
-    }
-}
-
 /// <summary>
 /// Base class for terrain in editor generators
 /// </summary>

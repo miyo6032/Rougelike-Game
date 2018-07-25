@@ -17,6 +17,7 @@ public class DungeonLevelGenerator : TerrainGenerator
     public Chest chestPrefab;
     public SpriteRenderer holePrefab;
     public SpriteRenderer liquidPrefab;
+    public Destructible destructiblePrefab;
     public DungeonUpstairs upStairs;
     public DungeonDownstairs downStairs;
     public DungeonDoor door;
@@ -115,6 +116,7 @@ public class DungeonLevelGenerator : TerrainGenerator
         PlaceObjects(PlaceChest, DungeonLevel.ChestsPerLevel);
         PlaceObjects(PlaceDecorObjects, DungeonLevel.FreeStandingDecorationCount);
         PlaceObjects(PlaceEnemy, DungeonLevel.EnemiesPerLevel);
+        PlaceObjects(PlaceDestrucibleObjects, DungeonLevel.DestructibleObjectCount);
     }
 
     /// <summary>
@@ -170,8 +172,7 @@ public class DungeonLevelGenerator : TerrainGenerator
     private void PlaceEnemy(Vector2Int objectPosition)
     {
         enemyPrefab.enemy = DungeonLevel.Enemies.GetEnemy();
-        EnemyStats enemy = Instantiate(enemyPrefab, (Vector2)objectPosition, Quaternion.identity);
-        enemy.transform.SetParent(mapGameObjects);
+        EnemyStats enemy = Instantiate(enemyPrefab, (Vector2)objectPosition, Quaternion.identity, mapGameObjects);
         if (Lighting.LightingType == Lighting.LightType.smooth)
         {
             enemy.GetComponent<SpriteRenderer>().material = Lighting.SmoothLighting;
@@ -181,8 +182,7 @@ public class DungeonLevelGenerator : TerrainGenerator
     private void PlaceChest(Vector2Int objectPosition)
     {
         chestPrefab.lootLevel = DungeonLevel.ChestLevel;
-        Chest chest = Instantiate(chestPrefab, (Vector2)objectPosition, Quaternion.identity);
-        chest.transform.SetParent(mapGameObjects);
+        Chest chest = Instantiate(chestPrefab, (Vector2)objectPosition, Quaternion.identity, mapGameObjects);
         if (Lighting.LightingType == Lighting.LightType.smooth)
         {
             chest.GetComponent<SpriteRenderer>().material = Lighting.SmoothLighting;
@@ -192,9 +192,19 @@ public class DungeonLevelGenerator : TerrainGenerator
     private void PlaceDecorObjects(Vector2Int objectPosition)
     {
         Tile tile = DungeonLevel.FreeStandingDecor.GetTile();
-        if(tile != null)
+        if(tile)
         {
             walls.SetTile(new Vector3Int(objectPosition.x, objectPosition.y, 0), tile);
+        }
+    }
+
+    private void PlaceDestrucibleObjects(Vector2Int objectPosition)
+    {
+        destructiblePrefab.destructible = DungeonLevel.Destructibles.GetDestructible();
+        Destructible destructible = Instantiate(destructiblePrefab, (Vector2)objectPosition, Quaternion.identity, mapGameObjects);
+        if (Lighting.LightingType == Lighting.LightType.smooth)
+        {
+            destructible.GetComponent<SpriteRenderer>().material = Lighting.SmoothLighting;
         }
     }
 

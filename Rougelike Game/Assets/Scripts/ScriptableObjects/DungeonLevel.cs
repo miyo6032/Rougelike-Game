@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine.Tilemaps;
 
 /// <summary>
 /// The DungeonLevel scriptable object that allows a DungeonLevel floor to be customized
@@ -13,6 +14,7 @@ public class DungeonLevel : ScriptableObject
     public TileType FreeStandingWallTile; // A freestanding wall tile
     public TileType DecorativeFloorTile;
     public TileType FreeStandingDecor;
+    public DestructibleType Destructibles;
     public Sprite UpStairs;
     public Sprite DownStairs;
     public Sprite Door;
@@ -34,6 +36,8 @@ public class DungeonLevel : ScriptableObject
     public int HoleCount;
     [Range(0, 10)]
     public int LiquidCount;
+    [Range(0, 100)]
+    public int DestructibleObjectCount;
     [Header("Dungeon Size")]
     [Range(3, 100)]
     public int Height = 3;
@@ -82,32 +86,4 @@ public class DungeonLevel : ScriptableObject
     public int roomThresholdSize = 50;
     public string seed;
     public bool useRandomSeed = true;
-}
-
-[System.Serializable]
-public class WeightedEnemy
-{
-    public Enemy enemy;
-    [Range(1, 100)]
-    public int weight = 1;
-}
-
-[System.Serializable]
-public class EnemyType
-{
-    public WeightedEnemy[] enemies;
-
-    public Enemy GetEnemy()
-    {
-        List<Enemy> e = new List<Enemy>();
-        foreach (var weightedEnemy in enemies)
-        {
-            for (int i = 0; i < weightedEnemy.weight; i++)
-            {
-                e.Add(weightedEnemy.enemy);
-            }
-        }
-
-        return e[Random.Range(0, e.Count)];
-    }
 }

@@ -6,19 +6,13 @@ using UnityEngine.EventSystems;
 /// </summary>
 public class EnemyClick : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 {
-    private PlayerMovement playerMovement;
     private bool pointerIsDown;
-
-    private void Start()
-    {
-        playerMovement = GameObject.Find("Player").GetComponent<PlayerMovement>();
-    }
 
     public void Update()
     {
         if (pointerIsDown)
         {
-            playerMovement.StartAutomoveWithTarget(transform);
+            PlayerMovement.instance.StartAutomoveWithTarget(transform);
         }
     }
 
