@@ -8,15 +8,13 @@ using UnityEngine.Tilemaps;
 /// </summary>
 public class DungeonLevelGenerator : TerrainGenerator
 {
+    public static DungeonLevelGenerator instance;
     [HideInInspector]
     public DungeonLevel DungeonLevel;
 
     [Header("References")]
-    public Lighting Lighting;
     public EnemyStats enemyPrefab;
     public Chest chestPrefab;
-    public SpriteRenderer holePrefab;
-    public SpriteRenderer liquidPrefab;
     public Destructible destructiblePrefab;
     public DungeonUpstairs upStairs;
     public DungeonDownstairs downStairs;
@@ -26,9 +24,21 @@ public class DungeonLevelGenerator : TerrainGenerator
     private List<Edge> hallways;
     private Dictionary<Vector2Int, Room> rooms;
     private Dictionary<Vector2Int, bool> placedDoors;
-    private Transform mapGameObjects;
+    public Transform mapGameObjects { get; private set; }
     public VertexPair dungeonExits { get; private set; }
     private bool generateDownStairs;
+
+    void Start()
+    {
+        if (instance == null)
+        {
+            instance = this;
+        }
+        else if (instance != this)
+        {
+            Debug.LogError("Duplicate DungeonLevelGenerator components in scene!");
+        }
+    }
 
     public override void Generate()
     {
@@ -109,10 +119,12 @@ public class DungeonLevelGenerator : TerrainGenerator
 
         // Place the physical objects into the world
         PlaceExits();
-        PlaceHole(Tiles.holeTile, DungeonLevel.HoleCount);
-        PlaceHole(Tiles.liquidTile, DungeonLevel.LiquidCount);
         AddFloorsAndWalls();
         PlaceDoors();
+        foreach (WeightedGeneratedStructure type in DungeonLevel.generatedStructures)
+        {
+            PlaceGeneratedStructures(type.structure, type.amountPerLevel);
+        }
         PlaceObjects(PlaceChest, DungeonLevel.ChestsPerLevel);
         PlaceObjects(PlaceDecorObjects, DungeonLevel.FreeStandingDecorationCount);
         PlaceObjects(PlaceEnemy, DungeonLevel.EnemiesPerLevel);
@@ -173,9 +185,9 @@ public class DungeonLevelGenerator : TerrainGenerator
     {
         enemyPrefab.enemy = DungeonLevel.Enemies.GetEnemy();
         EnemyStats enemy = Instantiate(enemyPrefab, (Vector2)objectPosition, Quaternion.identity, mapGameObjects);
-        if (Lighting.LightingType == Lighting.LightType.smooth)
+        if (Lighting.instance.LightingType == Lighting.LightType.smooth)
         {
-            enemy.GetComponent<SpriteRenderer>().material = Lighting.SmoothLighting;
+            enemy.GetComponent<SpriteRenderer>().material = Lighting.instance.SmoothLighting;
         }
     }
     
@@ -183,9 +195,9 @@ public class DungeonLevelGenerator : TerrainGenerator
     {
         chestPrefab.lootLevel = DungeonLevel.ChestLevel;
         Chest chest = Instantiate(chestPrefab, (Vector2)objectPosition, Quaternion.identity, mapGameObjects);
-        if (Lighting.LightingType == Lighting.LightType.smooth)
+        if (Lighting.instance.LightingType == Lighting.LightType.smooth)
         {
-            chest.GetComponent<SpriteRenderer>().material = Lighting.SmoothLighting;
+            chest.GetComponent<SpriteRenderer>().material = Lighting.instance.SmoothLighting;
         }
     }
 
@@ -202,9 +214,9 @@ public class DungeonLevelGenerator : TerrainGenerator
     {
         destructiblePrefab.destructible = DungeonLevel.Destructibles.GetDestructible();
         Destructible destructible = Instantiate(destructiblePrefab, (Vector2)objectPosition, Quaternion.identity, mapGameObjects);
-        if (Lighting.LightingType == Lighting.LightType.smooth)
+        if (Lighting.instance.LightingType == Lighting.LightType.smooth)
         {
-            destructible.GetComponent<SpriteRenderer>().material = Lighting.SmoothLighting;
+            destructible.GetComponent<SpriteRenderer>().material = Lighting.instance.SmoothLighting;
         }
     }
 
@@ -217,16 +229,17 @@ public class DungeonLevelGenerator : TerrainGenerator
         {
             Room randomRoom;
             Vector2Int objectPosition;
+            int infCounter = 0;
             List<Room> roomPos = rooms.Values.ToList();
             do
             {
-                if (roomPos.Count == 0)
+                infCounter++;
+                if (infCounter > 100)
                 {
                     Debug.LogError("Too many objects for one room: Increase the size of your room, or reduce the number of objects.");
                     return;
                 }
                 randomRoom = roomPos[Random.Range(0, roomPos.Count)];
-                roomPos.Remove(randomRoom);
                 int posX = randomRoom.lowerLeftCorner.x + Random.Range(0, randomRoom.GetWidth());
                 int posY = randomRoom.lowerLeftCorner.y + Random.Range(0, randomRoom.GetHeight());
                 objectPosition = new Vector2Int(posX, posY);
@@ -246,43 +259,28 @@ public class DungeonLevelGenerator : TerrainGenerator
         return false;
     }
 
-    private void PlaceHole(Tiles tile, int count)
+    /// <summary>
+    /// Places all generated structures in order
+    /// </summary>
+    private void PlaceGeneratedStructures(GeneratedStructure structure, int count)
     {
+        List<Room> roomPos = rooms.Values.ToList();
         for (int i = 0; i < count; i++)
         {
             Room randomRoom;
-            List<Room> roomPos = rooms.Values.ToList();
+            Vector2Int structurePosition;
             do
             {
                 if (roomPos.Count == 0)
                 {
-                    Debug.LogError("Too many holes/lakes for one room: Increase the number of rooms.");
+                    Debug.LogError("Too many generated structures for one level: Increase the number of rooms.");
                     return;
                 }
                 randomRoom = roomPos[Random.Range(0, roomPos.Count)];
                 roomPos.Remove(randomRoom);
-            } while (randomRoom.SpotTaken(randomRoom.GetCenter()));
+            } while(!structure.CanGenerate(walls, upperFloor, randomRoom));
 
-            int roomWidth2 = Mathf.FloorToInt(randomRoom.GetWidth() / 2f) - 1;
-            int roomHeight2 = Mathf.FloorToInt(randomRoom.GetHeight() / 2f) - 1;
-
-            for (int x = -roomWidth2; x < roomWidth2; x++)
-            {
-                for (int y = -roomHeight2; y < roomHeight2; y++)
-                {
-                    Vector2Int pos = new Vector2Int(x + randomRoom.GetCenter().x, y + randomRoom.GetCenter().y);
-                    if(x != roomWidth2 && x != -roomWidth2 && y != roomHeight2 && y != -roomHeight2)
-                    {
-                        randomRoom.ClaimRoomSpot(new Vector2Int(pos.x, pos.y));
-                        map[pos.x, pos.y] = tile;
-                    }
-                    else if(Random.Range(0, 2) == 0)
-                    {
-                        randomRoom.ClaimRoomSpot(new Vector2Int(pos.x, pos.y));
-                        map[pos.x, pos.y] = tile;
-                    }
-                }
-            }
+            structure.Generate(walls, upperFloor, randomRoom);
         }
     }
 
@@ -434,41 +432,6 @@ public class DungeonLevelGenerator : TerrainGenerator
                         upperFloor.SetTile(new Vector3Int(x, y, 0), DungeonLevel.DecorativeFloorTile.GetTile());
                     }
                 }
-                // Place holes
-                else if(map[x, y] == Tiles.holeTile)
-                {
-                    SpriteRenderer instance = Instantiate(holePrefab, new Vector3(x, y, 0), Quaternion.identity, mapGameObjects);
-                    if (map[x ,y + 1] != Tiles.holeTile)
-                    {
-                        instance.sprite = DungeonLevel.HoleEdge;
-                    }
-                    else
-                    {
-                        instance.sprite = DungeonLevel.Hole;
-                    }
-                    if (Lighting.LightingType == Lighting.LightType.smooth)
-                    {
-                        instance.material = Lighting.SmoothLighting;
-                    }
-                }
-                // Place pools
-                else if (map[x, y] == Tiles.liquidTile)
-                {
-                    SpriteRenderer instance = Instantiate(liquidPrefab, new Vector3(x, y, 0), Quaternion.identity, mapGameObjects);
-                    if (map[x, y + 1] != Tiles.liquidTile)
-                    {
-                        instance.sprite = DungeonLevel.LiquidEdge;
-                    }
-                    else
-                    {
-                        instance.sprite = DungeonLevel.Liquid;
-                    }
-                    if (Lighting.LightingType == Lighting.LightType.smooth)
-                    {
-                        instance.material = Lighting.SmoothLighting;
-                    }
-                    instance.GetComponent<Liquid>().effect = DungeonLevel.liquidEffect;
-                }
                 // Fill in anything else with walls
                 else
                 {
@@ -559,9 +522,9 @@ public class DungeonLevelGenerator : TerrainGenerator
                                 instance.spriteRenderer.sprite = DungeonLevel.HiddenDoor;
                             }
 
-                            if (Lighting.LightingType == Lighting.LightType.smooth)
+                            if (Lighting.instance.LightingType == Lighting.LightType.smooth)
                             {
-                                instance.spriteRenderer.material = Lighting.SmoothLighting;
+                                instance.spriteRenderer.material = Lighting.instance.SmoothLighting;
                             }
 
                             placedDoors.Add(new Vector2Int(x, y), true);
@@ -585,9 +548,9 @@ public class DungeonLevelGenerator : TerrainGenerator
 
         // Also claim the foot of the stairs
         rooms[claimedSpot].ClaimRoomSpot(claimedSpot + new Vector2Int(-1, 0));
-        if (Lighting.LightingType == Lighting.LightType.smooth)
+        if (Lighting.instance.LightingType == Lighting.LightType.smooth)
         {
-            upstairs.GetComponent<SpriteRenderer>().material = Lighting.SmoothLighting;
+            upstairs.GetComponent<SpriteRenderer>().material = Lighting.instance.SmoothLighting;
         }
         if (generateDownStairs)
         {
@@ -596,9 +559,9 @@ public class DungeonLevelGenerator : TerrainGenerator
             claimedSpot = Vector2Int.FloorToInt(dungeonExits.ToVector2()[1]);
             rooms[claimedSpot].ClaimRoomSpot(claimedSpot);
             rooms[claimedSpot].ClaimRoomSpot(claimedSpot + new Vector2Int(1, 0));
-            if (Lighting.LightingType == Lighting.LightType.smooth)
+            if (Lighting.instance.LightingType == Lighting.LightType.smooth)
             {
-                downstairs.GetComponent<SpriteRenderer>().material = Lighting.SmoothLighting;
+                downstairs.GetComponent<SpriteRenderer>().material = Lighting.instance.SmoothLighting;
             }
         }
     }

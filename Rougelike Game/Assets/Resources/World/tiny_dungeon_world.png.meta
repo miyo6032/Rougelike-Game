@@ -214,8 +214,8 @@ TextureImporter:
     21300414: Web1
     21300416: Web2
     21300418: Web3
-    21300420: tiny_dungeon_world_210
-    21300422: Web4
+    21300420: Web4
+    21300422: Web5
     21300424: Rune1
     21300426: Rune2
     21300428: Rune3
@@ -3343,7 +3343,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: tiny_dungeon_world_210
+      name: Web4
       rect:
         serializedVersion: 2
         x: 48
@@ -3357,7 +3357,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: Web4
+      name: Web5
       rect:
         serializedVersion: 2
         x: 64

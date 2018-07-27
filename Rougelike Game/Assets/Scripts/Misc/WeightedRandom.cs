@@ -64,7 +64,7 @@ public class WeightedDestructible
 public class DestructibleType
 {
     public WeightedDestructible[] destructibles;
-    
+
     public DestructibleScriptableObject GetDestructible()
     {
         float[] probs = new float[destructibles.Length];

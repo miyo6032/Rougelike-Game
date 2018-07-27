@@ -1,6 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections.Generic;
-using UnityEngine.Tilemaps;
 
 /// <summary>
 /// The DungeonLevel scriptable object that allows a DungeonLevel floor to be customized
@@ -15,16 +13,11 @@ public class DungeonLevel : ScriptableObject
     public TileType DecorativeFloorTile;
     public TileType FreeStandingDecor;
     public DestructibleType Destructibles;
+    public WeightedGeneratedStructure[] generatedStructures;
     public Sprite UpStairs;
     public Sprite DownStairs;
     public Sprite Door;
     public Sprite HiddenDoor;
-    public Sprite HoleEdge;
-    public Sprite Hole;
-    [Header("Liquid")]
-    public Sprite Liquid;
-    public Sprite LiquidEdge;
-    public Effect liquidEffect;
     [Header("Decoration")]
     [Range(0, 1)]
     public float FloorDecorationDensity;
@@ -32,10 +25,6 @@ public class DungeonLevel : ScriptableObject
     public float HiddenDoorDensity;
     [Range(0, 100)]
     public int FreeStandingDecorationCount;
-    [Range(0, 10)]
-    public int HoleCount;
-    [Range(0, 10)]
-    public int LiquidCount;
     [Range(0, 100)]
     public int DestructibleObjectCount;
     [Header("Dungeon Size")]
