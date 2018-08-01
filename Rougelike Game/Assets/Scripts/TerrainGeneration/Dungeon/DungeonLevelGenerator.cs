@@ -9,11 +9,13 @@ using UnityEngine.Tilemaps;
 public class DungeonLevelGenerator : TerrainGenerator
 {
     public static DungeonLevelGenerator instance;
+
     [HideInInspector]
     public DungeonLevel DungeonLevel;
 
     [Header("References")]
     public EnemyStats enemyPrefab;
+
     public Chest chestPrefab;
     public Destructible destructiblePrefab;
     public DungeonUpstairs upStairs;
@@ -28,7 +30,7 @@ public class DungeonLevelGenerator : TerrainGenerator
     public VertexPair dungeonExits { get; private set; }
     private bool generateDownStairs;
 
-    void Start()
+    private void Start()
     {
         if (instance == null)
         {
@@ -74,7 +76,6 @@ public class DungeonLevelGenerator : TerrainGenerator
                 map[x, y] = Tiles.voidTile;
             }
         }
-        Tile tile = walls.GetTile(Vector3Int.zero) as Tile;
     }
 
     /// <summary>
@@ -109,9 +110,9 @@ public class DungeonLevelGenerator : TerrainGenerator
         CellularAutomata caveGen = new CellularAutomata(DungeonLevel);
         List<List<Vector2Int>> caveRooms = caveGen.Generate();
 
-        foreach(var caveRoom in caveRooms)
+        foreach (var caveRoom in caveRooms)
         {
-            foreach(var tile in caveRoom)
+            foreach (var tile in caveRoom)
             {
                 map[tile.x, tile.y] = Tiles.caveTile;
             }
@@ -190,7 +191,7 @@ public class DungeonLevelGenerator : TerrainGenerator
             enemy.GetComponent<SpriteRenderer>().material = Lighting.instance.SmoothLighting;
         }
     }
-    
+
     private void PlaceChest(Vector2Int objectPosition)
     {
         chestPrefab.lootLevel = DungeonLevel.ChestLevel;
@@ -204,7 +205,7 @@ public class DungeonLevelGenerator : TerrainGenerator
     private void PlaceDecorObjects(Vector2Int objectPosition)
     {
         Tile tile = DungeonLevel.FreeStandingDecor.GetTile();
-        if(tile)
+        if (tile)
         {
             walls.SetTile(new Vector3Int(objectPosition.x, objectPosition.y, 0), tile);
         }
@@ -252,7 +253,7 @@ public class DungeonLevelGenerator : TerrainGenerator
 
     private bool NextToDoor(Vector2Int pos)
     {
-        if(placedDoors.ContainsKey(pos + Vector2Int.up) || placedDoors.ContainsKey(pos + Vector2Int.down) || placedDoors.ContainsKey(pos + Vector2Int.left) || placedDoors.ContainsKey(pos + Vector2Int.right))
+        if (placedDoors.ContainsKey(pos + Vector2Int.up) || placedDoors.ContainsKey(pos + Vector2Int.down) || placedDoors.ContainsKey(pos + Vector2Int.left) || placedDoors.ContainsKey(pos + Vector2Int.right))
         {
             return true;
         }
@@ -268,7 +269,6 @@ public class DungeonLevelGenerator : TerrainGenerator
         for (int i = 0; i < count; i++)
         {
             Room randomRoom;
-            Vector2Int structurePosition;
             do
             {
                 if (roomPos.Count == 0)
@@ -278,7 +278,7 @@ public class DungeonLevelGenerator : TerrainGenerator
                 }
                 randomRoom = roomPos[Random.Range(0, roomPos.Count)];
                 roomPos.Remove(randomRoom);
-            } while(!structure.CanGenerate(walls, upperFloor, randomRoom));
+            } while (!structure.CanGenerate(walls, upperFloor, randomRoom));
 
             structure.Generate(walls, upperFloor, randomRoom);
         }
@@ -418,12 +418,12 @@ public class DungeonLevelGenerator : TerrainGenerator
                 {
                     // Offset to keep the tilemap at the expected position
                     floor.SetTile(new Vector3Int(x, y, 0), DungeonLevel.FloorTile.GetTile());
-                    if(Random.Range(0, 1f) < DungeonLevel.FloorDecorationDensity)
+                    if (Random.Range(0, 1f) < DungeonLevel.FloorDecorationDensity)
                     {
                         upperFloor.SetTile(new Vector3Int(x, y, 0), DungeonLevel.DecorativeFloorTile.GetTile());
                     }
                 }
-                else if(map[x, y] == Tiles.caveTile)
+                else if (map[x, y] == Tiles.caveTile)
                 {
                     // Offset to keep the tilemap at the expected position
                     floor.SetTile(new Vector3Int(x, y, 0), DungeonLevel.CaveFloor.GetTile());
@@ -481,11 +481,11 @@ public class DungeonLevelGenerator : TerrainGenerator
             {
                 if (map[x, y] == Tiles.floorTile)
                 {
-                    Vector2Int[] up = {Vector2Int.up, Vector2Int.left, Vector2Int.right};
-                    Vector2Int[] down = {Vector2Int.down, Vector2Int.right, Vector2Int.left};
-                    Vector2Int[] left = {Vector2Int.left, Vector2Int.down, Vector2Int.up};
-                    Vector2Int[] right = {Vector2Int.right, Vector2Int.up, Vector2Int.down};
-                    Vector2Int[][] directions = {up, down, left, right};
+                    Vector2Int[] up = { Vector2Int.up, Vector2Int.left, Vector2Int.right };
+                    Vector2Int[] down = { Vector2Int.down, Vector2Int.right, Vector2Int.left };
+                    Vector2Int[] left = { Vector2Int.left, Vector2Int.down, Vector2Int.up };
+                    Vector2Int[] right = { Vector2Int.right, Vector2Int.up, Vector2Int.down };
+                    Vector2Int[][] directions = { up, down, left, right };
                     foreach (var direction in directions)
                     {
                         /*

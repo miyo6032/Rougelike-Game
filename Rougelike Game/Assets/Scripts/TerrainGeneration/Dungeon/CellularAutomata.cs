@@ -6,7 +6,8 @@ using UnityEngine;
 /// Generates basic cave shapes in the form of a list of vectors
 /// Based on Sebastian Lague's cellular automata youtube series
 /// </summary>
-public class CellularAutomata {
+public class CellularAutomata
+{
     private int width;
     private int height;
 
@@ -55,7 +56,7 @@ public class CellularAutomata {
     {
         map = new int[width, height];
         Init();
-        for(int i = 0; i < smoothingCycles; i++)
+        for (int i = 0; i < smoothingCycles; i++)
         {
             int[,] newMap = new int[width, height];
             Smooth(newMap);
@@ -77,9 +78,9 @@ public class CellularAutomata {
 
         System.Random random = new System.Random(seed.GetHashCode());
 
-        for(int x = 0; x < width; x++)
+        for (int x = 0; x < width; x++)
         {
-            for(int y = 0; y < height; y++)
+            for (int y = 0; y < height; y++)
             {
                 if (x == 0 || x == width - 1 || y == 0 || y == height - 1)
                 {
@@ -96,18 +97,18 @@ public class CellularAutomata {
     /// <summary>
     /// Change the map 1's and 0's based on their neighbors
     /// </summary>
-    void Smooth(int[,] map)
+    private void Smooth(int[,] map)
     {
         for (int x = 0; x < width; x++)
         {
             for (int y = 0; y < height; y++)
             {
                 int count = GetSurroundingWallCount(x, y);
-                if(count >= birthLimit)
+                if (count >= birthLimit)
                 {
                     map[x, y] = 1;
                 }
-                else if(count <= deathLimit)
+                else if (count <= deathLimit)
                 {
                     map[x, y] = 0;
                 }
@@ -118,7 +119,7 @@ public class CellularAutomata {
     /// <summary>
     /// Gets the amount of walls nearby
     /// </summary>
-    int GetSurroundingWallCount(int x, int y)
+    private int GetSurroundingWallCount(int x, int y)
     {
         int wallCount = 0;
         for (int neighborX = x - 1; neighborX <= x + 1; neighborX++)
@@ -144,15 +145,15 @@ public class CellularAutomata {
     /// <summary>
     /// Remove small fragment region walls and rooms
     /// </summary>
-    void CleanRegions()
+    private void CleanRegions()
     {
         List<List<Vector2Int>> wallRegions = GetRegions(1);
 
-        foreach(List<Vector2Int> region in wallRegions)
+        foreach (List<Vector2Int> region in wallRegions)
         {
-            if(region.Count < wallThresholdSize)
+            if (region.Count < wallThresholdSize)
             {
-                foreach(Vector2Int tile in region)
+                foreach (Vector2Int tile in region)
                 {
                     map[tile.x, tile.y] = 0;
                 }
@@ -176,7 +177,7 @@ public class CellularAutomata {
     /// <summary>
     /// Gets all of the regions of a certain tile type
     /// </summary>
-    List<List<Vector2Int>> GetRegions(int tileType)
+    private List<List<Vector2Int>> GetRegions(int tileType)
     {
         List<List<Vector2Int>> regions = new List<List<Vector2Int>>();
         int[,] mapFlags = new int[width, height];
@@ -185,11 +186,11 @@ public class CellularAutomata {
         {
             for (int y = 0; y < height; y++)
             {
-                if(mapFlags[x, y] == 0 && map[x, y] == tileType)
+                if (mapFlags[x, y] == 0 && map[x, y] == tileType)
                 {
                     List<Vector2Int> region = GetRegionTiles(x, y);
                     regions.Add(region);
-                    foreach(Vector2Int tile in region)
+                    foreach (Vector2Int tile in region)
                     {
                         mapFlags[tile.x, tile.y] = 1;
                     }
@@ -202,27 +203,27 @@ public class CellularAutomata {
     /// <summary>
     /// Gets all region tiles connected to the tile position passed in
     /// </summary>
-    List<Vector2Int> GetRegionTiles(int x, int y)
+    private List<Vector2Int> GetRegionTiles(int x, int y)
     {
         List<Vector2Int> tiles = new List<Vector2Int>();
         int[,] mapFlags = new int[width, height];
         int tileType = map[x, y];
 
-        Queue <Vector2Int> queue = new Queue<Vector2Int>();
+        Queue<Vector2Int> queue = new Queue<Vector2Int>();
         queue.Enqueue(new Vector2Int(x, y));
         mapFlags[x, y] = 1;
 
-        while(queue.Count > 0)
+        while (queue.Count > 0)
         {
             Vector2Int tile = queue.Dequeue();
             tiles.Add(tile);
-            for(int i = tile.x - 1; i <= tile.x + 1; i++)
+            for (int i = tile.x - 1; i <= tile.x + 1; i++)
             {
                 for (int j = tile.y - 1; j <= tile.y + 1; j++)
                 {
-                    if(InMap(i, j) && (i == tile.x || j == tile.y))
+                    if (InMap(i, j) && (i == tile.x || j == tile.y))
                     {
-                        if(mapFlags[i, j] == 0 && map[i, j] == tileType)
+                        if (mapFlags[i, j] == 0 && map[i, j] == tileType)
                         {
                             mapFlags[i, j] = 1;
                             queue.Enqueue(new Vector2Int(i, j));
@@ -237,7 +238,7 @@ public class CellularAutomata {
     /// <summary>
     /// If in the bounds of the map
     /// </summary>
-    bool InMap(int x, int y)
+    private bool InMap(int x, int y)
     {
         return x >= 0 && x < width && y >= 0 && y < height;
     }

@@ -15,10 +15,9 @@ public class GeneratorEditor : Editor
             generator.Generate();
         }
 
-        if(GUILayout.Button("Clear Tiles"))
+        if (GUILayout.Button("Clear Tiles"))
         {
             generator.ClearTilemap();
         }
-
     }
 }
