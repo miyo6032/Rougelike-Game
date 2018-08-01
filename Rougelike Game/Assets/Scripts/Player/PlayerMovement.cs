@@ -156,11 +156,11 @@ public class PlayerMovement : MovingObject
         if(CanMove(dir, out hit)) return;
 
         // Did we hit an enemy?
-        EnemyStats enemy = hit.transform.GetComponent<EnemyStats>();
+        Stats stats = hit.transform.GetComponent<Stats>();
 
-        if (enemy != null)
+        if (stats != null)
         {
-            Attack(enemy);
+            Attack(stats);
         }
         else
         {
@@ -199,13 +199,13 @@ public class PlayerMovement : MovingObject
     /// <summary>
     /// When the player tries to move into an enemy
     /// </summary>
-    protected void Attack(EnemyStats hitEnemy)
+    protected void Attack(Stats hitObj)
     {
         if (hitting) return;
         hitting = true;
         Invoke("HittingFalse", stats.hitDelay.GetValue());
         animatorHandler.AnimateAttack();
-        hitEnemy.TakeDamage(Random.Range(stats.minAttack.GetIntValue(), stats.maxAttack.GetIntValue() + 1));
+        hitObj.TakeDamage(Random.Range(stats.minAttack.GetIntValue(), stats.maxAttack.GetIntValue() + 1));
     }
 
     /// <summary>

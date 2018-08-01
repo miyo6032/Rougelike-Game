@@ -5,7 +5,6 @@
 /// </summary>
 public class ItemUse : MonoBehaviour
 {
-    public EffectManager effectManager;
     public SkillManager skillManager;
 
     /// <summary>
@@ -16,7 +15,7 @@ public class ItemUse : MonoBehaviour
     {
         foreach (Effect effect in itemSlot.itemStack.item.ConsumptionEffects)
         {
-            effectManager.AddNewEffect(effect);
+            EffectManager.instance.AddNewEffect(effect, null);
         }
         if (itemSlot.itemStack.item.Title == "Critical Hit")
         {

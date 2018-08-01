@@ -8,13 +8,16 @@ using UnityEngine.Tilemaps;
 /// </summary>
 public class DungeonLevelGenerator : TerrainGenerator
 {
+    public static DungeonLevelGenerator instance;
+
     [HideInInspector]
     public DungeonLevel DungeonLevel;
 
     [Header("References")]
-    public Lighting Lighting;
     public EnemyStats enemyPrefab;
+
     public Chest chestPrefab;
+    public Destructible destructiblePrefab;
     public DungeonUpstairs upStairs;
     public DungeonDownstairs downStairs;
     public DungeonDoor door;
@@ -22,16 +25,28 @@ public class DungeonLevelGenerator : TerrainGenerator
     private Dictionary<Vector2Int, List<Vector2Int>> links;
     private List<Edge> hallways;
     private Dictionary<Vector2Int, Room> rooms;
-    private Transform mapGameObjects;
+    private Dictionary<Vector2Int, bool> placedDoors;
+    public Transform mapGameObjects { get; private set; }
     public VertexPair dungeonExits { get; private set; }
     private bool generateDownStairs;
+
+    private void Start()
+    {
+        if (instance == null)
+        {
+            instance = this;
+        }
+        else if (instance != this)
+        {
+            Debug.LogError("Duplicate DungeonLevelGenerator components in scene!");
+        }
+    }
 
     public override void Generate()
     {
         generateDownStairs = true;
         InitMap();
         GenerateDungeon();
-        MapToTilemap();
     }
 
     public void GenerateBottom()
@@ -39,7 +54,6 @@ public class DungeonLevelGenerator : TerrainGenerator
         generateDownStairs = false;
         InitMap();
         GenerateDungeon();
-        MapToTilemap();
     }
 
     public override void ClearTilemap()
@@ -72,9 +86,9 @@ public class DungeonLevelGenerator : TerrainGenerator
         DungeonMst dungeonMst = new DungeonMst();
         RoomGenerator roomGenerator = new RoomGenerator();
         rooms = roomGenerator.GenerateRooms(
-            DungeonLevel.InitialRoomDensity, 
-            DungeonLevel.Width, 
-            DungeonLevel.Height, 
+            DungeonLevel.InitialRoomDensity,
+            DungeonLevel.Width,
+            DungeonLevel.Height,
             new Vector2Int(DungeonLevel.MinRoomHeight, DungeonLevel.MaxRoomHeight),
             new Vector2Int(DungeonLevel.MinRoomWidth, DungeonLevel.MaxRoomWidth)
             );
@@ -93,13 +107,29 @@ public class DungeonLevelGenerator : TerrainGenerator
             WriteEdgeToMap(edge);
         }
 
-        PlaceExits();
-        PlaceChests();
+        CellularAutomata caveGen = new CellularAutomata(DungeonLevel);
+        List<List<Vector2Int>> caveRooms = caveGen.Generate();
 
-        foreach (var room in rooms.Values)
+        foreach (var caveRoom in caveRooms)
         {
-            SpawnEnemies(room);
+            foreach (var tile in caveRoom)
+            {
+                map[tile.x, tile.y] = Tiles.caveTile;
+            }
         }
+
+        // Place the physical objects into the world
+        PlaceExits();
+        AddFloorsAndWalls();
+        PlaceDoors();
+        foreach (WeightedGeneratedStructure type in DungeonLevel.generatedStructures)
+        {
+            PlaceGeneratedStructures(type.structure, type.amountPerLevel);
+        }
+        PlaceObjects(PlaceChest, DungeonLevel.ChestsPerLevel);
+        PlaceObjects(PlaceDecorObjects, DungeonLevel.FreeStandingDecorationCount);
+        PlaceObjects(PlaceEnemy, DungeonLevel.EnemiesPerLevel);
+        PlaceObjects(PlaceDestrucibleObjects, DungeonLevel.DestructibleObjectCount);
     }
 
     /// <summary>
@@ -141,65 +171,116 @@ public class DungeonLevelGenerator : TerrainGenerator
     /// <param name="room"></param>
     private void WriteRoomToMap(Room room)
     {
-        for (int y = 0; y < room.GetHeight() + 1; y++)
+        for (int y = 0; y < room.GetHeight(); y++)
         {
-            for (int x = 0; x < room.GetWidth() + 1; x++)
+            for (int x = 0; x < room.GetWidth(); x++)
             {
                 map[room.lowerLeftCorner.x + x, room.lowerLeftCorner.y + y] = Tiles.floorTile;
             }
         }
     }
 
-    private void SpawnEnemies(Room room)
+    private delegate void PlaceObject(Vector2Int objectPosition);
+
+    private void PlaceEnemy(Vector2Int objectPosition)
     {
-        int numEnemies = HelperScripts.RandomVec(new Vector2Int(DungeonLevel.MinEnemiesPerRoom, DungeonLevel.MaxEnemiesPerRoom));
-
-        for (int i = 0; i < numEnemies; i++)
+        enemyPrefab.enemy = DungeonLevel.Enemies.GetEnemy();
+        EnemyStats enemy = Instantiate(enemyPrefab, (Vector2)objectPosition, Quaternion.identity, mapGameObjects);
+        if (Lighting.instance.LightingType == Lighting.LightType.smooth)
         {
-            int infcounter = 0;
-            Vector3 enemyPosition;
-            do
-            {
-                enemyPosition = new Vector3(room.lowerLeftCorner.x + Random.Range(0, room.GetWidth() + 1), room.lowerLeftCorner.y + Random.Range(0, room.GetHeight() + 1));
-                infcounter++;
-                if (infcounter > 100)
-                {
-                    Debug.LogError("Too many enemies for one room: Increase the size of your room, or reduce the number of enemies.");
-                    return;
-                }
-            }
-            while (room.SpotTaken(Vector2Int.RoundToInt(enemyPosition)));
-
-            enemyPrefab.enemy = DungeonLevel.Enemies.GetEnemy();
-            EnemyStats enemy = Instantiate(enemyPrefab, enemyPosition, Quaternion.identity);
-            enemy.transform.SetParent(mapGameObjects);
-            room.ClaimRoomSpot(Vector2Int.RoundToInt(enemyPosition));
-            if (Lighting.LightingType == Lighting.LightType.smooth)
-            {
-                enemy.GetComponent<SpriteRenderer>().material = Lighting.SmoothLighting;
-            }
+            enemy.GetComponent<SpriteRenderer>().material = Lighting.instance.SmoothLighting;
         }
     }
 
-    private void PlaceChests()
+    private void PlaceChest(Vector2Int objectPosition)
     {
-        int numChests = HelperScripts.RandomVec(new Vector2Int(DungeonLevel.MinChestPerLevel, DungeonLevel.MaxChestsPerLevel));
-        for (int i = 0; i < numChests; i++)
+        chestPrefab.lootLevel = DungeonLevel.ChestLevel;
+        Chest chest = Instantiate(chestPrefab, (Vector2)objectPosition, Quaternion.identity, mapGameObjects);
+        if (Lighting.instance.LightingType == Lighting.LightType.smooth)
         {
-            Room room;
+            chest.GetComponent<SpriteRenderer>().material = Lighting.instance.SmoothLighting;
+        }
+    }
+
+    private void PlaceDecorObjects(Vector2Int objectPosition)
+    {
+        Tile tile = DungeonLevel.FreeStandingDecor.GetTile();
+        if (tile)
+        {
+            walls.SetTile(new Vector3Int(objectPosition.x, objectPosition.y, 0), tile);
+        }
+    }
+
+    private void PlaceDestrucibleObjects(Vector2Int objectPosition)
+    {
+        destructiblePrefab.destructible = DungeonLevel.Destructibles.GetDestructible();
+        Destructible destructible = Instantiate(destructiblePrefab, (Vector2)objectPosition, Quaternion.identity, mapGameObjects);
+        if (Lighting.instance.LightingType == Lighting.LightType.smooth)
+        {
+            destructible.GetComponent<SpriteRenderer>().material = Lighting.instance.SmoothLighting;
+        }
+    }
+
+    /// <summary>
+    /// Place a certain amount of objects randomly in the level in rooms
+    /// </summary>
+    private void PlaceObjects(PlaceObject objectPlacer, int count)
+    {
+        for (int i = 0; i < count; i++)
+        {
+            Room randomRoom;
+            Vector2Int objectPosition;
+            int infCounter = 0;
+            List<Room> roomPos = rooms.Values.ToList();
             do
             {
-                room = rooms.Values.ToList()[Random.Range(0, rooms.Count)];
-            } while (room.SpotTaken(room.GetCenter()));
+                infCounter++;
+                if (infCounter > 100)
+                {
+                    Debug.LogError("Too many objects for one room: Increase the size of your room, or reduce the number of objects.");
+                    return;
+                }
+                randomRoom = roomPos[Random.Range(0, roomPos.Count)];
+                int posX = randomRoom.lowerLeftCorner.x + Random.Range(0, randomRoom.GetWidth());
+                int posY = randomRoom.lowerLeftCorner.y + Random.Range(0, randomRoom.GetHeight());
+                objectPosition = new Vector2Int(posX, posY);
+            } while (randomRoom.SpotTaken(objectPosition) || NextToDoor(objectPosition));
 
-            chestPrefab.lootLevel = DungeonLevel.ChestLevel;
-            Chest chest = Instantiate(chestPrefab, (Vector2)room.GetCenter(), Quaternion.identity);
-            chest.transform.SetParent(mapGameObjects);
-            room.ClaimRoomSpot(room.GetCenter());
-            if (Lighting.LightingType == Lighting.LightType.smooth)
+            randomRoom.ClaimRoomSpot(objectPosition);
+            objectPlacer(objectPosition);
+        }
+    }
+
+    private bool NextToDoor(Vector2Int pos)
+    {
+        if (placedDoors.ContainsKey(pos + Vector2Int.up) || placedDoors.ContainsKey(pos + Vector2Int.down) || placedDoors.ContainsKey(pos + Vector2Int.left) || placedDoors.ContainsKey(pos + Vector2Int.right))
+        {
+            return true;
+        }
+        return false;
+    }
+
+    /// <summary>
+    /// Places all generated structures in order
+    /// </summary>
+    private void PlaceGeneratedStructures(GeneratedStructure structure, int count)
+    {
+        List<Room> roomPos = rooms.Values.ToList();
+        for (int i = 0; i < count; i++)
+        {
+            Room randomRoom;
+            do
             {
-                chest.GetComponent<SpriteRenderer>().material = Lighting.SmoothLighting;
-            }
+                if (roomPos.Count == 0)
+                {
+                    Debug.LogError("Too many generated structures for one level: Increase the number of rooms.");
+                    return;
+                }
+                randomRoom = roomPos[Random.Range(0, roomPos.Count)];
+                roomPos.Remove(randomRoom);
+            } while (!structure.CanGenerate(walls, upperFloor, randomRoom));
+
+            structure.Generate(walls, upperFloor, randomRoom);
         }
     }
 
@@ -310,13 +391,6 @@ public class DungeonLevelGenerator : TerrainGenerator
         return null;
     }
 
-    // Converts our integer 2d array into the tilemap!
-    private void MapToTilemap()
-    {
-        AddFloorsAndWalls();
-        PlaceDoors();
-    }
-
     /// <summary>
     /// Clear any generated game objects, like doors
     /// </summary>
@@ -344,12 +418,20 @@ public class DungeonLevelGenerator : TerrainGenerator
                 {
                     // Offset to keep the tilemap at the expected position
                     floor.SetTile(new Vector3Int(x, y, 0), DungeonLevel.FloorTile.GetTile());
-                    if(Random.Range(0, 1f) < DungeonLevel.DecorationDensity)
+                    if (Random.Range(0, 1f) < DungeonLevel.FloorDecorationDensity)
                     {
                         upperFloor.SetTile(new Vector3Int(x, y, 0), DungeonLevel.DecorativeFloorTile.GetTile());
                     }
                 }
-
+                else if (map[x, y] == Tiles.caveTile)
+                {
+                    // Offset to keep the tilemap at the expected position
+                    floor.SetTile(new Vector3Int(x, y, 0), DungeonLevel.CaveFloor.GetTile());
+                    if (Random.Range(0, 1f) < DungeonLevel.FloorDecorationDensity)
+                    {
+                        upperFloor.SetTile(new Vector3Int(x, y, 0), DungeonLevel.DecorativeFloorTile.GetTile());
+                    }
+                }
                 // Fill in anything else with walls
                 else
                 {
@@ -370,7 +452,7 @@ public class DungeonLevelGenerator : TerrainGenerator
                     {
                         if (x + i > 0 && x + i < DungeonLevel.Width - 1 && y + j > 0 && y + j < DungeonLevel.Height - 1)
                         {
-                            if (map[x + i, y + j] == Tiles.floorTile)
+                            if (map[x + i, y + j] == Tiles.floorTile || map[x + i, y + j] == Tiles.caveTile || map[x + i, y + j] == Tiles.holeTile)
                             {
                                 containsFloor = true;
                             }
@@ -392,18 +474,18 @@ public class DungeonLevelGenerator : TerrainGenerator
     /// </summary>
     public void PlaceDoors()
     {
-        Dictionary<Vector2Int, bool> placedDoors = new Dictionary<Vector2Int, bool>();
+        placedDoors = new Dictionary<Vector2Int, bool>();
         for (int y = 2; y < DungeonLevel.Height - 2; y++)
         {
             for (int x = 2; x < DungeonLevel.Width - 2; x++)
             {
                 if (map[x, y] == Tiles.floorTile)
                 {
-                    Vector2Int[] up = {Vector2Int.up, Vector2Int.left, Vector2Int.right};
-                    Vector2Int[] down = {Vector2Int.down, Vector2Int.right, Vector2Int.left};
-                    Vector2Int[] left = {Vector2Int.left, Vector2Int.down, Vector2Int.up};
-                    Vector2Int[] right = {Vector2Int.right, Vector2Int.up, Vector2Int.down};
-                    Vector2Int[][] directions = {up, down, left, right};
+                    Vector2Int[] up = { Vector2Int.up, Vector2Int.left, Vector2Int.right };
+                    Vector2Int[] down = { Vector2Int.down, Vector2Int.right, Vector2Int.left };
+                    Vector2Int[] left = { Vector2Int.left, Vector2Int.down, Vector2Int.up };
+                    Vector2Int[] right = { Vector2Int.right, Vector2Int.up, Vector2Int.down };
+                    Vector2Int[][] directions = { up, down, left, right };
                     foreach (var direction in directions)
                     {
                         /*
@@ -412,7 +494,7 @@ public class DungeonLevelGenerator : TerrainGenerator
                          *      o
                          *    o o o
                          *    w d w
-                         *
+                         *      o
                          * The other complexity is the need to rotate the Door
                          */
                         Vector2Int crossCenter = new Vector2Int(x + direction[0].x, y + direction[0].y);
@@ -421,12 +503,14 @@ public class DungeonLevelGenerator : TerrainGenerator
                         Vector2Int crossRight = new Vector2Int(x + direction[0].x + direction[2].x, y + direction[0].y + direction[2].y);
                         Vector2Int crossBottomLeft = new Vector2Int(x + direction[1].x, y + direction[1].y);
                         Vector2Int crossBottomRight = new Vector2Int(x + direction[2].x, y + direction[2].y);
+                        Vector2Int crossDown = new Vector2Int(x - direction[0].x, y - direction[0].y);
 
                         if (map[crossCenter.x, crossCenter.y] == Tiles.floorTile &&
                             map[crossUp.x, crossUp.y] == Tiles.floorTile &&
                             (map[crossLeft.x, crossLeft.y] == Tiles.floorTile || map[crossRight.x, crossRight.y] == Tiles.floorTile) &&
                             IsWallTile(map[crossBottomLeft.x, crossBottomLeft.y]) &&
                             IsWallTile(map[crossBottomRight.x, crossBottomRight.y]) &&
+                            map[crossDown.x, crossDown.y] == Tiles.floorTile &&
                             !placedDoors.ContainsKey(new Vector2Int(x, y)))
                         {
                             DungeonDoor instance = Instantiate(door, new Vector3(x, y), Quaternion.identity,
@@ -438,9 +522,9 @@ public class DungeonLevelGenerator : TerrainGenerator
                                 instance.spriteRenderer.sprite = DungeonLevel.HiddenDoor;
                             }
 
-                            if (Lighting.LightingType == Lighting.LightType.smooth)
+                            if (Lighting.instance.LightingType == Lighting.LightType.smooth)
                             {
-                                instance.spriteRenderer.material = Lighting.SmoothLighting;
+                                instance.spriteRenderer.material = Lighting.instance.SmoothLighting;
                             }
 
                             placedDoors.Add(new Vector2Int(x, y), true);
@@ -464,9 +548,9 @@ public class DungeonLevelGenerator : TerrainGenerator
 
         // Also claim the foot of the stairs
         rooms[claimedSpot].ClaimRoomSpot(claimedSpot + new Vector2Int(-1, 0));
-        if (Lighting.LightingType == Lighting.LightType.smooth)
+        if (Lighting.instance.LightingType == Lighting.LightType.smooth)
         {
-            upstairs.GetComponent<SpriteRenderer>().material = Lighting.SmoothLighting;
+            upstairs.GetComponent<SpriteRenderer>().material = Lighting.instance.SmoothLighting;
         }
         if (generateDownStairs)
         {
@@ -475,9 +559,9 @@ public class DungeonLevelGenerator : TerrainGenerator
             claimedSpot = Vector2Int.FloorToInt(dungeonExits.ToVector2()[1]);
             rooms[claimedSpot].ClaimRoomSpot(claimedSpot);
             rooms[claimedSpot].ClaimRoomSpot(claimedSpot + new Vector2Int(1, 0));
-            if (Lighting.LightingType == Lighting.LightType.smooth)
+            if (Lighting.instance.LightingType == Lighting.LightType.smooth)
             {
-                downstairs.GetComponent<SpriteRenderer>().material = Lighting.SmoothLighting;
+                downstairs.GetComponent<SpriteRenderer>().material = Lighting.instance.SmoothLighting;
             }
         }
     }

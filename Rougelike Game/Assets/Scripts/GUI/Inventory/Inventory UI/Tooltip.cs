@@ -81,6 +81,8 @@ public class Tooltip : MonoBehaviour
                 return " Damage Per Second";
             case ModifierType.healing:
                 return " HP Per Second";
+            case ModifierType.movementDelay:
+                return " Movement Delay";
             default:
                 return "";
         }

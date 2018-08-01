@@ -8,6 +8,8 @@ using UnityEngine.UI;
 /// </summary>
 public class EffectManager : MonoBehaviour
 {
+    public static EffectManager instance;
+
     public Sprite invisible;
 
     public List<TimeAndSprite> ui;
@@ -19,18 +21,46 @@ public class EffectManager : MonoBehaviour
     /// <summary>
     /// Adds a new effect to the list, and will become active next iteration in ApplyEffects()
     /// </summary>
-    /// <param name="effect"></param>
-    public void AddNewEffect(Effect effect)
+    public void AddNewEffect(Effect effect, object source)
     {
-        if (effect.applyOnce)
+        ActiveEffect newEffect = new ActiveEffect(effect, effect.duration, source);
+        PlayerStats.instance.ApplyStats(effect.ModifiersAffected, newEffect);
+        activeEffects.Add(newEffect);
+        UpdateUI();
+    }
+
+    /// <summary>
+    /// Removes all effects from a source
+    /// </summary>
+    public void RemoveEffectBySource(object source)
+    {
+        List<ActiveEffect> toRemove = new List<ActiveEffect>();
+        foreach(var effect in activeEffects)
         {
-            PlayerStats.instance.ApplyStats(effect.ModifiersAffected);
+            if (effect.source == source)
+            {
+                effect.currentDuration = 0;
+                PlayerStats.instance.RemoveStats(effect.effect.ModifiersAffected, effect);
+                toRemove.Add(effect);
+            }
         }
-        activeEffects.Add(new ActiveEffect(effect, effect.duration));
+        foreach (var effect in toRemove)
+        {
+            activeEffects.Remove(effect);
+        }
     }
 
     private void Start()
     {
+        if(instance == null)
+        {
+            instance = this;
+        }
+        else if(instance  != this)
+        {
+            Debug.LogError("Duplicate Effect Managers!");
+        }
+
         effectInstances = GetComponentsInChildren<EffectTooltipShow>();
         activeEffects = new List<ActiveEffect>();
         StartCoroutine(ApplyEffects());
@@ -50,14 +80,14 @@ public class EffectManager : MonoBehaviour
                 effect.currentDuration--;
                 if (!effect.effect.applyOnce)
                 {
-                    PlayerStats.instance.ApplyStats(effect.effect.ModifiersAffected);
+                    PlayerStats.instance.ApplyStats(effect.effect.ModifiersAffected, effect);
                 }
-                if (effect.currentDuration == 0)
+                if (effect.currentDuration == 0 && !effect.effect.isPermanent)
                 {
                     toRemove.Add(effect);
                     if (effect.effect.removeAfterDone)
                     {
-                        PlayerStats.instance.ReverseStats(effect.effect.ModifiersAffected);
+                        PlayerStats.instance.RemoveStats(effect.effect.ModifiersAffected, effect);
                     }
                 }
             }
@@ -82,7 +112,7 @@ public class EffectManager : MonoBehaviour
         {
             if (activeEffects.Count > i)
             {
-                ui[i].time.text = activeEffects[i].currentDuration.ToString();
+                ui[i].time.text = activeEffects[i].effect.isPermanent ? "" : activeEffects[i].currentDuration.ToString();
                 ui[i].image.sprite = activeEffects[i].effect.sprite;
                 effectInstances[i].SetEffect(activeEffects[i].effect);
             }
@@ -99,11 +129,13 @@ public class EffectManager : MonoBehaviour
     {
         public readonly Effect effect;
         public int currentDuration;
+        public object source;
 
-        public ActiveEffect(Effect effect, int currentDuration)
+        public ActiveEffect(Effect effect, int currentDuration, object source)
         {
             this.effect = effect;
             this.currentDuration = currentDuration;
+            this.source = source;
         }
     }
 

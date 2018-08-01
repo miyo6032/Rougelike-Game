@@ -13,6 +13,8 @@ public class Lighting : MonoBehaviour
         ray,
         smooth
     }
+    public static Lighting instance;
+
     public Tilemap LightingTilemap;
     public Tilemap Walls;
     public int LightingRange;
@@ -30,6 +32,14 @@ public class Lighting : MonoBehaviour
 
     void Start()
     {
+        if (instance == null)
+        {
+            instance = this;
+        }
+        else if (instance != this)
+        {
+            Debug.LogError("Duplicate Lighting components in scene!");
+        }
         GetCirclePoints(LightingRange);
     }
 

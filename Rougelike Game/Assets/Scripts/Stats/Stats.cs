@@ -30,5 +30,4 @@ public class Stats : MonoBehaviour
     {
         health = Mathf.Clamp(health + amount, 0, maxHealth.GetValue());
     }
-
 }
