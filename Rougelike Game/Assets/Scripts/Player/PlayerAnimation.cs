@@ -5,24 +5,21 @@
 /// </summary>
 public class PlayerAnimation : MonoBehaviour
 {
-    public Animator[] animators;
-    public SpriteRenderer leftSword;
-    public SpriteRenderer rightSword;
-    public SpriteRenderer armor;
-    public SpriteRenderer helmet;
-    public SpriteRenderer skin;
+    public Animator slashAnimator;
+    public Animator animator;
+    public SpriteRenderer sprite;
 
     // Used in animation to face left or right depending on movement
-    bool facingRight = true;
+    private bool facingRight = true;
 
     // Used in animations to tell which way to face for an attack
-    Vector2Int attackDirection = Vector2Int.zero;
+    private Vector2Int attackDirection = Vector2Int.zero;
 
     // tell which way to face when moving
-    Vector2Int moveDirection = Vector2Int.zero;
+    private Vector2Int moveDirection = Vector2Int.zero;
 
     // which way to face when idle
-    Vector2Int idleDirection = Vector2Int.zero;
+    private Vector2Int idleDirection = Vector2Int.zero;
 
     /// <summary>
     /// Called by PlayerMovement when the player was able to move
@@ -63,9 +60,25 @@ public class PlayerAnimation : MonoBehaviour
     /// </summary>
     public void AnimateAttack()
     {
-        if (attackDirection.x != 0) SetTriggers("attackSide");
-        if (attackDirection.y < 0) SetTriggers("attackFront");
-        if (attackDirection.y > 0) SetTriggers("attackBack");
+        slashAnimator.SetTrigger("slash");
+        if (attackDirection.x != 0)
+        {
+            animator.SetTrigger("attackSide");
+            slashAnimator.transform.rotation = Quaternion.Euler(0, 0, attackDirection.x == -1 ? 180 : 0);
+            slashAnimator.transform.localPosition = new Vector3(attackDirection.x, 0, 0);
+        }
+        else if (attackDirection.y < 0)
+        {
+            animator.SetTrigger("attackFront");
+            slashAnimator.transform.rotation = Quaternion.Euler(0, 0, -90);
+            slashAnimator.transform.localPosition = new Vector3(0, -1, 0);
+        }
+        if (attackDirection.y > 0)
+        {
+            animator.SetTrigger("attackBack");
+            slashAnimator.transform.rotation = Quaternion.Euler(0, 0, 90);
+            slashAnimator.transform.localPosition = new Vector3(0, 1, 0);
+        }
     }
 
     /// <summary>
@@ -78,71 +91,23 @@ public class PlayerAnimation : MonoBehaviour
     }
 
     // Realtime animation based on whether or not the player is moving
-    void Update()
+    private void Update()
     {
         if (Time.timeScale > 0)
         {
-            SetFloats("horizontalMove", Mathf.Abs(moveDirection.x));
-            SetFloats("verticalMove", moveDirection.y);
-            SetFloats("horizontalIdle", Mathf.Abs(idleDirection.x));
-            SetFloats("verticalIdle", idleDirection.y);
+            animator.SetFloat("horizontalMove", Mathf.Abs(moveDirection.x));
+            animator.SetFloat("verticalMove", moveDirection.y);
+            animator.SetFloat("horizontalIdle", Mathf.Abs(idleDirection.x));
+            animator.SetFloat("verticalIdle", idleDirection.y);
         }
     }
 
     /// <summary>
     /// Flip the player when they move right/left
     /// </summary>
-    void Flip()
+    private void Flip()
     {
-        leftSword.flipX = facingRight;
-        rightSword.flipX = facingRight;
-        armor.flipX = facingRight;
-        helmet.flipX = facingRight;
-        skin.flipX = facingRight;
+        sprite.flipX = facingRight;
         facingRight = !facingRight;
-    }
-
-    void SetTriggers(string trigger)
-    {
-        foreach (Animator animator in animators)
-        {
-            animator.SetTrigger(trigger);
-        }
-    }
-
-    void SetFloats(string trigger, float dir)
-    {
-        foreach (Animator animator in animators)
-        {
-            animator.SetFloat(trigger, dir);
-        }
-    }
-
-    /// <summary>
-    /// Color the player's armor and swords
-    /// </summary>
-    /// <param name="equipmentType"></param>
-    /// <param name="color"></param>
-    public void ColorAnimator(string equipmentType, string color)
-    {
-        Color itemColor;
-        if (ColorUtility.TryParseHtmlString(color, out itemColor))
-        {
-            switch (equipmentType)
-            {
-                case "LeftSwordSlot":
-                    leftSword.color = itemColor;
-                    break;
-                case "RightSwordSlot":
-                    rightSword.color = itemColor;
-                    break;
-                case "ChestSlot":
-                    armor.color = itemColor;
-                    break;
-                case "HelmetSlot":
-                    helmet.color = itemColor;
-                    break;
-            }
-        }
     }
 }

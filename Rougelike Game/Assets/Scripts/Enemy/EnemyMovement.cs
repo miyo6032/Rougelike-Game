@@ -12,6 +12,7 @@ public class EnemyMovement : MovingObject
 
     // We want enemy pathfinding to disreguard enemies in the way of doorways and stuff like that
     public LayerMask firstpassPathfindingLayer;
+
     public LayerMask secondPassPathfindingLayer;
 
     protected Animator animator;
@@ -24,7 +25,7 @@ public class EnemyMovement : MovingObject
     protected BoxCollider2D enemyCol;
 
     // Responsible for alternating the move priorities - will sometimes be horizontal, and sometimes be vertical
-    bool altMove = false;
+    private bool altMove = false;
 
     protected override void Start()
     {
@@ -63,7 +64,7 @@ public class EnemyMovement : MovingObject
     /// Handles the basic enemy ai for one turn
     /// </summary>
     /// <returns></returns>
-    IEnumerator moveCounter()
+    private IEnumerator moveCounter()
     {
         // While the enemy is not dead
         while (this)
@@ -149,12 +150,15 @@ public class EnemyMovement : MovingObject
     private void AttemptMove(Vector2Int dir)
     {
         RaycastHit2D hit;
-        if (!CanMove(dir, out hit)) return;
+        if (!CanMove(dir, out hit))
+        {
+            TryToAttack(dir);
+            return;
+        }
 
         Vector2 start = transform.position;
         Vector2 end = start + dir;
         moveManager.ClaimSpot(Vector2Int.FloorToInt(end));
         StartCoroutine(SmoothMovement(end));
     }
-
 }
