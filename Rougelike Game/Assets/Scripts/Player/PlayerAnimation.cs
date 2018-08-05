@@ -73,7 +73,7 @@ public class PlayerAnimation : MonoBehaviour
             slashAnimator.transform.rotation = Quaternion.Euler(0, 0, -90);
             slashAnimator.transform.localPosition = new Vector3(0, -1, 0);
         }
-        if (attackDirection.y > 0)
+        else if (attackDirection.y > 0)
         {
             animator.SetTrigger("attackBack");
             slashAnimator.transform.rotation = Quaternion.Euler(0, 0, 90);

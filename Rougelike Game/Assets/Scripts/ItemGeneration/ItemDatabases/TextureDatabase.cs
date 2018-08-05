@@ -9,7 +9,7 @@ public class TextureDatabase : MonoBehaviour
 {
     public static TextureDatabase instance;
     private readonly Dictionary<string, Sprite> textures = new Dictionary<string, Sprite>();
-    private readonly string[] itemCategories = {"Armor", "Swords", "Helmets", "Items", "Skills"};
+    private readonly string[] itemCategories = { "Armor", "Swords", "Helmets", "Items", "Skills" };
 
     private void Start()
     {
@@ -40,7 +40,7 @@ public class TextureDatabase : MonoBehaviour
             }
         }
 
-        textures.Add("Invisible", Resources.Load<Sprite>("ItemIcons/Invisible"));
+        textures.Add("Invisible", Resources.Load<Sprite>("Other/Invisible"));
     }
 
     /// <summary>
