@@ -30,6 +30,7 @@ public class PlayerStats : Stats
 
     // Just standard rpg experience, when the player has enough they will level up
     private int experience;
+
     private int maxExperience = 50;
 
     // Leveling up will allow the player to choose upgrades from the skill tree and also improve the base stats by a little bit
@@ -40,6 +41,7 @@ public class PlayerStats : Stats
 
     // The player's focus bar - used for special skills
     public float focus;
+
     public Stat maxFocus;
 
     public DamageCounter damageCounterPrefab;
@@ -53,7 +55,7 @@ public class PlayerStats : Stats
     private PlayerAnimation playerAnimation;
     private SoundManager soundManager;
 
-    void Start()
+    private void Start()
     {
         if (instance == null)
         {
@@ -76,7 +78,6 @@ public class PlayerStats : Stats
         InventoryManager.instance.AddItemToSlot(new ItemStack(starterSword.item, 1), InventoryManager.instance.equipSlots[1]);
         InventoryManager.instance.AddItemToSlot(new ItemStack(starterHelmet.item, 1), InventoryManager.instance.equipSlots[3]);
         InventoryManager.instance.AddItemToSlot(new ItemStack(starterArmor.item, 1), InventoryManager.instance.equipSlots[2]);
-
     }
 
     /// <summary>
@@ -89,7 +90,7 @@ public class PlayerStats : Stats
         if (experience >= maxExperience)
         {
             // Upgrades points granted at level 30: 5
-            upgradePoints += Mathf.CeilToInt(level/6f);
+            upgradePoints += Mathf.CeilToInt(level / 6f);
             level++;
             experience = experience - maxExperience;
             maxExperience += Mathf.CeilToInt(maxExperience * 0.2f);
@@ -134,7 +135,7 @@ public class PlayerStats : Stats
     /// Applies damage effect like camera shake and sound
     /// </summary>
     /// <param name="damage"></param>
-    void ApplyDamageEffects(int damage)
+    private void ApplyDamageEffects(int damage)
     {
         if (damage >= maxHealth.GetValue() / 6f)
         {
@@ -180,7 +181,6 @@ public class PlayerStats : Stats
             minAttack.AddModifier(inst.item.Attack, inst);
             defense.AddModifier(inst.item.Defence, inst);
             UpdateStats();
-            playerAnimation.ColorAnimator(slot.gameObject.name, inst.item.ItemColor);
             return true;
         }
 
@@ -232,25 +232,32 @@ public class PlayerStats : Stats
                 maxHealth.AddModifier(Mathf.RoundToInt(modifier.value), source);
                 Heal(Mathf.RoundToInt(modifier.value));
                 break;
+
             case ModifierType.attack:
                 minAttack.AddModifier(Mathf.RoundToInt(modifier.value), source);
                 maxAttack.AddModifier(Mathf.RoundToInt(modifier.value), source);
                 break;
+
             case ModifierType.defense:
                 defense.AddModifier(Mathf.RoundToInt(modifier.value), source);
                 break;
+
             case ModifierType.hitSpeed:
                 hitDelay.AddModifier(modifier.value, source);
                 break;
+
             case ModifierType.maxFocus:
                 maxFocus.AddModifier(Mathf.RoundToInt(modifier.value), source);
                 break;
+
             case ModifierType.damage:
                 DamagePlayerDirectly(Mathf.RoundToInt(modifier.value));
                 break;
+
             case ModifierType.healing:
                 Heal(modifier.value);
                 break;
+
             case ModifierType.movementDelay:
                 movementDelay.AddModifier(modifier.value, source);
                 break;
@@ -267,25 +274,32 @@ public class PlayerStats : Stats
             case ModifierType.maxHealth:
                 maxHealth.RemoveSource(source);
                 break;
+
             case ModifierType.attack:
                 minAttack.RemoveSource(source);
                 maxAttack.RemoveSource(source);
                 break;
+
             case ModifierType.defense:
                 defense.RemoveSource(source);
                 break;
+
             case ModifierType.hitSpeed:
                 hitDelay.RemoveSource(source);
                 break;
+
             case ModifierType.maxFocus:
                 maxFocus.RemoveSource(source);
                 break;
+
             case ModifierType.damage:
                 Heal(modifier.value);
                 break;
+
             case ModifierType.healing:
                 DamagePlayerDirectly(Mathf.RoundToInt(modifier.value));
                 break;
+
             case ModifierType.movementDelay:
                 movementDelay.RemoveSource(source);
                 break;

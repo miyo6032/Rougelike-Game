@@ -9,12 +9,16 @@ using EZCameraShake;
 public class EnemyStats : Stats
 {
     public Enemy enemy;
+
     [HideInInspector]
     public Stat turnDelay;
+
     [HideInInspector]
     public Stat attackDelay;
+
     [Header("Components")]
     public Experience experiencePrefab;
+
     public LootBag lootBagPrefab;
     public LayerMask bagLayerMask;
     public DamageCounter damageCounterPrefab;
@@ -26,9 +30,9 @@ public class EnemyStats : Stats
 
     private void Start()
     {
+        animator = GetComponent<Animator>();
         healthSlider = HelperScripts.GetComponentFromChildrenExc<Slider>(transform);
         InitializeStats();
-        InitializeAnimations();
     }
 
     public void InitializeStats()
@@ -44,15 +48,6 @@ public class EnemyStats : Stats
         experienceDrop = enemy.experienceDrop;
         health = maxHealth.GetIntValue();
         dropRange = enemy.dropRange;
-    }
-
-    public void InitializeAnimations()
-    {
-        animator = GetComponent<Animator>();
-        AnimatorOverrideController animatorOverrideController = new AnimatorOverrideController(animator.runtimeAnimatorController);
-        animatorOverrideController["ArmedSkeletonIdle"] = enemy.idle;
-        animatorOverrideController["ArmedSkeletonAttack"] = enemy.attack;
-        animator.runtimeAnimatorController = animatorOverrideController;
     }
 
     /// <summary>
@@ -128,7 +123,7 @@ public class EnemyStats : Stats
                 DropNewBag(itemDrops);
             }
         }
-         
+
         int numExpOrbs = HelperScripts.RandomVec(enemy.numExpOrbs);
         int expPerOrb = Mathf.RoundToInt(experienceDrop / (float)numExpOrbs);
 

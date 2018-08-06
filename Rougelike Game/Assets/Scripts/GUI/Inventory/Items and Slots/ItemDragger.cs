@@ -4,10 +4,13 @@ using UnityEngine.UI;
 /// <summary>
 /// Responsible for item dragging whenever an item is picked up
 /// </summary>
-public class ItemDragger : MonoBehaviour {
+public class ItemDragger : MonoBehaviour
+{
     public static ItemDragger instance;
+
     [HideInInspector]
     public ItemStack itemStack;
+
     public Text stackText;
     public Image itemSprite;
 
