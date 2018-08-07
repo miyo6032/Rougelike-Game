@@ -35,8 +35,9 @@ public class EffectManager : MonoBehaviour
     public void RemoveEffectBySource(object source)
     {
         List<ActiveEffect> toRemove = new List<ActiveEffect>();
-        foreach(var effect in activeEffects)
+        foreach (var effect in activeEffects)
         {
+            Debug.Log(source + " " + effect.source);
             if (effect.source == source)
             {
                 effect.currentDuration = 0;
@@ -52,11 +53,11 @@ public class EffectManager : MonoBehaviour
 
     private void Start()
     {
-        if(instance == null)
+        if (instance == null)
         {
             instance = this;
         }
-        else if(instance  != this)
+        else if (instance != this)
         {
             Debug.LogError("Duplicate Effect Managers!");
         }

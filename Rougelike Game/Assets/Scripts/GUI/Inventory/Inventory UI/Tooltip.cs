@@ -48,13 +48,27 @@ public class Tooltip : MonoBehaviour
     /// </summary>
     /// <param name="modifiers"></param>
     /// <returns></returns>
-    string GetStatsString(Modifier[] modifiers)
+    private string GetStatsString(Modifier[] modifiers)
     {
-        string str = "";
+        var str = "";
+        var builder = new System.Text.StringBuilder();
+        builder.Append(str);
         foreach (var stat in modifiers)
         {
-            str += stat.value + GetStatString(stat) + "\n\n";
+            if (stat.modifierType == StatModifierType.linear)
+            {
+                builder.Append(stat.value + GetStatString(stat) + "\n\n");
+            }
+            else if (stat.modifierType == StatModifierType.basePercent)
+            {
+                builder.Append(stat.value + "% base" + GetStatString(stat) + "\n\n");
+            }
+            if (stat.modifierType == StatModifierType.afterPercent)
+            {
+                builder.Append(stat.value + "%" + GetStatString(stat) + "\n\n");
+            }
         }
+        str = builder.ToString();
         return str;
     }
 
@@ -65,24 +79,32 @@ public class Tooltip : MonoBehaviour
     /// <returns></returns>
     private string GetStatString(Modifier modifier)
     {
-        switch (modifier.ModifierType)
+        switch (modifier.statToModify)
         {
-            case ModifierType.maxHealth:
+            case PlayerStatModifier.maxHealth:
                 return " Max health";
-            case ModifierType.attack:
+
+            case PlayerStatModifier.attack:
                 return " Attack";
-            case ModifierType.defense:
+
+            case PlayerStatModifier.defense:
                 return " Defense";
-            case ModifierType.hitSpeed:
+
+            case PlayerStatModifier.hitSpeed:
                 return " Hit Speed";
-            case ModifierType.maxFocus:
+
+            case PlayerStatModifier.maxFocus:
                 return " Max Focus";
-            case ModifierType.damage:
+
+            case PlayerStatModifier.damage:
                 return " Damage Per Second";
-            case ModifierType.healing:
+
+            case PlayerStatModifier.healing:
                 return " HP Per Second";
-            case ModifierType.movementDelay:
+
+            case PlayerStatModifier.movementDelay:
                 return " Movement Delay";
+
             default:
                 return "";
         }
@@ -108,7 +130,7 @@ public class Tooltip : MonoBehaviour
     /// <summary>
     /// Position the tooltip in relation to the mouse screen position
     /// </summary>
-    void PositionTooltip()
+    private void PositionTooltip()
     {
         transform.position = Input.mousePosition;
         PositionRelativeToScreen();
@@ -120,7 +142,7 @@ public class Tooltip : MonoBehaviour
     /// </summary>
     /// <param name="item"></param>
     /// <returns></returns>
-    string GetAttackString(Item item)
+    private string GetAttackString(Item item)
     {
         if (item.Attack == 0)
         {
@@ -133,13 +155,12 @@ public class Tooltip : MonoBehaviour
         }
 
         return item.Attack + " - " + item.MaxAttack + " Damage\n\n";
-
     }
 
     /// <summary>
     /// Depending on where the tooltip is, position it relative to the mouse so it doesn't go off the screen
     /// </summary>
-    void PositionRelativeToScreen()
+    private void PositionRelativeToScreen()
     {
         Vector2 pivotPosition = new Vector2
         {
@@ -149,7 +170,7 @@ public class Tooltip : MonoBehaviour
         GetComponent<RectTransform>().pivot = pivotPosition;
     }
 
-    void Update()
+    private void Update()
     {
         transform.position = Input.mousePosition;
     }
