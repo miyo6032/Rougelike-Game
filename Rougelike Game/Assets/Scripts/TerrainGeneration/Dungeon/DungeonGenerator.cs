@@ -8,10 +8,12 @@ using UnityEngine;
 public class DungeonGenerator : MonoBehaviour
 {
     private List<DungeonLevel> DungeonLevels;
-    private int CurrentLevel;
+    private int currentLevel;
     public PlayerMovement player;
     public static DungeonGenerator Instance;
+    public Effect dungeonCurseEffect;
     private Transform DungeonEntrance;
+    private int lowestLevel;
 
     private void Start()
     {
@@ -33,7 +35,7 @@ public class DungeonGenerator : MonoBehaviour
     {
         DungeonEntrance = transform;
         DungeonLevels = dungeonLevels;
-        CurrentLevel = -1;
+        currentLevel = -1;
         gameObject.SetActive(true);
         Downstairs();
     }
@@ -43,15 +45,20 @@ public class DungeonGenerator : MonoBehaviour
     /// </summary>
     public void Downstairs()
     {
-        CurrentLevel++;
-        if (CurrentLevel == DungeonLevels.Count)
+        currentLevel++;
+        if (currentLevel > lowestLevel)
+        {
+            lowestLevel = currentLevel;
+        }
+        if (currentLevel == DungeonLevels.Count)
         {
             DungeonLevelGenerator.instance.GenerateBottom();
         }
         else
         {
-            GenerateLevel(CurrentLevel);
+            GenerateLevel(currentLevel);
         }
+        ApplyDungeonCurse();
         // Teleport the player just to the left of the stairs
         player.TeleportPlayer(DungeonLevelGenerator.instance.dungeonExits.ToVector2()[0] + new Vector2(-1, 0));
     }
@@ -61,17 +68,31 @@ public class DungeonGenerator : MonoBehaviour
     /// </summary>
     public void Upstairs()
     {
-        CurrentLevel--;
-        if (CurrentLevel == -1)
+        currentLevel--;
+        if (currentLevel == -1)
         {
             Exit();
         }
         else
         {
-            GenerateLevel(CurrentLevel);
+            GenerateLevel(currentLevel);
             // Teleport the player just right of the stairs
             player.TeleportPlayer(DungeonLevelGenerator.instance.dungeonExits.ToVector2()[1] + new Vector2(1, 0));
+            ApplyDungeonCurse();
         }
+    }
+
+    private void ApplyDungeonCurse()
+    {
+        EffectManager.instance.RemoveEffectBySource(this);
+        for (int i = 0; i < dungeonCurseEffect.ModifiersAffected.Length; i++)
+        {
+            float curseValue = 10 * (currentLevel - lowestLevel);
+            // Don't apply any effect if the value is 0
+            if (curseValue == 0) return;
+            dungeonCurseEffect.ModifiersAffected[i].value = curseValue;
+        }
+        EffectManager.instance.AddNewEffect(dungeonCurseEffect, this);
     }
 
     private void Exit()

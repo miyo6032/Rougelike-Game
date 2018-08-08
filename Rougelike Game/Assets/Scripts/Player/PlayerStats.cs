@@ -1,7 +1,7 @@
 ﻿using EZCameraShake;
 using UnityEngine;
 
-public enum ModifierType
+public enum PlayerStatModifier
 {
     maxHealth,
     attack,
@@ -16,8 +16,16 @@ public enum ModifierType
 [System.Serializable]
 public class Modifier
 {
-    public ModifierType ModifierType;
+    public PlayerStatModifier statToModify;
+    public StatModifierType modifierType;
     public float value;
+
+    public Modifier(PlayerStatModifier statToModify, StatModifierType modifierType, float value)
+    {
+        this.statToModify = statToModify;
+        this.modifierType = modifierType;
+        this.value = value;
+    }
 }
 
 /// <summary>
@@ -177,9 +185,9 @@ public class PlayerStats : Stats
         // If the item has the correct stats to equip
         if (level >= inst.item.ItemLevel)
         {
-            maxAttack.AddModifier(inst.item.MaxAttack, inst);
-            minAttack.AddModifier(inst.item.Attack, inst);
-            defense.AddModifier(inst.item.Defence, inst);
+            maxAttack.AddModifier(inst.item.MaxAttack, inst, StatModifierType.linear);
+            minAttack.AddModifier(inst.item.Attack, inst, StatModifierType.linear);
+            defense.AddModifier(inst.item.Defence, inst, StatModifierType.linear);
             UpdateStats();
             return true;
         }
@@ -223,43 +231,45 @@ public class PlayerStats : Stats
     /// <summary>
     /// Apply a specific ModifierType to the playerStats
     /// </summary>
-    /// <param name="modifier"></param>
     private void ApplyStat(Modifier modifier, object source)
     {
-        switch (modifier.ModifierType)
+        switch (modifier.statToModify)
         {
-            case ModifierType.maxHealth:
-                maxHealth.AddModifier(Mathf.RoundToInt(modifier.value), source);
+            case PlayerStatModifier.maxHealth:
+                maxHealth.AddModifier(Mathf.RoundToInt(modifier.value), source, modifier.modifierType);
                 Heal(Mathf.RoundToInt(modifier.value));
                 break;
 
-            case ModifierType.attack:
-                minAttack.AddModifier(Mathf.RoundToInt(modifier.value), source);
-                maxAttack.AddModifier(Mathf.RoundToInt(modifier.value), source);
+            case PlayerStatModifier.attack:
+                minAttack.AddModifier(Mathf.RoundToInt(modifier.value), source, modifier.modifierType);
+                maxAttack.AddModifier(Mathf.RoundToInt(modifier.value), source, modifier.modifierType);
                 break;
 
-            case ModifierType.defense:
-                defense.AddModifier(Mathf.RoundToInt(modifier.value), source);
+            case PlayerStatModifier.defense:
+                defense.AddModifier(Mathf.RoundToInt(modifier.value), source, modifier.modifierType);
                 break;
 
-            case ModifierType.hitSpeed:
-                hitDelay.AddModifier(modifier.value, source);
+            case PlayerStatModifier.hitSpeed:
+                hitDelay.AddModifier(modifier.value, source, modifier.modifierType);
                 break;
 
-            case ModifierType.maxFocus:
-                maxFocus.AddModifier(Mathf.RoundToInt(modifier.value), source);
+            case PlayerStatModifier.maxFocus:
+                maxFocus.AddModifier(Mathf.RoundToInt(modifier.value), source, modifier.modifierType);
                 break;
 
-            case ModifierType.damage:
+            case PlayerStatModifier.damage:
                 DamagePlayerDirectly(Mathf.RoundToInt(modifier.value));
                 break;
 
-            case ModifierType.healing:
+            case PlayerStatModifier.healing:
                 Heal(modifier.value);
                 break;
 
-            case ModifierType.movementDelay:
-                movementDelay.AddModifier(modifier.value, source);
+            case PlayerStatModifier.movementDelay:
+                movementDelay.AddModifier(modifier.value, source, modifier.modifierType);
+                break;
+
+            default:
                 break;
         }
     }
@@ -269,39 +279,42 @@ public class PlayerStats : Stats
     /// </summary>
     private void RemoveStat(Modifier modifier, object source)
     {
-        switch (modifier.ModifierType)
+        switch (modifier.statToModify)
         {
-            case ModifierType.maxHealth:
+            case PlayerStatModifier.maxHealth:
                 maxHealth.RemoveSource(source);
                 break;
 
-            case ModifierType.attack:
+            case PlayerStatModifier.attack:
                 minAttack.RemoveSource(source);
                 maxAttack.RemoveSource(source);
                 break;
 
-            case ModifierType.defense:
+            case PlayerStatModifier.defense:
                 defense.RemoveSource(source);
                 break;
 
-            case ModifierType.hitSpeed:
+            case PlayerStatModifier.hitSpeed:
                 hitDelay.RemoveSource(source);
                 break;
 
-            case ModifierType.maxFocus:
+            case PlayerStatModifier.maxFocus:
                 maxFocus.RemoveSource(source);
                 break;
 
-            case ModifierType.damage:
+            case PlayerStatModifier.damage:
                 Heal(modifier.value);
                 break;
 
-            case ModifierType.healing:
+            case PlayerStatModifier.healing:
                 DamagePlayerDirectly(Mathf.RoundToInt(modifier.value));
                 break;
 
-            case ModifierType.movementDelay:
+            case PlayerStatModifier.movementDelay:
                 movementDelay.RemoveSource(source);
+                break;
+
+            default:
                 break;
         }
     }
@@ -309,7 +322,6 @@ public class PlayerStats : Stats
     /// <summary>
     /// Apply a bunch of stats to the playerstat
     /// </summary>
-    /// <param name="modifiers"></param>
     public void ApplyStats(Modifier[] modifiers, object source)
     {
         foreach (var stat in modifiers)
@@ -322,7 +334,6 @@ public class PlayerStats : Stats
     /// <summary>
     /// Undo effects of a ModifierType (basically apply -1 * ModifierType)
     /// </summary>
-    /// <param name="modifiers"></param>
     public void RemoveStats(Modifier[] modifiers, object source)
     {
         foreach (var stat in modifiers)

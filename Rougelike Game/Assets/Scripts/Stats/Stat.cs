@@ -29,21 +29,38 @@ public class Stat
     public float GetValue()
     {
         float finalValue = baseValue;
-        foreach (var mod in modifiers)
+        for (int i = (int)StatModifierType.basePercent; i <= (int)StatModifierType.afterPercent; i++)
         {
-            finalValue += mod.value;
+            foreach (var mod in modifiers)
+            {
+                if ((int)mod.statType == i)
+                {
+                    if (mod.statType == StatModifierType.linear)
+                    {
+                        finalValue += mod.value;
+                    }
+                    else if (mod.statType == StatModifierType.afterPercent)
+                    {
+                        finalValue *= mod.value * 0.01f;
+                    }
+                    else if (mod.statType == StatModifierType.basePercent)
+                    {
+                        finalValue += baseValue * mod.value * 0.01f;
+                    }
+                }
+            }
         }
         return finalValue;
     }
 
-    public void AddModifier(float modifier)
+    public void AddModifier(float modifier, StatModifierType statType)
     {
-        modifiers.Add(new StatModifier(modifier, null));
+        modifiers.Add(new StatModifier(modifier, null, statType));
     }
 
-    public void AddModifier(float modifier, object source)
+    public void AddModifier(float modifier, object source, StatModifierType statType)
     {
-        modifiers.Add(new StatModifier(modifier, source));
+        modifiers.Add(new StatModifier(modifier, source, statType));
     }
 
     /// <summary>
@@ -69,15 +86,23 @@ public class Stat
 /// Holds a modifier's value and what object it came from
 /// </summary>
 [System.Serializable]
-struct StatModifier
+internal struct StatModifier
 {
     public float value;
     public object source;
+    public StatModifierType statType;
 
-    public StatModifier(float value, object source)
+    public StatModifier(float value, object source, StatModifierType statType)
     {
         this.value = value;
         this.source = source;
+        this.statType = statType;
     }
+}
 
+public enum StatModifierType
+{
+    basePercent,
+    linear,
+    afterPercent,
 }
