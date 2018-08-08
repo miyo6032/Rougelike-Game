@@ -33,6 +33,7 @@ public class DungeonGenerator : MonoBehaviour
     /// </summary>
     public void Enter(List<DungeonLevel> dungeonLevels, Transform transform)
     {
+        DescensionPanel.instance.StartAnimation("Descending");
         DungeonEntrance = transform;
         DungeonLevels = dungeonLevels;
         currentLevel = -1;
@@ -45,6 +46,7 @@ public class DungeonGenerator : MonoBehaviour
     /// </summary>
     public void Downstairs()
     {
+        DescensionPanel.instance.StartAnimation("Descending");
         currentLevel++;
         if (currentLevel > lowestLevel)
         {
@@ -68,6 +70,7 @@ public class DungeonGenerator : MonoBehaviour
     /// </summary>
     public void Upstairs()
     {
+        DescensionPanel.instance.StartAnimation("Ascending");
         currentLevel--;
         if (currentLevel == -1)
         {

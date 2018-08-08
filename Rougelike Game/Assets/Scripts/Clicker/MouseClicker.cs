@@ -14,7 +14,5 @@ public class MouseClicker : MonoBehaviour, IPointerClickHandler
     }
 
     public void OnPointerClick(PointerEventData eventData)
-    {
-        playerMovement.StartAutomove(new Vector2(Mathf.Round(transform.position.x), Mathf.Round(transform.position.y)));
-    }
+    { }
 }

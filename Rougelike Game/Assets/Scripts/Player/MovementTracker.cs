@@ -6,24 +6,24 @@ using System.Collections.Generic;
 /// </summary>
 public class MovementTracker : MonoBehaviour
 {
-    private readonly List<Vector2Int> claimedSpots = new List<Vector2Int>();
+    private readonly Dictionary<MovingObject, Vector2Int> claimedSpots = new Dictionary<MovingObject, Vector2Int>();
 
     /// <summary>
     /// Claim a spot that the object will move into that no one else can claim
     /// </summary>
     /// <param name="pos"></param>
-    public void ClaimSpot(Vector2Int pos)
+    public void ClaimSpot(MovingObject source, Vector2Int pos)
     {
-        claimedSpots.Add(pos);
+        claimedSpots.Add(source, pos);
     }
 
     /// <summary>
     /// After moving, remove the claim to that spot
     /// </summary>
     /// <param name="pos"></param>
-    public void RemoveClaim(Vector2Int pos)
+    public void RemoveClaim(MovingObject source)
     {
-        claimedSpots.Remove(pos);
+        claimedSpots.Remove(source);
     }
 
     /// <summary>
@@ -33,6 +33,13 @@ public class MovementTracker : MonoBehaviour
     /// <returns></returns>
     public bool SpotClaimed(Vector2Int pos)
     {
-        return claimedSpots.Contains(pos);
+        foreach (Vector2Int claimed in claimedSpots.Values)
+        {
+            if (pos == claimed)
+            {
+                return true;
+            }
+        }
+        return false;
     }
 }

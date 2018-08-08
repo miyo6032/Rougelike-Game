@@ -36,40 +36,6 @@ public class PlayerMovement : MovingObject
         lighting = GetComponent<Lighting>();
     }
 
-    /// <summary>
-    /// Automove to an empty location if a route exists
-    /// </summary>
-    /// <param name="target"></param>
-    public void StartAutomove(Vector2 target)
-    {
-        automovePosition = target;
-        clickMove = true;
-    }
-
-    /// <summary>
-    /// Automove with a specific enemy in mind
-    /// </summary>
-    /// <param name="target"></param>
-    public void StartAutomoveWithTarget(Transform target)
-    {
-        automovePosition = target.transform.position;
-        clickMove = true;
-    }
-
-    public void StopAutomove()
-    {
-        clickMove = false;
-    }
-
-    /// <summary>
-    /// Stop - even if in the middle of the smooth movement coroutine
-    /// </summary>
-    public override void EmergencyStop()
-    {
-        base.EmergencyStop();
-        StopAutomove();
-    }
-
     public void TeleportPlayer(Vector3 pos)
     {
         EmergencyStop();
@@ -88,14 +54,7 @@ public class PlayerMovement : MovingObject
 
         transform.position = (Vector2)Vector2Int.RoundToInt(transform.position);
 
-        SetMoveSpeed(PlayerStats.instance.movementDelay.GetValue());
-
         InputMove();
-
-        if (clickMove)
-        {
-            Automove();
-        }
     }
 
     protected override void OnStopMove()
@@ -122,7 +81,6 @@ public class PlayerMovement : MovingObject
             // check to make sure the spot is not claimed - and keeps enemies and players from moving into the same spot.
             if (!moveManager.SpotClaimed(Vector2Int.RoundToInt((Vector2)transform.position + input)))
             {
-                StopAutomove();
                 facingdirection = input;
                 AttemptMove(input); // The player moves (or at least tries to)
             }
@@ -167,10 +125,12 @@ public class PlayerMovement : MovingObject
             return;
         }
 
+        SetMoveSpeed(PlayerStats.instance.movementDelay.GetValue());
+
         // Initiate the movement
         Vector2 start = transform.position;
         Vector2 end = start + dir;
-        moveManager.ClaimSpot(Vector2Int.FloorToInt(end));
+        moveManager.ClaimSpot(this, Vector2Int.FloorToInt(end));
         StartCoroutine(SmoothMovement(end));
 
         // Update certain other events
@@ -195,52 +155,5 @@ public class PlayerMovement : MovingObject
     private void ResetHitDirection()
     {
         hitDirection = Vector2Int.zero;
-    }
-
-    /// <summary>
-    /// Performs all calculations for automovement
-    /// </summary>
-    private void Automove()
-    {
-        //Vector2 nextMove = automovePosition - Vector2Int.RoundToInt(transform.position);
-
-        //bool isNextTo = nextMove == Vector2.down || nextMove == Vector2.left || nextMove == Vector2.right || nextMove == Vector2.up;
-
-        //if (isNextTo && !moveManager.SpotClaimed(Vector2Int.RoundToInt(transform.position) + Vector2Int.RoundToInt(nextMove)))
-        //{
-        //    // Update the animator to align with the player's input
-        //    facingdirection = Vector2Int.RoundToInt(nextMove);
-        //    animatorHandler.SetAttackAnimationDirection(Vector2Int.RoundToInt(nextMove));
-        //    Click(Vector2Int.RoundToInt(nextMove)); // The player moves (or at least tries to)
-        //}
-
-        StopAutomove();
-    }
-
-    /// <summary>
-    /// Actions when clicked on the environment (chest opening, attacking)
-    /// </summary>
-    private void Click(Vector2Int dir)
-    {
-        //RaycastHit2D hit;
-        //if (CanMove(dir, out hit)) return;
-
-        //// Did we hit an enemy?
-        //Stats stats = hit.transform.GetComponent<Stats>();
-
-        //if (stats != null)
-        //{
-        //    Attack(stats);
-        //}
-        //else
-        //{
-        //Chest chest = hit.transform.GetComponent<Chest>();
-        //if (chest != null)
-        //{
-        //    ChestInventory.instance.OpenChest(chest);
-        //}
-
-        //    animatorHandler.SetIdle(dir);
-        //}
     }
 }
