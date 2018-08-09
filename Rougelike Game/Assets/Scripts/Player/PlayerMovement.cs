@@ -12,13 +12,8 @@ public class PlayerMovement : MovingObject
     [HideInInspector]
     public Vector2Int facingdirection;
 
-    // Variables that handle automatic movement when the player clicks a position
-    private bool clickMove;
-
     //Keeps track of the hit direction to keep the player from hitting too rapidly
     private Vector2Int hitDirection;
-
-    private Vector2 automovePosition;
 
     protected override void Start()
     {
@@ -98,15 +93,14 @@ public class PlayerMovement : MovingObject
         RaycastHit2D hit;
         if (!CanMove(dir, out hit))
         {
-            hitDirection = dir;
-            Invoke("ResetHitDirection", PlayerStats.instance.hitDelay.GetValue());
-
             Stats destructible = hit.transform.GetComponent<Stats>();
             Chest chest = hit.transform.GetComponent<Chest>();
             NPC npc = hit.transform.GetComponent<NPC>();
 
-            if (destructible)
+            if (destructible && hitDirection == Vector2Int.zero)
             {
+                hitDirection = dir;
+                Invoke("ResetHitDirection", PlayerStats.instance.hitDelay.GetValue());
                 Attack(destructible);
             }
             else if (chest)
