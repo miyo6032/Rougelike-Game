@@ -4,8 +4,8 @@ using System.Collections.Generic;
 /// <summary>
 /// Generates items drops
 /// </summary>
-public class ItemDropGenerator : MonoBehaviour {
-
+public class ItemDropGenerator : MonoBehaviour
+{
     public static ItemDropGenerator instance;
 
     public enum ItemDropTypes
@@ -75,10 +75,11 @@ public class ItemDropGenerator : MonoBehaviour {
             switch (itemType)
             {
                 case ItemDropTypes.RareArtifact:
-                    item = new ItemSave(new ItemStack(ItemDatabase.instance.GetArtifact(randomLevel + 3), 1), 1);
+                    item = new ItemSave(new ItemStack(ItemDatabase.instance.GetArtifact(randomLevel + 3), 1), 0);
                     break;
+
                 default:
-                    item = new ItemSave(new ItemStack(ItemDatabase.instance.GetArtifact(randomLevel), 1), 1);
+                    item = new ItemSave(new ItemStack(ItemDatabase.instance.GetArtifact(randomLevel), 1), 0);
                     break;
             }
             ItemSave duplicateItem = GetDuplicateItem(items, item);
@@ -90,7 +91,7 @@ public class ItemDropGenerator : MonoBehaviour {
             {
                 items.Add(item);
             }
-            if(ItemDropQueue.Count == 0)
+            if (ItemDropQueue.Count == 0)
             {
                 FillItemDropQueue();
             }
@@ -110,5 +111,4 @@ public class ItemDropGenerator : MonoBehaviour {
         }
         return null;
     }
-
 }
