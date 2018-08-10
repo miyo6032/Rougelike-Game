@@ -165,7 +165,7 @@ public class EnemyMovement : MovingObject
         AnimateWithDirection(dir, "idle");
         Vector2 start = transform.position;
         Vector2 end = start + dir;
-        moveManager.ClaimSpot(Vector2Int.FloorToInt(end));
+        moveManager.ClaimSpot(this, Vector2Int.FloorToInt(end));
         StartCoroutine(SmoothMovement(end));
     }
 
@@ -201,5 +201,10 @@ public class EnemyMovement : MovingObject
             slashAnimator.transform.rotation = Quaternion.Euler(0, 0, 90);
             slashAnimator.transform.localPosition = new Vector3(0, 1, 0);
         }
+    }
+
+    public void RemoveSpotClaim()
+    {
+        moveManager.RemoveClaim(this);
     }
 }

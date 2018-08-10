@@ -8,8 +8,10 @@ public abstract class MovingObject : MonoBehaviour
 {
     // Keeps the player from moving extra
     public LayerMask blockingLayer;
+
     [HideInInspector]
     public bool moving;
+
     protected MovementTracker moveManager;
     private Rigidbody2D rb2D;
     private float inverseMoveTime;
@@ -82,7 +84,7 @@ public abstract class MovingObject : MonoBehaviour
 
         OnStopMove();
 
-        moveManager.RemoveClaim(Vector2Int.FloorToInt(end));
+        moveManager.RemoveClaim(this);
     }
 
     protected virtual void OnStopMove()

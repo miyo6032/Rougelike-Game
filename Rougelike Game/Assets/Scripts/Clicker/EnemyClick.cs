@@ -10,10 +10,6 @@ public class EnemyClick : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 
     public void Update()
     {
-        if (pointerIsDown)
-        {
-            PlayerMovement.instance.StartAutomoveWithTarget(transform);
-        }
     }
 
     public void OnPointerDown(PointerEventData eventData)

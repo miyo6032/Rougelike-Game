@@ -127,6 +127,7 @@ public class EnemyStats : Stats
         int numExpOrbs = HelperScripts.RandomVec(enemy.numExpOrbs);
         int expPerOrb = Mathf.RoundToInt(experienceDrop / (float)numExpOrbs);
 
+        GetComponent<EnemyMovement>().RemoveSpotClaim();
         Destroy(gameObject);
 
         for (int i = 0; i < numExpOrbs; i++)
