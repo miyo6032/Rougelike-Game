@@ -80,7 +80,7 @@ public class DungeonGenerator : MonoBehaviour
         {
             GenerateLevel(currentLevel);
             // Teleport the player just right of the stairs
-            player.TeleportPlayer(DungeonLevelGenerator.instance.dungeonExits.ToVector2()[1] + new Vector2(1, 0));
+            player.TeleportPlayer(DungeonLevelGenerator.instance.dungeonExits.ToVector2()[1] + new Vector2(-1, 0));
             ApplyDungeonCurse();
         }
     }
@@ -101,7 +101,7 @@ public class DungeonGenerator : MonoBehaviour
     private void Exit()
     {
         // Teleport the player just to the left of the exit
-        player.TeleportPlayer(new Vector3(Mathf.FloorToInt(DungeonEntrance.position.x), Mathf.FloorToInt(DungeonEntrance.position.y)) + new Vector3(1, 0, 0));
+        player.TeleportPlayer(new Vector3(Mathf.FloorToInt(DungeonEntrance.position.x), Mathf.FloorToInt(DungeonEntrance.position.y)) + new Vector3(-1, 0, 0));
         DungeonLevelGenerator.instance.ClearTilemap();
         DungeonLevels = null;
         gameObject.SetActive(false);

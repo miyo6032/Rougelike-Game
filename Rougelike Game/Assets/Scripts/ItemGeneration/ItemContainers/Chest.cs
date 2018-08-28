@@ -4,8 +4,8 @@ using UnityEngine;
 /// <summary>
 /// Holds the chest items, and the chest opening and closing sprites
 /// </summary>
-public class Chest : MonoBehaviour {
-
+public class Chest : MonoBehaviour
+{
     public List<ItemSave> chestItems = new List<ItemSave>();
     public int lootLevel;
     public Vector2Int dropRange;
@@ -13,7 +13,7 @@ public class Chest : MonoBehaviour {
     public Sprite chestOpen;
     public Sprite chestClosed;
 
-    void Start()
+    private void Start()
     {
         chestItems = ItemDropGenerator.instance.GenerateItemDrops(lootLevel, dropRange);
     }
@@ -27,5 +27,4 @@ public class Chest : MonoBehaviour {
     {
         GetComponent<SpriteRenderer>().sprite = chestClosed;
     }
-
 }
