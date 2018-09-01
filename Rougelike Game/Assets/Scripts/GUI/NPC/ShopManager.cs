@@ -5,7 +5,8 @@ using UnityEngine.UI;
 /// <summary>
 /// Handles the shop ui and buy and selling items
 /// </summary>
-public class ShopManager : MonoBehaviour {
+public class ShopManager : MonoBehaviour
+{
     public static ShopManager instance;
     public Text NPCName;
     public Text NPCIntro;
@@ -15,6 +16,7 @@ public class ShopManager : MonoBehaviour {
     public Text buyItemCost;
     public Text sellItemCost;
     public Text goldText;
+    public Image traderPortrait;
     public Image buyItemImage;
     public Image sellItemImage;
     public GameObject noItemsToSell;
@@ -46,8 +48,9 @@ public class ShopManager : MonoBehaviour {
         if (currentTrader != trader)
         {
             currentTrader = trader;
-            NPCName.text = trader.dialogue.name;
-            NPCIntro.text = trader.introDialogue;
+            NPCName.text = trader.introDialogue.name;
+            NPCIntro.text = trader.introDialogue.sentence;
+            traderPortrait.sprite = trader.introDialogue.portrait;
             goldText.text = gold.ToString();
             // Reset indices
             buyItemIndex = 1;
@@ -185,5 +188,4 @@ public class ShopManager : MonoBehaviour {
     {
         return index <= 0 ? count - 1 : index - 1;
     }
-
 }

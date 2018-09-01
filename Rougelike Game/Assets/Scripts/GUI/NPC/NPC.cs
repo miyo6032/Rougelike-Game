@@ -6,7 +6,7 @@ using UnityEngine.EventSystems;
 /// </summary>
 public class NPC : MonoBehaviour, IPointerClickHandler
 {
-    public DialogueString dialogue;
+    public Dialogue[] dialogue;
     public float speakingDistance = 2;
     private Transform player;
 
@@ -33,5 +33,4 @@ public class NPC : MonoBehaviour, IPointerClickHandler
     {
         DialoguePanel.instance.StartDialogue(dialogue);
     }
-
 }

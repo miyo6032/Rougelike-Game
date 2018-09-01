@@ -5,15 +5,13 @@ using UnityEngine;
 /// <summary>
 /// Stores the data for a trader NPC, activated on click
 /// </summary>
-public class NPCTrader : NPC {
-
+public class NPCTrader : NPC
+{
     public List<ItemScriptableObject> itemsForSale;
-    [TextArea(2, 4)]
-    public string introDialogue;
+    public Dialogue introDialogue;
 
     public override void OnNPCClicked()
     {
         ShopManager.instance.OpenShop(this);
     }
-
 }

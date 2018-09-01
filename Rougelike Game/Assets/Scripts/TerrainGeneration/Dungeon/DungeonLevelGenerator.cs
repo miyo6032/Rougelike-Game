@@ -403,6 +403,8 @@ public class DungeonLevelGenerator : TerrainGenerator
         if (Application.isPlaying)
         {
             if (prevGameObject) Destroy(prevGameObject);
+            //Destroyed enemies may potentially still have claimed spot in the movement tracker
+            MovementTracker.instance.ClearSpots();
         }
         mapGameObjects = new GameObject("MapGameObjects").GetComponent<Transform>();
         mapGameObjects.transform.SetParent(transform);
