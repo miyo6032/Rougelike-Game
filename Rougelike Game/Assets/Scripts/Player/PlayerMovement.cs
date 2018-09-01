@@ -74,7 +74,7 @@ public class PlayerMovement : MovingObject
         if (input.x != 0 || input.y != 0)
         {
             // check to make sure the spot is not claimed - and keeps enemies and players from moving into the same spot.
-            if (!moveManager.SpotClaimed(Vector2Int.RoundToInt((Vector2)transform.position + input)))
+            if (!MovementTracker.instance.SpotClaimed(Vector2Int.RoundToInt((Vector2)transform.position + input)))
             {
                 facingdirection = input;
                 AttemptMove(input); // The player moves (or at least tries to)
@@ -131,7 +131,7 @@ public class PlayerMovement : MovingObject
         // Initiate the movement
         Vector2 start = transform.position;
         Vector2 end = start + dir;
-        moveManager.ClaimSpot(this, Vector2Int.FloorToInt(end));
+        MovementTracker.instance.ClaimSpot(this, Vector2Int.FloorToInt(end));
         StartCoroutine(SmoothMovement(end));
 
         // Update certain other events

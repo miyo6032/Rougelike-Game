@@ -83,7 +83,7 @@ public class EnemyMovement : MovingObject
             if (GetNextMove(out nextMove))
             {
                 // As long at the spot is not claimed already something else, we can try to move into the position
-                if (!moveManager.SpotClaimed(Vector2Int.RoundToInt(transform.position) + Vector2Int.RoundToInt(nextMove)))
+                if (!MovementTracker.instance.SpotClaimed(Vector2Int.RoundToInt(transform.position) + Vector2Int.RoundToInt(nextMove)))
                 {
                     AttemptMove(Vector2Int.RoundToInt(nextMove));
                     altMove = !altMove;
@@ -165,7 +165,7 @@ public class EnemyMovement : MovingObject
         AnimateWithDirection(dir, "idle");
         Vector2 start = transform.position;
         Vector2 end = start + dir;
-        moveManager.ClaimSpot(this, Vector2Int.FloorToInt(end));
+        MovementTracker.instance.ClaimSpot(this, Vector2Int.FloorToInt(end));
         StartCoroutine(SmoothMovement(end));
     }
 
@@ -205,6 +205,6 @@ public class EnemyMovement : MovingObject
 
     public void RemoveSpotClaim()
     {
-        moveManager.RemoveClaim(this);
+        MovementTracker.instance.RemoveClaim(this);
     }
 }

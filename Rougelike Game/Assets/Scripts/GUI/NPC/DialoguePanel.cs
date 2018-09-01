@@ -9,11 +9,13 @@ using System.Collections;
 public class DialoguePanel : MonoBehaviour
 {
     public static DialoguePanel instance;
-    private Queue<string> dialogueQueue;
-    private DialogueString currentDialogue;
+    private Queue<Dialogue> dialogueQueue;
+    private Dialogue[] currentDialogue;
 
     // Keeps track of the current dialogue to determine if startDialogue should just continue the current dialogue
     public Text dialogueText;
+
+    public Image dialogueImage;
     public Text title;
 
     private void Start()
@@ -28,32 +30,27 @@ public class DialoguePanel : MonoBehaviour
             Destroy(gameObject);
         }
         gameObject.SetActive(false);
-        dialogueQueue = new Queue<string>();
+        dialogueQueue = new Queue<Dialogue>();
     }
 
     /// <summary>
     /// Will either load and start new dialogue, or continue the existing dialogue
     /// </summary>
-    public void StartDialogue(DialogueString dialogue)
+    public void StartDialogue(Dialogue[] dialogue)
     {
         gameObject.SetActive(true);
 
         //Continue current dialogue?
-        if (dialogue == currentDialogue)
-        {
-            NextSentence();
-            return;
-        }
+        if (dialogue == currentDialogue) return;
 
         currentDialogue = dialogue;
         dialogueQueue.Clear();
 
-        foreach (var sentence in dialogue.sentences)
+        foreach (var sentence in dialogue)
         {
             dialogueQueue.Enqueue(sentence);
         }
 
-        title.text = dialogue.name;
         NextSentence();
     }
 
@@ -68,13 +65,16 @@ public class DialoguePanel : MonoBehaviour
             return;
         }
         StopAllCoroutines();
-        StartCoroutine(TypeSentence(dialogueQueue.Dequeue()));
+        Dialogue dialogue = dialogueQueue.Dequeue();
+        title.text = dialogue.name;
+        dialogueImage.sprite = dialogue.portrait;
+        StartCoroutine(TypeSentence(dialogue.sentence));
     }
 
     /// <summary>
     /// Type the words out in sequence
     /// </summary>
-    IEnumerator TypeSentence(string sentence)
+    private IEnumerator TypeSentence(string sentence)
     {
         dialogueText.text = "";
         foreach (var letter in sentence)
@@ -92,5 +92,4 @@ public class DialoguePanel : MonoBehaviour
         gameObject.SetActive(false);
         currentDialogue = null;
     }
-
 }

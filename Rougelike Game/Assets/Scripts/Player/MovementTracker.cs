@@ -6,7 +6,20 @@ using System.Collections.Generic;
 /// </summary>
 public class MovementTracker : MonoBehaviour
 {
+    public static MovementTracker instance;
     private readonly Dictionary<MovingObject, Vector2Int> claimedSpots = new Dictionary<MovingObject, Vector2Int>();
+
+    private void Start()
+    {
+        if (instance == null)
+        {
+            instance = this;
+        }
+        else if (instance != this)
+        {
+            Debug.LogError("Multiple instances of MovementTracker!");
+        }
+    }
 
     /// <summary>
     /// Claim a spot that the object will move into that no one else can claim
@@ -24,6 +37,14 @@ public class MovementTracker : MonoBehaviour
     public void RemoveClaim(MovingObject source)
     {
         claimedSpots.Remove(source);
+    }
+
+    /// <summary>
+    /// Clear all claimed spots
+    /// </summary>
+    public void ClearSpots()
+    {
+        claimedSpots.Clear();
     }
 
     /// <summary>

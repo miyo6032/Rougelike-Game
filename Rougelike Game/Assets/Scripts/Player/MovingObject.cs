@@ -12,14 +12,12 @@ public abstract class MovingObject : MonoBehaviour
     [HideInInspector]
     public bool moving;
 
-    protected MovementTracker moveManager;
     private Rigidbody2D rb2D;
     private float inverseMoveTime;
 
     protected virtual void Start()
     {
         rb2D = GetComponent<Rigidbody2D>();
-        moveManager = GameObject.Find("GameManager").GetComponent<MovementTracker>();
     }
 
     protected void SetMoveSpeed(float moveSpeed)
@@ -84,7 +82,7 @@ public abstract class MovingObject : MonoBehaviour
 
         OnStopMove();
 
-        moveManager.RemoveClaim(this);
+        MovementTracker.instance.RemoveClaim(this);
     }
 
     protected virtual void OnStopMove()
