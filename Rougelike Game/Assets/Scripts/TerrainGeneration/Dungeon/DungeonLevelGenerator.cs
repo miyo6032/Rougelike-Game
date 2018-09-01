@@ -10,6 +10,8 @@ public class DungeonLevelGenerator : TerrainGenerator
 {
     public static DungeonLevelGenerator instance;
 
+    public Tilemap ceiling;
+
     [HideInInspector]
     public DungeonLevel DungeonLevel;
 
@@ -59,6 +61,7 @@ public class DungeonLevelGenerator : TerrainGenerator
     public override void ClearTilemap()
     {
         base.ClearTilemap();
+        ceiling.ClearAllTiles();
         ClearGameObjects();
     }
 
@@ -278,9 +281,9 @@ public class DungeonLevelGenerator : TerrainGenerator
                 }
                 randomRoom = roomPos[Random.Range(0, roomPos.Count)];
                 roomPos.Remove(randomRoom);
-            } while (!structure.CanGenerate(walls, upperFloor, randomRoom));
+            } while (!structure.CanGenerate(walls, upperFloor, ceiling, randomRoom));
 
-            structure.Generate(walls, upperFloor, randomRoom);
+            structure.Generate(walls, upperFloor, ceiling, randomRoom);
         }
     }
 
@@ -511,13 +514,24 @@ public class DungeonLevelGenerator : TerrainGenerator
                             IsWallTile(map[crossBottomLeft.x, crossBottomLeft.y]) &&
                             IsWallTile(map[crossBottomRight.x, crossBottomRight.y]) &&
                             map[crossDown.x, crossDown.y] == Tiles.floorTile &&
-                            !placedDoors.ContainsKey(new Vector2Int(x, y)))
+                            !placedDoors.ContainsKey(new Vector2Int(x, y)) &&
+                            !placedDoors.ContainsKey(new Vector2Int(x + 1, y)) &&
+                            !placedDoors.ContainsKey(new Vector2Int(x - 1, y)) &&
+                            !placedDoors.ContainsKey(new Vector2Int(x, y + 1)) &&
+                            !placedDoors.ContainsKey(new Vector2Int(x, y - 1)))
                         {
                             DungeonDoor instance = Instantiate(door, new Vector3(x, y), Quaternion.identity,
                                 mapGameObjects);
-
                             instance.spriteRenderer.sprite = DungeonLevel.Door;
-                            if (Random.Range(0, 1f) < DungeonLevel.HiddenDoorDensity)
+                            if (direction == left || direction == right)
+                            {
+                                walls.SetTile(new Vector3Int(x, y + 1, 0), DungeonLevel.WallTile.GetTile());
+                                if (Random.Range(0, 1f) < DungeonLevel.HiddenDoorDensity)
+                                {
+                                    instance.spriteRenderer.sprite = DungeonLevel.HiddenSideDoor;
+                                }
+                            }
+                            else if (Random.Range(0, 1f) < DungeonLevel.HiddenDoorDensity)
                             {
                                 instance.spriteRenderer.sprite = DungeonLevel.HiddenDoor;
                             }

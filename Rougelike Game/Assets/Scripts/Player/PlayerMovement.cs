@@ -96,6 +96,7 @@ public class PlayerMovement : MovingObject
             Stats destructible = hit.transform.GetComponent<Stats>();
             Chest chest = hit.transform.GetComponent<Chest>();
             NPC npc = hit.transform.GetComponent<NPC>();
+            DungeonDoor door = hit.transform.GetComponent<DungeonDoor>();
 
             if (destructible && hitDirection == Vector2Int.zero)
             {
@@ -111,10 +112,16 @@ public class PlayerMovement : MovingObject
             {
                 npc.OnNPCClicked();
             }
+            else if (door)
+            {
+                door.Open();
+            }
             else
             {
                 animatorHandler.SetIdle(dir);
             }
+
+            lighting.GenerateLight();
 
             return;
         }

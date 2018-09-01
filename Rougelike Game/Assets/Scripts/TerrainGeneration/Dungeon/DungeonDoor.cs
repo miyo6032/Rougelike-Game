@@ -1,21 +1,14 @@
 ﻿using UnityEngine;
-using UnityEngine.EventSystems;
 
 /// <summary>
 /// The trigger for the dungeon Door - just destroys it when walked upon
 /// </summary>
-public class DungeonDoor : PlayerEnterDetector, IPointerClickHandler
+public class DungeonDoor : PlayerEnterDetector
 {
     public SpriteRenderer spriteRenderer;
 
     //When the player walks on top of the bag
-    public override void PlayerEnter(Collider2D player)
-    {
-        Destroy(gameObject);
-    }
-
-    // Not sure if this works right now
-    public void OnPointerClick(PointerEventData eventData)
+    public void Open()
     {
         Destroy(gameObject);
     }

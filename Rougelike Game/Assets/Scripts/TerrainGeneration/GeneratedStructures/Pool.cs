@@ -13,12 +13,12 @@ public class Pool : GeneratedStructure
     public Sprite holeEdge;
     public Effect effect;
 
-    public override bool CanGenerate(Tilemap walls, Tilemap upperFloor, Room room)
+    public override bool CanGenerate(Tilemap walls, Tilemap upperFloor, Tilemap ceiling, Room room)
     {
         return !room.SpotTaken(room.GetCenter());
     }
 
-    public override void Generate(Tilemap walls, Tilemap upperFloor, Room room)
+    public override void Generate(Tilemap walls, Tilemap upperFloor, Tilemap ceiling, Room room)
     {
         int roomWidth2 = Mathf.FloorToInt(room.GetWidth() / 2f) - 1;
         int roomHeight2 = Mathf.FloorToInt(room.GetHeight() / 2f) - 1;
@@ -43,7 +43,7 @@ public class Pool : GeneratedStructure
             }
         }
 
-        foreach(Vector2Int tile in tiles)
+        foreach (Vector2Int tile in tiles)
         {
             SpriteRenderer instance = Instantiate(holePrefab, (Vector2)tile, Quaternion.identity, DungeonLevelGenerator.instance.mapGameObjects);
             instance.sprite = (tiles.Contains(tile + Vector2Int.up)) ? hole : holeEdge;

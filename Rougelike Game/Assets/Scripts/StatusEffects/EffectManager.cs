@@ -37,7 +37,6 @@ public class EffectManager : MonoBehaviour
         List<ActiveEffect> toRemove = new List<ActiveEffect>();
         foreach (var effect in activeEffects)
         {
-            Debug.Log(source + " " + effect.source);
             if (effect.source == source)
             {
                 effect.currentDuration = 0;
