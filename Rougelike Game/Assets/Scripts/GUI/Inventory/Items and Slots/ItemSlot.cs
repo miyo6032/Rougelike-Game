@@ -23,11 +23,11 @@ public class ItemSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         {
             ItemDropIntoEmpty(attachedItem);
         }
-        else if(itemStack != null && attachedItem == null)
+        else if (itemStack != null && attachedItem == null)
         {
             PickItemUp();
         }
-        else if(itemStack != null && attachedItem != null)
+        else if (itemStack != null && attachedItem != null)
         {
             ItemDropIntoFull(attachedItem);
         }
@@ -57,7 +57,7 @@ public class ItemSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     /// </summary>
     public virtual void ItemDropIntoFull(ItemStack droppedItem)
     {
-        if(droppedItem.item == itemStack.item && droppedItem.item.Stackable)
+        if (droppedItem.item == itemStack.item && droppedItem.item.Stackable)
         {
             ChangeAmount(droppedItem.amount);
             SetItem(itemStack);
@@ -125,5 +125,4 @@ public class ItemSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
             RemoveItem();
         }
     }
-
 }

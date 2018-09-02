@@ -30,20 +30,27 @@ public class InventoryManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Creates a new item instance and stacks it to an existing stack, or to the next available slot
+    /// Creates a new item instance and stacks it to an existing stack, or to the next available slot.
+    /// Returns false if unable to add item to the inventory
     /// </summary>
-    /// <param name="stack"></param>
-    public void AddItem(ItemStack stack)
+    public bool AddItem(ItemStack stack)
     {
         ItemSlot slot = FindSlotWithItem(stack.item, slots);
         if (slot && stack.item.Stackable)
         {
             slot.ItemDropIntoFull(stack);
+            return true;
         }
         else
         {
-            AddItemToSlot(stack, FindNextOpenSlot(slots));
+            slot = FindNextOpenSlot(slots);
+            if (slot)
+            {
+                AddItemToSlot(stack, slot);
+                return true;
+            }
         }
+        return false;
     }
 
     /// <summary>

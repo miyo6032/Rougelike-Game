@@ -19,14 +19,11 @@ public class EnemyStats : Stats
     [Header("Components")]
     public Experience experiencePrefab;
 
-    public LootBag lootBagPrefab;
+    public ItemPickup itemPrefab;
     public LayerMask bagLayerMask;
     public DamageCounter damageCounterPrefab;
-    private Vector2Int dropRange;
     private Animator animator;
     private Slider healthSlider;
-    private int experienceDrop;
-    private int level;
 
     private void Start()
     {
@@ -44,10 +41,7 @@ public class EnemyStats : Stats
         maxHealth.SetBaseValue(enemy.maxHealth);
         defense.SetBaseValue(enemy.defense);
         turnDelay.SetBaseValue(enemy.turnDelay);
-        level = enemy.level;
-        experienceDrop = enemy.experienceDrop;
         health = maxHealth.GetIntValue();
-        dropRange = enemy.dropRange;
     }
 
     /// <summary>
@@ -109,23 +103,15 @@ public class EnemyStats : Stats
     /// </summary>
     private void Death()
     {
-        List<ItemSave> itemDrops = ItemDropGenerator.instance.GenerateItemDrops(level, dropRange);
-        if (itemDrops.Count > 0)
+        if (enemy.dropChance > Random.Range(0, 1f))
         {
-            //If a bag already exists, just add the items to that bag
-            LootBag existingBag = GetBag();
-            if (existingBag)
-            {
-                existingBag.AddItems(itemDrops);
-            }
-            else
-            {
-                DropNewBag(itemDrops);
-            }
+            ItemPickup item = Instantiate(itemPrefab, transform.parent);
+            item.SetItem(new ItemStack(enemy.itemDrops[Random.Range(0, enemy.itemDrops.Length)].item, 1));
+            item.transform.position = transform.position;
         }
 
         int numExpOrbs = HelperScripts.RandomVec(enemy.numExpOrbs);
-        int expPerOrb = Mathf.RoundToInt(experienceDrop / (float)numExpOrbs);
+        int expPerOrb = Mathf.RoundToInt(enemy.experienceDrop / (float)numExpOrbs);
 
         GetComponent<EnemyMovement>().RemoveSpotClaim();
         Destroy(gameObject);
@@ -136,35 +122,5 @@ public class EnemyStats : Stats
             exp.transform.position = transform.position;
             exp.experienceAmount = expPerOrb;
         }
-    }
-
-    /// <summary>
-    /// If the enemy dies on an empty space, drop a new loot bag
-    /// </summary>
-    private void DropNewBag(List<ItemSave> itemDrops)
-    {
-        LootBag bag = Instantiate(lootBagPrefab);
-        bag.AddItems(itemDrops);
-        bag.transform.SetParent(transform.parent);
-        bag.transform.position = transform.position;
-    }
-
-    /// <summary>
-    /// Tries to get an existing bag where the enemy dies
-    /// </summary>
-    /// <returns></returns>
-    private LootBag GetBag()
-    {
-        Collider2D[] colliders = Physics2D.OverlapPointAll(transform.position, bagLayerMask);
-        foreach (Collider2D col in colliders)
-        {
-            LootBag bag = col.GetComponent<LootBag>();
-            if (bag)
-            {
-                return bag;
-            }
-        }
-
-        return null;
     }
 }
