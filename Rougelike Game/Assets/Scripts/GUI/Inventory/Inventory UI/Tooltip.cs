@@ -84,8 +84,11 @@ public class Tooltip : MonoBehaviour
             case PlayerStatModifier.maxHealth:
                 return " Max health";
 
-            case PlayerStatModifier.attack:
+            case PlayerStatModifier.minAttack:
                 return " Attack";
+
+            case PlayerStatModifier.maxAttack:
+                return " MaxAttack";
 
             case PlayerStatModifier.defense:
                 return " Defense";
@@ -116,11 +119,13 @@ public class Tooltip : MonoBehaviour
     /// <param name="item"></param>
     public void ShowItemTooltip(Item item)
     {
+        Modifier defenseMod = GetModifier(item, PlayerStatModifier.defense);
+
         PositionTooltip();
         title.text = item.Title;
         string str = item.ItemLevel == 0 ? "" : "Required Level: " + item.ItemLevel + "\n\n";
         str += GetAttackString(item);
-        str += item.Defence == 0 ? "" : "+" + item.Defence + " Defense\n\n";
+        str += defenseMod.value == 0 ? "" : "+" + defenseMod.value + " Defense\n\n";
         str += item.focusConsumption == 0 ? "" : "Required focus: " + item.focusConsumption + "\n\n";
         str += item.Value == 0 ? "" : "Value: " + item.Value + "\n\n";
         str += item.Description;
@@ -144,17 +149,35 @@ public class Tooltip : MonoBehaviour
     /// <returns></returns>
     private string GetAttackString(Item item)
     {
-        if (item.Attack == 0)
+        Modifier minAttack = GetModifier(item, PlayerStatModifier.minAttack);
+        Modifier maxAttack = GetModifier(item, PlayerStatModifier.maxAttack);
+        if (maxAttack.value == 0)
         {
             return "";
         }
 
-        if (item.Attack == item.MaxAttack)
+        if (minAttack.value == maxAttack.value)
         {
-            return item.Attack + " Damage\n\n";
+            return minAttack.value + " Damage\n\n";
         }
 
-        return item.Attack + " - " + item.MaxAttack + " Damage\n\n";
+        return minAttack.value + " - " + maxAttack.value + " Damage\n\n";
+    }
+
+    /// <summary>
+    /// Returns a modifier based on its type, or a useless modifier is there is none
+    /// </summary>
+    private Modifier GetModifier(Item item, PlayerStatModifier modifierType)
+    {
+        foreach (var modifier in item.equipmentModifiers)
+        {
+            if (modifier.statToModify == modifierType)
+            {
+                return modifier;
+            }
+        }
+
+        return new Modifier(modifierType, StatModifierType.linear, 0);
     }
 
     /// <summary>

@@ -4,7 +4,8 @@ using UnityEngine;
 public enum PlayerStatModifier
 {
     maxHealth,
-    attack,
+    minAttack,
+    maxAttack,
     maxFocus,
     hitSpeed,
     defense,
@@ -56,8 +57,13 @@ public class PlayerStats : Stats
 
     public ItemScriptableObject meat;
     public ItemScriptableObject starterSword;
+    public ItemScriptableObject starterShield;
     public ItemScriptableObject starterHelmet;
-    public ItemScriptableObject starterArmor;
+    public ItemScriptableObject starterChestplate;
+    public ItemScriptableObject starterLeggings;
+    public ItemScriptableObject starterBoots;
+    public ItemScriptableObject starterNecklace;
+    public ItemScriptableObject startedRing;
 
     private Animator animator;
     private PlayerAnimation playerAnimation;
@@ -83,9 +89,13 @@ public class PlayerStats : Stats
 
         InventoryManager.instance.AddItem(new ItemStack(meat.item, 1));
         InventoryManager.instance.AddItemToSlot(new ItemStack(starterSword.item, 1), InventoryManager.instance.equipSlots[0]);
-        InventoryManager.instance.AddItemToSlot(new ItemStack(starterSword.item, 1), InventoryManager.instance.equipSlots[1]);
-        InventoryManager.instance.AddItemToSlot(new ItemStack(starterHelmet.item, 1), InventoryManager.instance.equipSlots[3]);
-        InventoryManager.instance.AddItemToSlot(new ItemStack(starterArmor.item, 1), InventoryManager.instance.equipSlots[2]);
+        InventoryManager.instance.AddItemToSlot(new ItemStack(starterShield.item, 1), InventoryManager.instance.equipSlots[1]);
+        InventoryManager.instance.AddItemToSlot(new ItemStack(starterHelmet.item, 1), InventoryManager.instance.equipSlots[2]);
+        InventoryManager.instance.AddItemToSlot(new ItemStack(starterChestplate.item, 1), InventoryManager.instance.equipSlots[3]);
+        InventoryManager.instance.AddItemToSlot(new ItemStack(starterLeggings.item, 1), InventoryManager.instance.equipSlots[4]);
+        InventoryManager.instance.AddItemToSlot(new ItemStack(starterBoots.item, 1), InventoryManager.instance.equipSlots[5]);
+        InventoryManager.instance.AddItemToSlot(new ItemStack(starterNecklace.item, 1), InventoryManager.instance.equipSlots[6]);
+        InventoryManager.instance.AddItemToSlot(new ItemStack(startedRing.item, 1), InventoryManager.instance.equipSlots[7]);
     }
 
     /// <summary>
@@ -180,14 +190,12 @@ public class PlayerStats : Stats
     /// <param name="inst"></param>
     /// <param name="slot"></param>
     /// <returns></returns>
-    public bool EquipItem(ItemStack inst, EquipSlot slot)
+    public bool EquipItem(ItemStack inst)
     {
         // If the item has the correct stats to equip
         if (level >= inst.item.ItemLevel)
         {
-            maxAttack.AddModifier(inst.item.MaxAttack, inst, StatModifierType.linear);
-            minAttack.AddModifier(inst.item.Attack, inst, StatModifierType.linear);
-            defense.AddModifier(inst.item.Defence, inst, StatModifierType.linear);
+            ApplyStats(inst.item.equipmentModifiers, inst);
             UpdateStats();
             return true;
         }
@@ -201,9 +209,7 @@ public class PlayerStats : Stats
     /// <param name="inst"></param>
     public void UnequipItem(ItemStack inst)
     {
-        maxAttack.RemoveSource(inst);
-        minAttack.RemoveSource(inst);
-        defense.RemoveSource(inst);
+        RemoveStats(inst.item.equipmentModifiers, inst);
         UpdateStats();
     }
 
@@ -240,8 +246,11 @@ public class PlayerStats : Stats
                 Heal(Mathf.RoundToInt(modifier.value));
                 break;
 
-            case PlayerStatModifier.attack:
+            case PlayerStatModifier.minAttack:
                 minAttack.AddModifier(Mathf.RoundToInt(modifier.value), source, modifier.modifierType);
+                break;
+
+            case PlayerStatModifier.maxAttack:
                 maxAttack.AddModifier(Mathf.RoundToInt(modifier.value), source, modifier.modifierType);
                 break;
 
@@ -285,8 +294,11 @@ public class PlayerStats : Stats
                 maxHealth.RemoveSource(source);
                 break;
 
-            case PlayerStatModifier.attack:
+            case PlayerStatModifier.minAttack:
                 minAttack.RemoveSource(source);
+                break;
+
+            case PlayerStatModifier.maxAttack:
                 maxAttack.RemoveSource(source);
                 break;
 

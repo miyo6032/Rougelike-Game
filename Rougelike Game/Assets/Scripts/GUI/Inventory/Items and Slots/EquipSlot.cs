@@ -23,7 +23,7 @@ public class EquipSlot : ItemSlot
         if (ItemCanBeEquipped(droppedItem))
         {
             SetItem(droppedItem);
-            playerStat.EquipItem(droppedItem, this);
+            playerStat.EquipItem(droppedItem);
             ItemDragger.instance.RemoveItem();
             slotImage.sprite = fullSprite;
         }
@@ -38,7 +38,7 @@ public class EquipSlot : ItemSlot
         if (ItemCanBeEquipped(droppedItem))
         {
             playerStat.UnequipItem(itemStack);
-            playerStat.EquipItem(droppedItem, this);
+            playerStat.EquipItem(droppedItem);
             PickItemUp();
             SetItem(droppedItem);
             slotImage.sprite = fullSprite;
@@ -62,7 +62,7 @@ public class EquipSlot : ItemSlot
     /// </summary>
     /// <param name="droppedItem"></param>
     /// <returns></returns>
-    bool ItemCanBeEquipped(ItemStack droppedItem)
+    private bool ItemCanBeEquipped(ItemStack droppedItem)
     {
         return droppedItem.item.EquippedSlot == equipmentSlot && playerStat.GetLevel() >= droppedItem.item.ItemLevel;
     }
