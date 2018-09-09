@@ -85,10 +85,10 @@ public class Tooltip : MonoBehaviour
                 return " Max health";
 
             case PlayerStatModifier.minAttack:
-                return " Attack";
+                return " Min Attack";
 
             case PlayerStatModifier.maxAttack:
-                return " MaxAttack";
+                return " Max Attack";
 
             case PlayerStatModifier.defense:
                 return " Defense";
@@ -119,13 +119,10 @@ public class Tooltip : MonoBehaviour
     /// <param name="item"></param>
     public void ShowItemTooltip(Item item)
     {
-        Modifier defenseMod = GetModifier(item, PlayerStatModifier.defense);
-
         PositionTooltip();
         title.text = item.Title;
         string str = item.ItemLevel == 0 ? "" : "Required Level: " + item.ItemLevel + "\n\n";
-        str += GetAttackString(item);
-        str += defenseMod.value == 0 ? "" : "+" + defenseMod.value + " Defense\n\n";
+        str += GetStatsString(item.equipmentModifiers);
         str += item.focusConsumption == 0 ? "" : "Required focus: " + item.focusConsumption + "\n\n";
         str += item.Value == 0 ? "" : "Value: " + item.Value + "\n\n";
         str += item.Description;
@@ -140,28 +137,6 @@ public class Tooltip : MonoBehaviour
         transform.position = Input.mousePosition;
         PositionRelativeToScreen();
         gameObject.SetActive(true);
-    }
-
-    /// <summary>
-    /// Do some processing to return an attack string that describes the item's attack
-    /// </summary>
-    /// <param name="item"></param>
-    /// <returns></returns>
-    private string GetAttackString(Item item)
-    {
-        Modifier minAttack = GetModifier(item, PlayerStatModifier.minAttack);
-        Modifier maxAttack = GetModifier(item, PlayerStatModifier.maxAttack);
-        if (maxAttack.value == 0)
-        {
-            return "";
-        }
-
-        if (minAttack.value == maxAttack.value)
-        {
-            return minAttack.value + " Damage\n\n";
-        }
-
-        return minAttack.value + " - " + maxAttack.value + " Damage\n\n";
     }
 
     /// <summary>

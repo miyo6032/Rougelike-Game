@@ -197,8 +197,8 @@ public class DungeonLevelGenerator : TerrainGenerator
 
     private void PlaceChest(Vector2Int objectPosition)
     {
-        chestPrefab.lootLevel = DungeonLevel.ChestLevel;
         Chest chest = Instantiate(chestPrefab, (Vector2)objectPosition, Quaternion.identity, mapGameObjects);
+        chest.lootLevel = DungeonLevel.ChestLevel;
         if (Lighting.instance.LightingType == Lighting.LightType.smooth)
         {
             chest.GetComponent<SpriteRenderer>().material = Lighting.instance.SmoothLighting;

@@ -31,6 +31,11 @@ public class ItemSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         {
             ItemDropIntoFull(attachedItem);
         }
+
+        if (itemStack != null)
+        {
+            Tooltip.instance.ShowItemTooltip(itemStack.item);
+        }
     }
 
     /// <summary>

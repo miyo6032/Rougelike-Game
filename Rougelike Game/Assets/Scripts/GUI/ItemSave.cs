@@ -4,12 +4,12 @@
 [System.Serializable]
 public class ItemSave
 {
-    public ItemStack item;
+    public ItemStack itemStack;
     public int slotPosition;
 
     public ItemSave(ItemStack item, int slotPosition)
     {
-        this.item = item;
+        this.itemStack = item;
         this.slotPosition = slotPosition;
     }
 }

@@ -41,7 +41,7 @@ public class Stat
                     }
                     else if (mod.statType == StatModifierType.afterPercent)
                     {
-                        finalValue *= mod.value * 0.01f;
+                        finalValue += finalValue * mod.value * 0.01f;
                     }
                     else if (mod.statType == StatModifierType.basePercent)
                     {

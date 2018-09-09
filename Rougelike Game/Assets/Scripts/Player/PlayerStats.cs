@@ -243,7 +243,11 @@ public class PlayerStats : Stats
         {
             case PlayerStatModifier.maxHealth:
                 maxHealth.AddModifier(Mathf.RoundToInt(modifier.value), source, modifier.modifierType);
-                Heal(Mathf.RoundToInt(modifier.value));
+                if (modifier.modifierType == StatModifierType.linear)
+                {
+                    Heal(Mathf.RoundToInt(modifier.value));
+                }
+                health = Mathf.Clamp(health, 0, maxHealth.GetValue());
                 break;
 
             case PlayerStatModifier.minAttack:
