@@ -12,29 +12,15 @@ public class ItemDropGenerator : MonoBehaviour
     {
         CommonArtifact,
         RareArtifact,
-        RareWeapon,
-        RareShield,
-        RareChestplate,
-        RareHelmet,
-        RareLeggings,
-        RareBoots,
-        RareNecklace,
-        RareRing
+        Equipment
     }
 
     public List<ItemScriptableObject> artifacts;
-    public List<ItemScriptableObject> swords;
-    public List<ItemScriptableObject> chestplates;
-    public List<ItemScriptableObject> helmets;
-    public List<ItemScriptableObject> leggings;
-    public List<ItemScriptableObject> boots;
-    public List<ItemScriptableObject> shields;
-    public List<ItemScriptableObject> rings;
-    public List<ItemScriptableObject> necklaces;
+    public List<ItemScriptableObject> equipment;
 
     public int CommonArtifactDropWeight;
     public int RareArtifactDropWeight;
-    public int RareEquipmentDropWeight;
+    public int EquipmentDropWeight;
 
     private List<ItemDropTypes> ItemDropQueue = new List<ItemDropTypes>();
 
@@ -56,14 +42,7 @@ public class ItemDropGenerator : MonoBehaviour
     {
         FillWithType(CommonArtifactDropWeight, ItemDropTypes.CommonArtifact);
         FillWithType(RareArtifactDropWeight, ItemDropTypes.RareArtifact);
-        FillWithType(RareEquipmentDropWeight, ItemDropTypes.RareBoots);
-        FillWithType(RareEquipmentDropWeight, ItemDropTypes.RareChestplate);
-        FillWithType(RareEquipmentDropWeight, ItemDropTypes.RareLeggings);
-        FillWithType(RareEquipmentDropWeight, ItemDropTypes.RareNecklace);
-        FillWithType(RareEquipmentDropWeight, ItemDropTypes.RareRing);
-        FillWithType(RareEquipmentDropWeight, ItemDropTypes.RareShield);
-        FillWithType(RareEquipmentDropWeight, ItemDropTypes.RareWeapon);
-        FillWithType(RareEquipmentDropWeight, ItemDropTypes.RareHelmet);
+        FillWithType(EquipmentDropWeight, ItemDropTypes.Equipment);
     }
 
     private void FillWithType(int weight, ItemDropTypes type)
@@ -101,39 +80,11 @@ public class ItemDropGenerator : MonoBehaviour
             switch (itemType)
             {
                 case ItemDropTypes.RareArtifact:
-                    item = new ItemSave(new ItemStack(GetRandomItemByLevel(randomLevel + 3, artifacts), 1), randomSlot);
+                    item = new ItemSave(new ItemStack(GetRandomItemByLevel(randomLevel + 5, artifacts), 1), randomSlot);
                     break;
 
-                case ItemDropTypes.RareChestplate:
-                    item = new ItemSave(new ItemStack(GetRandomItemByLevel(randomLevel + 3, chestplates), 1), randomSlot);
-                    break;
-
-                case ItemDropTypes.RareBoots:
-                    item = new ItemSave(new ItemStack(GetRandomItemByLevel(randomLevel + 3, boots), 1), randomSlot);
-                    break;
-
-                case ItemDropTypes.RareHelmet:
-                    item = new ItemSave(new ItemStack(GetRandomItemByLevel(randomLevel + 3, helmets), 1), randomSlot);
-                    break;
-
-                case ItemDropTypes.RareLeggings:
-                    item = new ItemSave(new ItemStack(GetRandomItemByLevel(randomLevel + 3, leggings), 1), randomSlot);
-                    break;
-
-                case ItemDropTypes.RareNecklace:
-                    item = new ItemSave(new ItemStack(GetRandomItemByLevel(randomLevel + 3, necklaces), 1), randomSlot);
-                    break;
-
-                case ItemDropTypes.RareRing:
-                    item = new ItemSave(new ItemStack(GetRandomItemByLevel(randomLevel + 3, rings), 1), randomSlot);
-                    break;
-
-                case ItemDropTypes.RareShield:
-                    item = new ItemSave(new ItemStack(GetRandomItemByLevel(randomLevel + 3, shields), 1), randomSlot);
-                    break;
-
-                case ItemDropTypes.RareWeapon:
-                    item = new ItemSave(new ItemStack(GetRandomItemByLevel(randomLevel + 3, swords), 1), randomSlot);
+                case ItemDropTypes.Equipment:
+                    item = new ItemSave(new ItemStack(GetRandomItemByLevel(randomLevel, equipment), 1), randomSlot);
                     break;
 
                 default:
