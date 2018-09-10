@@ -121,7 +121,7 @@ public class Tooltip : MonoBehaviour
     {
         PositionTooltip();
         title.text = item.Title;
-        string str = item.ItemLevel == 0 ? "" : "Required Level: " + item.ItemLevel + "\n\n";
+        string str = item.EquippedSlot == EquipmentType.None ? "" : "Required Level: " + item.ItemLevel + "\n\n";
         str += GetStatsString(item.equipmentModifiers);
         str += item.focusConsumption == 0 ? "" : "Required focus: " + item.focusConsumption + "\n\n";
         str += item.Value == 0 ? "" : "Value: " + item.Value + "\n\n";

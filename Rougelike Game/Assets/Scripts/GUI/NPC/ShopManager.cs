@@ -17,8 +17,8 @@ public class ShopManager : MonoBehaviour
     public Text sellItemCost;
     public Text goldText;
     public Image traderPortrait;
-    public Image buyItemImage;
-    public Image sellItemImage;
+    public ShopItem buyItem;
+    public ShopItem sellItem;
     public GameObject noItemsToSell;
 
     public int gold;
@@ -140,7 +140,7 @@ public class ShopManager : MonoBehaviour
     {
         buyItemIndex = changeIndex(buyItemIndex, currentTrader.itemsForSale.Count);
         Item itemToShow = currentTrader.itemsForSale[buyItemIndex].item;
-        buyItemImage.sprite = TextureDatabase.instance.LoadTexture(itemToShow.Sprite);
+        buyItem.SetItemAndImage(itemToShow, TextureDatabase.instance.LoadTexture(itemToShow.Sprite));
         buyTitleText.text = itemToShow.Title;
         buyItemCost.text = itemToShow.Value.ToString();
     }
@@ -165,7 +165,7 @@ public class ShopManager : MonoBehaviour
         } while (slots[sellItemIndex].itemStack == null);
         noItemsToSell.SetActive(false);
         ItemStack itemStack = slots[sellItemIndex].itemStack;
-        sellItemImage.sprite = TextureDatabase.instance.LoadTexture(itemStack.item.Sprite);
+        sellItem.SetItemAndImage(itemStack.item, TextureDatabase.instance.LoadTexture(itemStack.item.Sprite));
         sellTitleText.text = itemStack.item.Title;
         sellStackAmount.text = itemStack.amount == 1 ? "" : itemStack.amount.ToString();
         sellItemCost.text = itemStack.item.Value.ToString();
