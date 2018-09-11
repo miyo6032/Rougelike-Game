@@ -12,16 +12,15 @@ public class ItemDropGenerator : MonoBehaviour
     {
         CommonArtifact,
         RareArtifact,
-        RareArmor,
-        RareWeapon,
-        RareHelmet
+        Equipment
     }
+
+    public List<ItemScriptableObject> artifacts;
+    public List<ItemScriptableObject> equipment;
 
     public int CommonArtifactDropWeight;
     public int RareArtifactDropWeight;
-    public int RareArmorDropWeight;
-    public int RareWeaponDropWeight;
-    public int RareHelmetDropWeight;
+    public int EquipmentDropWeight;
 
     private List<ItemDropTypes> ItemDropQueue = new List<ItemDropTypes>();
 
@@ -43,9 +42,7 @@ public class ItemDropGenerator : MonoBehaviour
     {
         FillWithType(CommonArtifactDropWeight, ItemDropTypes.CommonArtifact);
         FillWithType(RareArtifactDropWeight, ItemDropTypes.RareArtifact);
-        FillWithType(RareArmorDropWeight, ItemDropTypes.RareArmor);
-        FillWithType(RareWeaponDropWeight, ItemDropTypes.RareWeapon);
-        FillWithType(RareHelmetDropWeight, ItemDropTypes.RareHelmet);
+        FillWithType(EquipmentDropWeight, ItemDropTypes.Equipment);
     }
 
     private void FillWithType(int weight, ItemDropTypes type)
@@ -63,6 +60,12 @@ public class ItemDropGenerator : MonoBehaviour
     {
         List<ItemSave> items = new List<ItemSave>();
 
+        List<int> chestSlots = new List<int>();
+        for (int i = 0; i < ChestInventory.instance.chestSlots.Count; i++)
+        {
+            chestSlots.Add(i);
+        }
+
         int amount = Random.Range(dropRange.x, dropRange.y + 1);
 
         for (int i = 0; i < amount; i++)
@@ -71,26 +74,26 @@ public class ItemDropGenerator : MonoBehaviour
             ItemDropTypes itemType = ItemDropQueue[index];
             ItemDropQueue.Remove(itemType);
             int randomLevel = Mathf.Clamp(level + Random.Range(-1, 2), 1, 30);
+            int randomSlot = chestSlots[Random.Range(0, chestSlots.Count)];
+            chestSlots.Remove(randomSlot);
             ItemSave item;
             switch (itemType)
             {
                 case ItemDropTypes.RareArtifact:
-                    item = new ItemSave(new ItemStack(ItemDatabase.instance.GetArtifact(randomLevel + 3), 1), 0);
+                    item = new ItemSave(new ItemStack(GetRandomItemByLevel(randomLevel + 5, artifacts), 1), randomSlot);
+                    break;
+
+                case ItemDropTypes.Equipment:
+                    item = new ItemSave(new ItemStack(GetRandomItemByLevel(randomLevel, equipment), 1), randomSlot);
                     break;
 
                 default:
-                    item = new ItemSave(new ItemStack(ItemDatabase.instance.GetArtifact(randomLevel), 1), 0);
+                    item = new ItemSave(new ItemStack(GetRandomItemByLevel(randomLevel, artifacts), 1), randomSlot);
                     break;
             }
-            ItemSave duplicateItem = GetDuplicateItem(items, item);
-            if (duplicateItem != null)
-            {
-                duplicateItem.item.amount += 1;
-            }
-            else
-            {
-                items.Add(item);
-            }
+
+            items.Add(item);
+
             if (ItemDropQueue.Count == 0)
             {
                 FillItemDropQueue();
@@ -100,15 +103,17 @@ public class ItemDropGenerator : MonoBehaviour
         return items;
     }
 
-    private ItemSave GetDuplicateItem(List<ItemSave> items, ItemSave item)
+    /// <summary>
+    /// Get an artifact based on a level given (and thus more valuable)
+    /// </summary>
+    private Item GetRandomItemByLevel(int level, List<ItemScriptableObject> items)
     {
-        foreach (ItemSave prevItem in items)
+        List<ItemScriptableObject> candidateItems = items.FindAll(itemtype => itemtype.item.ItemLevel == level);
+
+        if (candidateItems.Count > 0)
         {
-            if (prevItem.item == item.item)
-            {
-                return prevItem;
-            }
+            return candidateItems[Random.Range(0, candidateItems.Count)].item;
         }
-        return null;
+        return GetRandomItemByLevel(level - 1, items);
     }
 }

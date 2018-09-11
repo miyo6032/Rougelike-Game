@@ -31,7 +31,12 @@ public class Enemy : ScriptableObject
     public int experienceDrop;
 
     public Vector2Int numExpOrbs;
+    public ItemScriptableObject[] itemDrops;
     public Vector2Int dropRange;
+
+    [Range(0, 1)]
+    public float dropChance;
+
     public Color particleDamagedColor;
 
     public AnimatorOverrideController animator;

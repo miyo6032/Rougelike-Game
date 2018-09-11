@@ -84,8 +84,11 @@ public class Tooltip : MonoBehaviour
             case PlayerStatModifier.maxHealth:
                 return " Max health";
 
-            case PlayerStatModifier.attack:
-                return " Attack";
+            case PlayerStatModifier.minAttack:
+                return " Min Attack";
+
+            case PlayerStatModifier.maxAttack:
+                return " Max Attack";
 
             case PlayerStatModifier.defense:
                 return " Defense";
@@ -118,9 +121,8 @@ public class Tooltip : MonoBehaviour
     {
         PositionTooltip();
         title.text = item.Title;
-        string str = item.ItemLevel == 0 ? "" : "Required Level: " + item.ItemLevel + "\n\n";
-        str += GetAttackString(item);
-        str += item.Defence == 0 ? "" : "+" + item.Defence + " Defense\n\n";
+        string str = item.EquippedSlot == EquipmentType.None ? "" : "Required Level: " + item.ItemLevel + "\n\n";
+        str += GetStatsString(item.equipmentModifiers);
         str += item.focusConsumption == 0 ? "" : "Required focus: " + item.focusConsumption + "\n\n";
         str += item.Value == 0 ? "" : "Value: " + item.Value + "\n\n";
         str += item.Description;
@@ -138,23 +140,19 @@ public class Tooltip : MonoBehaviour
     }
 
     /// <summary>
-    /// Do some processing to return an attack string that describes the item's attack
+    /// Returns a modifier based on its type, or a useless modifier is there is none
     /// </summary>
-    /// <param name="item"></param>
-    /// <returns></returns>
-    private string GetAttackString(Item item)
+    private Modifier GetModifier(Item item, PlayerStatModifier modifierType)
     {
-        if (item.Attack == 0)
+        foreach (var modifier in item.equipmentModifiers)
         {
-            return "";
+            if (modifier.statToModify == modifierType)
+            {
+                return modifier;
+            }
         }
 
-        if (item.Attack == item.MaxAttack)
-        {
-            return item.Attack + " Damage\n\n";
-        }
-
-        return item.Attack + " - " + item.MaxAttack + " Damage\n\n";
+        return new Modifier(modifierType, StatModifierType.linear, 0);
     }
 
     /// <summary>

@@ -104,6 +104,8 @@ public class DungeonGenerator : MonoBehaviour
         player.TeleportPlayer(new Vector3(Mathf.FloorToInt(DungeonEntrance.position.x), Mathf.FloorToInt(DungeonEntrance.position.y)) + new Vector3(-1, 0, 0));
         DungeonLevelGenerator.instance.ClearTilemap();
         DungeonLevels = null;
+        EffectManager.instance.RemoveEffectBySource(this);
+        lowestLevel = 0;
         gameObject.SetActive(false);
     }
 
