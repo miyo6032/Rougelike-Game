@@ -8,12 +8,7 @@ using UnityEngine.UI;
 public class ShopItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
     private Item currentItem;
-    private Image image;
-
-    private void Start()
-    {
-        image = GetComponent<Image>();
-    }
+    public Image image;
 
     public void SetItemAndImage(Item item, Sprite sprite)
     {

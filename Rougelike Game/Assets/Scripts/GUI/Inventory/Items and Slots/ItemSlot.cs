@@ -7,7 +7,7 @@ using UnityEngine.UI;
 /// </summary>
 public class ItemSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler
 {
-    public ItemStack itemStack;
+    public ItemStack itemStack {get; private set;}
     public Text stackText;
     public Image itemSprite;
 
