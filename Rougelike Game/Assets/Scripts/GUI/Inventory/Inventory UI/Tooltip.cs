@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using Rougelike_Game.Assets.Scripts.GUI.Inventory.Items_and_Slots;
 
 /// <summary>
 /// Shows information for items when they are hovered over
@@ -117,15 +118,15 @@ public class Tooltip : MonoBehaviour
     /// Shows the tooltip with the item data
     /// </summary>
     /// <param name="item"></param>
-    public void ShowItemTooltip(Item item)
+    public void ShowItemTooltip(ItemScriptableObject item)
     {
         PositionTooltip();
-        title.text = item.Title;
-        string str = item.EquippedSlot == EquipmentType.None ? "" : "Required Level: " + item.ItemLevel + "\n\n";
+        title.text = item.title;
+        string str = item.equippedSlot == EquipmentType.None ? "" : "Required Level: " + item.level + "\n\n";
         str += GetStatsString(item.equipmentModifiers);
         str += item.focusConsumption == 0 ? "" : "Required focus: " + item.focusConsumption + "\n\n";
-        str += item.Value == 0 ? "" : "Value: " + item.Value + "\n\n";
-        str += item.Description;
+        str += item.value == 0 ? "" : "Value: " + item.value + "\n\n";
+        str += item.description;
         description.text = str;
     }
 
@@ -142,7 +143,7 @@ public class Tooltip : MonoBehaviour
     /// <summary>
     /// Returns a modifier based on its type, or a useless modifier is there is none
     /// </summary>
-    private Modifier GetModifier(Item item, PlayerStatModifier modifierType)
+    private Modifier GetModifier(ItemScriptableObject item, PlayerStatModifier modifierType)
     {
         foreach (var modifier in item.equipmentModifiers)
         {

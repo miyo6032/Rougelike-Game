@@ -62,7 +62,7 @@ public class ItemSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     /// </summary>
     public virtual void ItemDropIntoFull(ItemStack droppedItem)
     {
-        if (droppedItem.item == itemStack.item && droppedItem.item.Stackable)
+        if (droppedItem.item == itemStack.item && droppedItem.item.stackable)
         {
             ChangeAmount(droppedItem.amount);
             SetItem(itemStack);
@@ -82,7 +82,7 @@ public class ItemSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
         itemStack = stack;
         stackText.text = stack.amount == 1 ? "" : stack.amount.ToString();
-        itemSprite.sprite = TextureDatabase.instance.LoadTexture(stack.item.Sprite);
+        itemSprite.sprite = stack.item.sprite;
     }
 
     /// <summary>
@@ -92,7 +92,7 @@ public class ItemSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
         itemStack = null;
         stackText.text = "";
-        itemSprite.sprite = TextureDatabase.instance.LoadTexture("Invisible");
+        itemSprite.sprite = InventoryManager.instance.invisible.sprite;
     }
 
     /// <summary>

@@ -3,10 +3,10 @@
 /// </summary>
 public class ItemStack
 {
-    public Item item;
+    public ItemScriptableObject item;
     public int amount;
 
-    public ItemStack(Item item, int amount)
+    public ItemStack(ItemScriptableObject item, int amount)
     {
         this.item = item;
         this.amount = amount;

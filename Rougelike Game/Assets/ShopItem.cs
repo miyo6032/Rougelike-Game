@@ -7,20 +7,20 @@ using UnityEngine.UI;
 /// </summary>
 public class ShopItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
-    private Item currentItem;
+    private ItemScriptableObject item;
     public Image image;
 
-    public void SetItemAndImage(Item item, Sprite sprite)
+    public void SetItemAndImage(ItemScriptableObject item, Sprite sprite)
     {
-        currentItem = item;
+        this.item = item;
         image.sprite = sprite;
     }
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        if (currentItem != null)
+        if (item != null)
         {
-            Tooltip.instance.ShowItemTooltip(currentItem);
+            Tooltip.instance.ShowItemTooltip(item);
         }
     }
 

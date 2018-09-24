@@ -8,6 +8,8 @@ public class InventoryManager : MonoBehaviour
 {
     public static InventoryManager instance;
 
+    public ItemScriptableObject invisible;
+
     public List<ItemSlot> slots = new List<ItemSlot>();
     public List<ItemSlot> equipSlots = new List<ItemSlot>();
 
@@ -23,9 +25,6 @@ public class InventoryManager : MonoBehaviour
             Destroy(gameObject);
         }
 
-        //Setup all of the databases
-        TextureDatabase.instance.LoadAllTextures();
-
         gameObject.SetActive(false);
     }
 
@@ -36,7 +35,7 @@ public class InventoryManager : MonoBehaviour
     public bool AddItem(ItemStack stack)
     {
         ItemSlot slot = FindSlotWithItem(stack.item, slots);
-        if (slot && stack.item.Stackable)
+        if (slot && stack.item.stackable)
         {
             slot.ItemDropIntoFull(stack);
             return true;
@@ -86,7 +85,7 @@ public class InventoryManager : MonoBehaviour
     /// <param name="itemId"></param>
     /// <param name="slotList"></param>
     /// <returns></returns>
-    public ItemSlot FindSlotWithItem(Item item, List<ItemSlot> slotList)
+    public ItemSlot FindSlotWithItem(ItemScriptableObject item, List<ItemSlot> slotList)
     {
         foreach (ItemSlot slot in slotList)
         {

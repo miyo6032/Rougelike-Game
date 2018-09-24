@@ -87,15 +87,15 @@ public class PlayerStats : Stats
         playerAnimation = GetComponent<PlayerAnimation>();
         soundManager = GetComponent<SoundManager>();
 
-        InventoryManager.instance.AddItem(new ItemStack(meat.item, 1));
-        InventoryManager.instance.AddItemToSlot(new ItemStack(starterSword.item, 1), InventoryManager.instance.equipSlots[0]);
-        InventoryManager.instance.AddItemToSlot(new ItemStack(starterShield.item, 1), InventoryManager.instance.equipSlots[1]);
-        InventoryManager.instance.AddItemToSlot(new ItemStack(starterHelmet.item, 1), InventoryManager.instance.equipSlots[2]);
-        InventoryManager.instance.AddItemToSlot(new ItemStack(starterChestplate.item, 1), InventoryManager.instance.equipSlots[3]);
-        InventoryManager.instance.AddItemToSlot(new ItemStack(starterLeggings.item, 1), InventoryManager.instance.equipSlots[4]);
-        InventoryManager.instance.AddItemToSlot(new ItemStack(starterBoots.item, 1), InventoryManager.instance.equipSlots[5]);
-        InventoryManager.instance.AddItemToSlot(new ItemStack(starterNecklace.item, 1), InventoryManager.instance.equipSlots[6]);
-        InventoryManager.instance.AddItemToSlot(new ItemStack(startedRing.item, 1), InventoryManager.instance.equipSlots[7]);
+        InventoryManager.instance.AddItem(new ItemStack(meat, 1));
+        InventoryManager.instance.AddItemToSlot(new ItemStack(starterSword, 1), InventoryManager.instance.equipSlots[0]);
+        InventoryManager.instance.AddItemToSlot(new ItemStack(starterShield, 1), InventoryManager.instance.equipSlots[1]);
+        InventoryManager.instance.AddItemToSlot(new ItemStack(starterHelmet, 1), InventoryManager.instance.equipSlots[2]);
+        InventoryManager.instance.AddItemToSlot(new ItemStack(starterChestplate, 1), InventoryManager.instance.equipSlots[3]);
+        InventoryManager.instance.AddItemToSlot(new ItemStack(starterLeggings, 1), InventoryManager.instance.equipSlots[4]);
+        InventoryManager.instance.AddItemToSlot(new ItemStack(starterBoots, 1), InventoryManager.instance.equipSlots[5]);
+        InventoryManager.instance.AddItemToSlot(new ItemStack(starterNecklace, 1), InventoryManager.instance.equipSlots[6]);
+        InventoryManager.instance.AddItemToSlot(new ItemStack(startedRing, 1), InventoryManager.instance.equipSlots[7]);
     }
 
     /// <summary>
@@ -190,12 +190,12 @@ public class PlayerStats : Stats
     /// <param name="inst"></param>
     /// <param name="slot"></param>
     /// <returns></returns>
-    public bool EquipItem(ItemStack inst)
+    public bool EquipItem(ItemScriptableObject item)
     {
         // If the item has the correct stats to equip
-        if (level >= inst.item.ItemLevel)
+        if (level >= item.level)
         {
-            ApplyStats(inst.item.equipmentModifiers, inst);
+            ApplyStats(item.equipmentModifiers, item);
             UpdateStats();
             return true;
         }
@@ -207,9 +207,9 @@ public class PlayerStats : Stats
     /// Unequip an item when it is removed from the equipment slot
     /// </summary>
     /// <param name="inst"></param>
-    public void UnequipItem(ItemStack inst)
+    public void UnequipItem(ItemScriptableObject item)
     {
-        RemoveStats(inst.item.equipmentModifiers, inst);
+        RemoveStats(item.equipmentModifiers, item);
         UpdateStats();
     }
 

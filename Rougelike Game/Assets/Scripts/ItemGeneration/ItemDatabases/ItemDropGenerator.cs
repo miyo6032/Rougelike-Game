@@ -106,13 +106,13 @@ public class ItemDropGenerator : MonoBehaviour
     /// <summary>
     /// Get an artifact based on a level given (and thus more valuable)
     /// </summary>
-    private Item GetRandomItemByLevel(int level, List<ItemScriptableObject> items)
+    private ItemScriptableObject GetRandomItemByLevel(int level, List<ItemScriptableObject> items)
     {
-        List<ItemScriptableObject> candidateItems = items.FindAll(itemtype => itemtype.item.ItemLevel == level);
+        List<ItemScriptableObject> candidateItems = items.FindAll(itemtype => itemtype.level == level);
 
         if (candidateItems.Count > 0)
         {
-            return candidateItems[Random.Range(0, candidateItems.Count)].item;
+            return candidateItems[Random.Range(0, candidateItems.Count)];
         }
         return GetRandomItemByLevel(level - 1, items);
     }

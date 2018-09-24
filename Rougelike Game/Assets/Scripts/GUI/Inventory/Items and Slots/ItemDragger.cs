@@ -7,8 +7,6 @@ using UnityEngine.UI;
 public class ItemDragger : MonoBehaviour
 {
     public static ItemDragger instance;
-
-    [HideInInspector]
     public ItemStack itemStack;
 
     public Text stackText;
@@ -30,11 +28,11 @@ public class ItemDragger : MonoBehaviour
     /// <summary>
     /// Set the item dragger to be dragging this item
     /// </summary>
-    public void SetItem(ItemStack item)
+    public void SetItem(ItemStack itemStack)
     {
-        itemStack = item;
+        this.itemStack = itemStack;
         stackText.text = itemStack.amount == 1 ? "" : itemStack.amount.ToString();
-        itemSprite.sprite = TextureDatabase.instance.LoadTexture(itemStack.item.Sprite);
+        itemSprite.sprite = itemStack.item.sprite;
     }
 
     /// <summary>
@@ -44,7 +42,7 @@ public class ItemDragger : MonoBehaviour
     {
         itemStack = null;
         stackText.text = "";
-        itemSprite.sprite = TextureDatabase.instance.LoadTexture("Invisible");
+        itemSprite.sprite = InventoryManager.instance.invisible.sprite;
     }
 
     private void Update()

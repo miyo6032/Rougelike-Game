@@ -1,32 +1,31 @@
 ﻿using UnityEngine;
 using System;
+using Rougelike_Game.Assets.Scripts.GUI.Inventory.Items_and_Slots;
 
 [CreateAssetMenu(menuName = "Custom/Item")]
 public class ItemScriptableObject : ScriptableObject
 {
-	public Item item;
+    public string title;
+    public string description;
+    public bool stackable;
+    [Range(0, 10000)]
+    public int value;
+    public Sprite sprite;
 
-    public Sprite itemSprite;
+    [Header("Equipment")]
+    public EquipmentType equippedSlot = EquipmentType.None;
 
-    public Color equipColor = Color.gray;
+    public Modifier[] equipmentModifiers;
 
-    /// <summary>
-    /// Automatically update the color and item texture in string mode so the engine can load the textures and colors 
-    /// </summary>
-    public void OnValidate()
-    {
-        string path = itemSprite.ToString();
-        int index = path.IndexOf(" ", StringComparison.Ordinal);
-        if (index < 0)
-        {
-            item.Sprite = "invisible";
-        }
-        else
-        {
-            path = path.Substring(0, index);
-            item.Sprite = path;
-        }
-        item.ItemColor = "#" + ColorUtility.ToHtmlStringRGBA(equipColor);
-    }
+    [Range(1, 100)]
+    public int level = 1;
+
+    [Header("Consumable")]
+    public bool consumable;
+
+    public Effect[] consumptionEffects;
+
+    [Range(0, 100)]
+    public int focusConsumption;
 
 }

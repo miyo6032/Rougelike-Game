@@ -13,15 +13,15 @@ public class ItemUse : MonoBehaviour
     /// <param name="itemSlot"></param>
     public void ApplyItemEffect(ItemSlot itemSlot)
     {
-        foreach (Effect effect in itemSlot.itemStack.item.ConsumptionEffects)
+        foreach (Effect effect in itemSlot.itemStack.item.consumptionEffects)
         {
             EffectManager.instance.AddNewEffect(effect, null);
         }
-        if (itemSlot.itemStack.item.Title == "Critical Hit")
+        if (itemSlot.itemStack.item.title == "Critical Hit")
         {
             skillManager.DoTheSkill(Skills.CriticalHit, itemSlot.itemStack.item.focusConsumption);
         }
-        if (itemSlot.itemStack.item.Consumable)
+        if (itemSlot.itemStack.item.consumable)
         {
             itemSlot.ChangeAmount(-1);
         }

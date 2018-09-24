@@ -104,7 +104,7 @@ public class ShopManager : MonoBehaviour
     /// </summary>
     public void SellItem()
     {
-        gold += InventoryManager.instance.slots[sellItemIndex].itemStack.item.Value;
+        gold += InventoryManager.instance.slots[sellItemIndex].itemStack.item.value;
         InventoryManager.instance.slots[sellItemIndex].ChangeAmount(-1);
         UpdateSellItems();
         goldText.text = gold.ToString();
@@ -115,12 +115,12 @@ public class ShopManager : MonoBehaviour
     /// </summary>
     public void BuyItem()
     {
-        Item itemToBuy = currentTrader.itemsForSale[buyItemIndex].item;
-        if (gold >= itemToBuy.Value)
+        ItemScriptableObject itemToBuy = currentTrader.itemsForSale[buyItemIndex];
+        if (gold >= itemToBuy.value)
         {
             InventoryManager.instance.AddItem(new ItemStack(itemToBuy, 1));
             UpdateSellItems();
-            gold -= itemToBuy.Value;
+            gold -= itemToBuy.value;
             goldText.text = gold.ToString();
         }
     }
@@ -139,10 +139,10 @@ public class ShopManager : MonoBehaviour
     private void UpdateBuyItem(ChangeIndex changeIndex)
     {
         buyItemIndex = changeIndex(buyItemIndex, currentTrader.itemsForSale.Count);
-        Item itemToShow = currentTrader.itemsForSale[buyItemIndex].item;
-        buyItem.SetItemAndImage(itemToShow, TextureDatabase.instance.LoadTexture(itemToShow.Sprite));
-        buyTitleText.text = itemToShow.Title;
-        buyItemCost.text = itemToShow.Value.ToString();
+        ItemScriptableObject itemToShow = currentTrader.itemsForSale[buyItemIndex];
+        buyItem.SetItemAndImage(itemToShow, itemToShow.sprite);
+        buyTitleText.text = itemToShow.title;
+        buyItemCost.text = itemToShow.value.ToString();
     }
 
     /// <summary>
@@ -165,10 +165,10 @@ public class ShopManager : MonoBehaviour
         } while (slots[sellItemIndex].itemStack == null);
         noItemsToSell.SetActive(false);
         ItemStack itemStack = slots[sellItemIndex].itemStack;
-        sellItem.SetItemAndImage(itemStack.item, TextureDatabase.instance.LoadTexture(itemStack.item.Sprite));
-        sellTitleText.text = itemStack.item.Title;
+        sellItem.SetItemAndImage(itemStack.item, itemStack.item.sprite);
+        sellTitleText.text = itemStack.item.title;
         sellStackAmount.text = itemStack.amount == 1 ? "" : itemStack.amount.ToString();
-        sellItemCost.text = itemStack.item.Value.ToString();
+        sellItemCost.text = itemStack.item.value.ToString();
     }
 
     private void UpdateSellItems()

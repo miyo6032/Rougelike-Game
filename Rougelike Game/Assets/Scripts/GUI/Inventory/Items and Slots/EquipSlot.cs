@@ -1,6 +1,7 @@
 ﻿using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using UnityEngine;
+using Rougelike_Game.Assets.Scripts.GUI.Inventory.Items_and_Slots;
 
 /// <summary>
 /// The slot that represents an equipped item when dropped into
@@ -20,10 +21,10 @@ public class EquipSlot : ItemSlot
     public override void ItemDropIntoEmpty(ItemStack droppedItem)
     {
         // If there is an item attached to the mouse pointer
-        if (ItemCanBeEquipped(droppedItem))
+        if (ItemCanBeEquipped(droppedItem.item))
         {
             SetItem(droppedItem);
-            playerStat.EquipItem(droppedItem);
+            playerStat.EquipItem(droppedItem.item);
             ItemDragger.instance.RemoveItem();
             slotImage.sprite = fullSprite;
         }
@@ -35,10 +36,10 @@ public class EquipSlot : ItemSlot
     /// <param name="droppedItem"></param>
     public override void ItemDropIntoFull(ItemStack droppedItem)
     {
-        if (ItemCanBeEquipped(droppedItem))
+        if (ItemCanBeEquipped(droppedItem.item))
         {
-            playerStat.UnequipItem(itemStack);
-            playerStat.EquipItem(droppedItem);
+            playerStat.UnequipItem(itemStack.item);
+            playerStat.EquipItem(droppedItem.item);
             PickItemUp();
             SetItem(droppedItem);
             slotImage.sprite = fullSprite;
@@ -53,17 +54,17 @@ public class EquipSlot : ItemSlot
 
     public override void RemoveItem()
     {
-        playerStat.UnequipItem(itemStack);
+        playerStat.UnequipItem(itemStack.item);
         base.RemoveItem();
     }
 
     /// <summary>
     /// If the player is qualified to equip the item
     /// </summary>
-    /// <param name="droppedItem"></param>
+    /// <param name="itemId"></param>
     /// <returns></returns>
-    private bool ItemCanBeEquipped(ItemStack droppedItem)
+    private bool ItemCanBeEquipped(ItemScriptableObject item)
     {
-        return droppedItem.item.EquippedSlot == equipmentSlot && playerStat.GetLevel() >= droppedItem.item.ItemLevel;
+        return item.equippedSlot == equipmentSlot && playerStat.GetLevel() >= item.level;
     }
 }

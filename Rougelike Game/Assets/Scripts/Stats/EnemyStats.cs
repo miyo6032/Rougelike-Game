@@ -106,7 +106,7 @@ public class EnemyStats : Stats
         if (enemy.dropChance > Random.Range(0, 1f))
         {
             ItemPickup item = Instantiate(itemPrefab, transform.parent);
-            item.SetItem(new ItemStack(enemy.itemDrops[Random.Range(0, enemy.itemDrops.Length)].item, 1));
+            item.SetItem(new ItemStack(enemy.itemDrops[Random.Range(0, enemy.itemDrops.Length)], 1));
             item.transform.position = transform.position;
         }
 
