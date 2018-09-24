@@ -7,6 +7,7 @@ using UnityEngine.UI;
 public class ItemDragger : MonoBehaviour
 {
     public static ItemDragger instance;
+    
     public ItemStack itemStack;
 
     public Text stackText;
