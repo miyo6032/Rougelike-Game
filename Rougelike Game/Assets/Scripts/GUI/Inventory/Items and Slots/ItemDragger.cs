@@ -33,7 +33,7 @@ public class ItemDragger : MonoBehaviour
     {
         this.itemStack = itemStack;
         stackText.text = itemStack.amount == 1 ? "" : itemStack.amount.ToString();
-        itemSprite.sprite = itemStack.item.sprite;
+        itemSprite.sprite = itemStack.item.GetSprite();
     }
 
     /// <summary>
@@ -43,7 +43,7 @@ public class ItemDragger : MonoBehaviour
     {
         itemStack = null;
         stackText.text = "";
-        itemSprite.sprite = InventoryManager.instance.invisible.sprite;
+        itemSprite.sprite = InventoryManager.instance.invisible.GetSprite();
     }
 
     private void Update()

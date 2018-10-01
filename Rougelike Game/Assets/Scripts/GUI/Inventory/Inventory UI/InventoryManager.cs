@@ -35,7 +35,7 @@ public class InventoryManager : MonoBehaviour
     public bool AddItem(ItemStack stack)
     {
         ItemSlot slot = FindSlotWithItem(stack.item, slots);
-        if (slot && stack.item.stackable)
+        if (slot && stack.item.GetIsStackable())
         {
             slot.ItemDropIntoFull(stack);
             return true;

@@ -104,7 +104,7 @@ public class ShopManager : MonoBehaviour
     /// </summary>
     public void SellItem()
     {
-        gold += InventoryManager.instance.slots[sellItemIndex].itemStack.item.value;
+        gold += InventoryManager.instance.slots[sellItemIndex].itemStack.item.GetValue();
         InventoryManager.instance.slots[sellItemIndex].ChangeAmount(-1);
         UpdateSellItems();
         goldText.text = gold.ToString();
@@ -116,11 +116,11 @@ public class ShopManager : MonoBehaviour
     public void BuyItem()
     {
         ItemScriptableObject itemToBuy = currentTrader.itemsForSale[buyItemIndex];
-        if (gold >= itemToBuy.value)
+        if (gold >= itemToBuy.GetValue())
         {
             InventoryManager.instance.AddItem(new ItemStack(itemToBuy, 1));
             UpdateSellItems();
-            gold -= itemToBuy.value;
+            gold -= itemToBuy.GetValue();
             goldText.text = gold.ToString();
         }
     }
@@ -140,9 +140,9 @@ public class ShopManager : MonoBehaviour
     {
         buyItemIndex = changeIndex(buyItemIndex, currentTrader.itemsForSale.Count);
         ItemScriptableObject itemToShow = currentTrader.itemsForSale[buyItemIndex];
-        buyItem.SetItemAndImage(itemToShow, itemToShow.sprite);
-        buyTitleText.text = itemToShow.title;
-        buyItemCost.text = itemToShow.value.ToString();
+        buyItem.SetItemAndImage(itemToShow, itemToShow.GetSprite());
+        buyTitleText.text = itemToShow.GetTitle();
+        buyItemCost.text = itemToShow.GetValue().ToString();
     }
 
     /// <summary>
@@ -165,10 +165,10 @@ public class ShopManager : MonoBehaviour
         } while (slots[sellItemIndex].itemStack == null);
         noItemsToSell.SetActive(false);
         ItemStack itemStack = slots[sellItemIndex].itemStack;
-        sellItem.SetItemAndImage(itemStack.item, itemStack.item.sprite);
-        sellTitleText.text = itemStack.item.title;
+        sellItem.SetItemAndImage(itemStack.item, itemStack.item.GetSprite());
+        sellTitleText.text = itemStack.item.GetTitle();
         sellStackAmount.text = itemStack.amount == 1 ? "" : itemStack.amount.ToString();
-        sellItemCost.text = itemStack.item.value.ToString();
+        sellItemCost.text = itemStack.item.GetValue().ToString();
     }
 
     private void UpdateSellItems()

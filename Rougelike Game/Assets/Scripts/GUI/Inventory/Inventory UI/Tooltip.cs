@@ -121,12 +121,12 @@ public class Tooltip : MonoBehaviour
     public void ShowItemTooltip(ItemScriptableObject item)
     {
         PositionTooltip();
-        title.text = item.title;
-        string str = item.equippedSlot == EquipmentType.None ? "" : "Required Level: " + item.level + "\n\n";
-        str += GetStatsString(item.equipmentModifiers);
-        str += item.focusConsumption == 0 ? "" : "Required focus: " + item.focusConsumption + "\n\n";
-        str += item.value == 0 ? "" : "Value: " + item.value + "\n\n";
-        str += item.description;
+        title.text = item.GetTitle();
+        string str = item.GetEquipmentSlot() == EquipmentType.None ? "" : "Required Level: " + item.GetLevel() + "\n\n";
+        str += GetStatsString(item.GetEquipmentModifiers());
+        str += item.GetFocusConsumption() == 0 ? "" : "Required focus: " + item.GetFocusConsumption() + "\n\n";
+        str += item.GetValue() == 0 ? "" : "Value: " + item.GetValue() + "\n\n";
+        str += item.GetDescription();
         description.text = str;
     }
 
@@ -145,7 +145,7 @@ public class Tooltip : MonoBehaviour
     /// </summary>
     private Modifier GetModifier(ItemScriptableObject item, PlayerStatModifier modifierType)
     {
-        foreach (var modifier in item.equipmentModifiers)
+        foreach (var modifier in item.GetEquipmentModifiers())
         {
             if (modifier.statToModify == modifierType)
             {

@@ -20,14 +20,14 @@ public class HotbarSlot : MonoBehaviour, IPointerClickHandler
     {
         if (itemSlot.itemStack != null)
         {
-            itemSprite.sprite = itemSlot.itemStack.item.sprite;
+            itemSprite.sprite = itemSlot.itemStack.item.GetSprite();
             //Only show number amount if item amount is not 1
             stackAmount.text = (itemSlot.itemStack.amount == 1) ? "" : itemSlot.itemStack.amount.ToString();
         }
         else
         {
             stackAmount.text = "";
-            itemSprite.sprite = InventoryManager.instance.invisible.sprite;
+            itemSprite.sprite = InventoryManager.instance.invisible.GetSprite();
         }
     }
 

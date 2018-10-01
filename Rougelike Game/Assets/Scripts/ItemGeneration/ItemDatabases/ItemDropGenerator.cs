@@ -108,7 +108,7 @@ public class ItemDropGenerator : MonoBehaviour
     /// </summary>
     private ItemScriptableObject GetRandomItemByLevel(int level, List<ItemScriptableObject> items)
     {
-        List<ItemScriptableObject> candidateItems = items.FindAll(itemtype => itemtype.level == level);
+        List<ItemScriptableObject> candidateItems = items.FindAll(itemtype => itemtype.GetLevel() == level);
 
         if (candidateItems.Count > 0)
         {

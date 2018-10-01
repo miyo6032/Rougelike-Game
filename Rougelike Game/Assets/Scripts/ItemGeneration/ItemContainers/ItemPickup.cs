@@ -10,7 +10,7 @@ public class ItemPickup : PlayerEnterDetector
     public void SetItem(ItemStack stack)
     {
         this.itemStack = stack;
-        GetComponent<SpriteRenderer>().sprite = stack.item.sprite;
+        GetComponent<SpriteRenderer>().sprite = stack.item.GetSprite();
     }
 
     public override void PlayerEnter(Collider2D player)

@@ -65,6 +65,6 @@ public class EquipSlot : ItemSlot
     /// <returns></returns>
     private bool ItemCanBeEquipped(ItemScriptableObject item)
     {
-        return item.equippedSlot == equipmentSlot && playerStat.GetLevel() >= item.level;
+        return item.GetEquipmentSlot() == equipmentSlot && playerStat.GetLevel() >= item.GetLevel();
     }
 }

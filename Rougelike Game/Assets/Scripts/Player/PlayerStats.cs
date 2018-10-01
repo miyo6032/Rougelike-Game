@@ -193,9 +193,9 @@ public class PlayerStats : Stats
     public bool EquipItem(ItemScriptableObject item)
     {
         // If the item has the correct stats to equip
-        if (level >= item.level)
+        if (level >= item.GetLevel())
         {
-            ApplyStats(item.equipmentModifiers, item);
+            ApplyStats(item.GetEquipmentModifiers(), item);
             UpdateStats();
             return true;
         }
@@ -209,7 +209,7 @@ public class PlayerStats : Stats
     /// <param name="inst"></param>
     public void UnequipItem(ItemScriptableObject item)
     {
-        RemoveStats(item.equipmentModifiers, item);
+        RemoveStats(item.GetEquipmentModifiers(), item);
         UpdateStats();
     }
 
