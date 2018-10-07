@@ -1,5 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.IO;
+using Rougelike_Game.Assets.Scripts.GUI.Inventory.Inventory_UI;
 
 /// <summary>
 /// Holds the inventory slot information, and implements some necessary item operations
@@ -11,7 +14,7 @@ public class InventoryManager : MonoBehaviour
     public ItemScriptableObject invisible;
 
     public List<ItemSlot> slots = new List<ItemSlot>();
-    public List<ItemSlot> equipSlots = new List<ItemSlot>();
+    private ItemDatabase itemDatabase;
 
     private void Start()
     {
@@ -24,6 +27,8 @@ public class InventoryManager : MonoBehaviour
             Debug.LogError("Duplicate " + this.GetType().Name);
             Destroy(gameObject);
         }
+
+        itemDatabase = new ItemDatabase();
 
         gameObject.SetActive(false);
     }
@@ -118,6 +123,42 @@ public class InventoryManager : MonoBehaviour
         else
         {
             gameObject.SetActive(true);
+        }
+    }
+
+    // A class to easily save the needed data for items
+    [System.Serializable]
+    class ItemSave{
+        public int id;
+        public int amount;
+        public ItemSave(int id, int amount){
+            this.id = id;
+            this.amount = amount;
+        }
+    }
+
+    public void Save(){
+        BinaryFormatter bf = new BinaryFormatter();
+        FileStream file  = File.Create(Application.persistentDataPath + "/inventory.dat");
+
+        List<ItemSave> items = slots.ConvertAll(slot => 
+            slot.itemStack != null ? new ItemSave(slot.itemStack.item.GetId(), slot.itemStack.amount) : new ItemSave(-1, 0));
+
+        bf.Serialize(file, items);
+        file.Close();
+    }
+
+    public void Load(){
+        BinaryFormatter bf = new BinaryFormatter();
+        FileStream file = File.Open(Application.persistentDataPath + "/inventory.dat", FileMode.Open);
+        List<ItemSave> save = (List<ItemSave>)bf.Deserialize(file);
+
+        for(int i = 0; i < save.Count; i++){
+            if(save[i].id != -1){
+                AddItemToSlot(
+                    new ItemStack(itemDatabase.GetItemById(save[i].id), save[i].amount), 
+                    slots[i]);
+            }
         }
     }
 }

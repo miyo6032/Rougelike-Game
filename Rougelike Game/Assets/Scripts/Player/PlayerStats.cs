@@ -87,15 +87,15 @@ public class PlayerStats : Stats
         playerAnimation = GetComponent<PlayerAnimation>();
         soundManager = GetComponent<SoundManager>();
 
-        InventoryManager.instance.AddItem(new ItemStack(meat, 1));
-        InventoryManager.instance.AddItemToSlot(new ItemStack(starterSword, 1), InventoryManager.instance.equipSlots[0]);
-        InventoryManager.instance.AddItemToSlot(new ItemStack(starterShield, 1), InventoryManager.instance.equipSlots[1]);
-        InventoryManager.instance.AddItemToSlot(new ItemStack(starterHelmet, 1), InventoryManager.instance.equipSlots[2]);
-        InventoryManager.instance.AddItemToSlot(new ItemStack(starterChestplate, 1), InventoryManager.instance.equipSlots[3]);
-        InventoryManager.instance.AddItemToSlot(new ItemStack(starterLeggings, 1), InventoryManager.instance.equipSlots[4]);
-        InventoryManager.instance.AddItemToSlot(new ItemStack(starterBoots, 1), InventoryManager.instance.equipSlots[5]);
-        InventoryManager.instance.AddItemToSlot(new ItemStack(starterNecklace, 1), InventoryManager.instance.equipSlots[6]);
-        InventoryManager.instance.AddItemToSlot(new ItemStack(startedRing, 1), InventoryManager.instance.equipSlots[7]);
+        // InventoryManager.instance.AddItem(new ItemStack(meat, 1));
+        // InventoryManager.instance.AddItemToSlot(new ItemStack(starterSword, 1), InventoryManager.instance.slots[16]);
+        // InventoryManager.instance.AddItemToSlot(new ItemStack(starterShield, 1), InventoryManager.instance.slots[17]);
+        // InventoryManager.instance.AddItemToSlot(new ItemStack(starterHelmet, 1), InventoryManager.instance.slots[18]);
+        // InventoryManager.instance.AddItemToSlot(new ItemStack(starterChestplate, 1), InventoryManager.instance.slots[19]);
+        // InventoryManager.instance.AddItemToSlot(new ItemStack(starterLeggings, 1), InventoryManager.instance.slots[20]);
+        // InventoryManager.instance.AddItemToSlot(new ItemStack(starterBoots, 1), InventoryManager.instance.slots[21]);
+        // InventoryManager.instance.AddItemToSlot(new ItemStack(starterNecklace, 1), InventoryManager.instance.slots[22]);
+        // InventoryManager.instance.AddItemToSlot(new ItemStack(startedRing, 1), InventoryManager.instance.slots[23]);
     }
 
     /// <summary>
